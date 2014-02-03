@@ -1,4 +1,4 @@
-smart-project
+SmartProject
 =============
 
-SmartProject - Another project management.
+Another project management.
