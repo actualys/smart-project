@@ -1,0 +1,41 @@
+{% extends "SmartProjectFrontBundle::layout.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block head_css %}
+    {{ parent() }}
+    {% stylesheets
+    "@SmartProjectFrontBundle/Resources/public/css/login.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.session.flashbag.all() %}
+        {% for key, message in messages %}
+            <div class="flash-{{ type }}">
+                {{ message|trans({}, 'FOSUserBundle') }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="container">
+
+        <form action="{{ path("fos_user_security_check") }}" method="post" class="form-signin" role="form">
+            <h2 class="form-signin-heading">Please sign in</h2>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+            <input type="text" id="username" name="_username" value="{{ last_username }}" placeholder="Email address" required="required"  class="form-control" autofocus />
+            <input type="password" id="password" name="_password" placeholder="Password" required="required" class="form-control" />
+
+            <label class="checkbox">
+                <input type="checkbox" id="remember_me" name="_remember_me" value="on"/>
+                Remember me
+            </label>
+
+            <button type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" class="btn btn-lg btn-primary btn-block">Sign in</button>
+        </form>
+
+    </div>
+
+{% endblock body %}
