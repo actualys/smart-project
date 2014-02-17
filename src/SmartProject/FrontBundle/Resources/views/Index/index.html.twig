@@ -1,0 +1,15 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block head_css %}
+    {{ parent() }}
+    {% stylesheets
+    "@SmartProjectFrontBundle/Resources/public/css/login.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+
+    foo
+
+{% endblock %}

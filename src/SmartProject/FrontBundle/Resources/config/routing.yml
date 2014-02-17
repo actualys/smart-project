@@ -1,0 +1,3 @@
+smart_project_front_homepage:
+    pattern:  /
+    defaults: { _controller: SmartProjectFrontBundle:Index:index }
