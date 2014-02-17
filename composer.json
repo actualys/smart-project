@@ -23,7 +23,8 @@
         "braincrafted/bootstrap-bundle": "~2.0",
         "twbs/bootstrap": "*",
         "components/jquery": "1.10.2",
-        "leafo/lessphp": "0.4.*@dev"
+        "leafo/lessphp": "0.4.*@dev",
+        "kbsali/redmine-api": "1.*"
     },
     "scripts": {
         "post-install-cmd": [

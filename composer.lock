@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ed1c819dfbe25df6520b938a6bc6ec9d",
+    "hash": "d6bbeec89e7000cf1f2401ce5c5cf056",
     "packages": [
         {
             "name": "braincrafted/bootstrap-bundle",
@@ -893,6 +893,50 @@
                 "sql"
             ],
             "time": "2014-01-12 16:20:24"
+        },
+        {
+            "name": "kbsali/redmine-api",
+            "version": "v1.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kbsali/php-redmine-api.git",
+                "reference": "f7e1fba284e422cfccb85199d4ab374be0e24f43"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kbsali/php-redmine-api/zipball/f7e1fba284e422cfccb85199d4ab374be0e24f43",
+                "reference": "f7e1fba284e422cfccb85199d4ab374be0e24f43",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Redmine": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Saliou",
+                    "email": "kevin@saliou.name",
+                    "homepage": "http://kbsali.github.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Redmine API client",
+            "homepage": "https://github.com/kbsali/php-redmine-api",
+            "keywords": [
+                "api",
+                "redmine"
+            ],
+            "time": "2013-12-13 16:26:46"
         },
         {
             "name": "kriswallsmith/assetic",
