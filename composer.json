@@ -1,8 +1,8 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "license": "MIT",
+    "name": "actualys/smart-project",
+    "license": "GPL-3.0",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "Another project management tool.",
     "autoload": {
         "psr-0": { "": "src/" }
     },
@@ -26,10 +26,7 @@
         "leafo/lessphp": "0.4.*@dev",
         "kbsali/redmine-api": "1.*",
         "knplabs/knp-menu": "2.0.*@dev",
-        "knplabs/knp-menu-bundle": "2.0.*@dev",
-        "sonata-project/core-bundle": "2.2.*@dev",
-        "sonata-project/block-bundle": "2.2.*@dev",
-        "sonata-project/cache-bundle": "2.2.*@dev"
+        "knplabs/knp-menu-bundle": "2.0.*@dev"
     },
     "scripts": {
         "post-install-cmd": [
