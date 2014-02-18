@@ -1,18 +1,22 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
-{% block head_css %}
-    {{ parent() }}
-    {% stylesheets
-    "@SmartProjectFrontBundle/Resources/public/css/default.css" %}
-    <link rel="stylesheet" href="{{ asset_url }}"/>
-    {% endstylesheets %}
-{% endblock %}
+{#{% block head_css %}#}
+    {#{{ parent() }}#}
+    {#{% stylesheets#}
+    {#"@SmartProjectFrontBundle/Resources/public/css/default.css" %}#}
+    {#<link rel="stylesheet" href="{{ asset_url }}"/>#}
+    {#{% endstylesheets %}#}
+{#{% endblock %}#}
 
-{% block body %}{% spaceless %}
+{% block headline %}Dashboard{% endblock headline %}
 
+{% block content_content %}{% spaceless %}
 
+    <div id="content">
+        {#{{ mopa_bootstrap_menu('main', {'automenu': 'navbar'}) }}#}
+    </div>
 
-    <ul id="sidebar" class="nav nav-pills nav-stacked">
+    <!--ul id="sidebar" class="nav nav-pills nav-stacked">
         <li class="avatar hidden-phone">
             <a href="#">
                 <img src="#">
@@ -106,6 +110,6 @@
                 <span class="hidden-phone">Widgets</span>
             </a>
         </li>
-    </ul>
+    </ul-->
 
 {% endspaceless %}{% endblock %}

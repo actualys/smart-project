@@ -1,6 +1,6 @@
 smart_project_front:
-    resource: "@SmartProjectFrontBundle/Resources/config/routing.yml"
-    prefix:   /
+    resource: "@SmartProjectFrontBundle/Controller"
+    type:     annotation
 
 #login + logout
 fos_user_security:

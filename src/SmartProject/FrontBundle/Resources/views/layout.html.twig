@@ -1,29 +1,112 @@
-{% spaceless %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{% block head_title %}{% if title is defined %}{{ title }} | Smart Project{% else %}Smart Project{% endif %}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap -->
-    {% block head_css %}
-        <link href="{{ asset('/css/bootstrap.css') }}" rel="stylesheet" media="screen">
-    {% endblock %}
+{% extends 'SmartProjectBootstrapBundle::base.html.twig' %}
 
-    {% block head_js %}
-    {% endblock %}
+{% block head_style %}
+    {{ parent() }}
+    {% stylesheets
+    '@SmartProjectFrontBundle/Resources/public/css/default.css' %}
+    <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+    {% endstylesheets %}
+{% endblock head_style %}
 
-    <!-- HTML5 Shim and Respond.js add IE8 support of HTML5 elements and media queries -->
-    {% include 'BraincraftedBootstrapBundle::ie8-support.html.twig' %}
-</head>
+{% block navbar %}
+    {% embed '@MopaBootstrap/Navbar/navbar.html.twig' with { fixedTop: true } %}
+        {% block brand %}
+            <a class="navbar-brand" href="{{ path('smartproject_front_index_index') }}">SmartProject</a>
+        {% endblock %}
 
-<body>{% block body %}{% endblock body %}
-<!-- jQuery (necessary for Bootstraps JavaScript plugins) -->
-<script src="{{ asset('/js/jquery.min.js') }}"></script>
-<!-- Include all JavaScripts, compiled by Assetic -->
-<script src="{{ asset('/js/bootstrap.js') }}"></script>
+        {% block menu %}{% spaceless %}
+            {{ mopa_bootstrap_menu('main') }}
+            {{ mopa_bootstrap_menu('user') }}
+        {% endspaceless %}{% endblock %}
+    {% endembed %}
+{% endblock navbar %}
 
-{% block footer_js %}{% endblock %}
+{% block headline %}The Basic Layout{% endblock headline %}
 
-</body>
-</html>
-{% endspaceless %}
+{% block content %}{% spaceless %}
+
+    <div class="col-lg-4">
+        <h3>To kick start development</h3>
+
+        <p>just create a file in app/Resources/MopaBootstrapBundle/views/layout.html.twig</p>
+
+    <pre class="prettyprint">
+{% raw %}
+        {% extends 'MopaBootstrapBundle::base.html.twig' %}
+
+{% block title %}Yourapp{% endblock %}
+
+{# and define more blocks ... #}
+        {% endraw %}
+    </pre>
+        <p>a good example is the sandbox itself:</p>
+        <ul>
+            <li>
+                <a href="https://github.com/phiamo/MopaBootstrapSandboxBundle/tree/master/Resources/views/base.html.twig">base.html.twig</a>
+            </li>
+            <li><a href="https://github.com/phiamo/MopaBootstrapSandboxBundle/tree/master/Resources/views/Examples">Resources/views/Examples</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-lg-4">
+        <h3>Use initializr</h3>
+
+        <p>Same as before just using initializr:</p>
+
+    <pre class="prettyprint">
+{% raw %}
+        {% extends 'MopaBootstrapBundle::base_initializr.html.twig' %}
+
+{% block title %}Yourapp{% endblock %}
+
+{# and define more blocks ... #}
+        {% endraw %}
+    </pre>
+        <p>or if global title is set in config.yml:</p>
+    <pre class="prettyprint">
+{% raw %}
+        {% extends 'MopaBootstrapBundle::base_initializr.html.twig' %}
+
+{% block title %}{{ parent() }} - Example subpage{% endblock %}
+
+{# and define more blocks ... #}
+        {% endraw %}
+    </pre>
+        <p>But you have at least to activate the template variables in config.yml:</p>
+    <pre class="prettyprint lang-yaml">
+mopa_bootstrap:
+    navbar: ~
+    initializr: ~
+    </pre>
+        <p>You can also configure it</p>
+        <ul>
+            <li>
+                <a href="https://github.com/phiamo/MopaBootstrapBundle/tree/master/Resources/doc/51-initializr-variables.md">51-initializr-variables.md</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-lg-4">
+        <h3>Using Bundles</h3>
+
+        <p>To overwrite the Templates you might either use the app/Resources folder</p>
+
+        <p>Or create a Bundle AcmeBootstrapSomethingBundle and use the inheritance:</p>
+
+    <pre class="prettyprint lang-php">
+class AcmeBootstrapSomethingBundle extends Bundle
+{
+
+    public function getParent()
+    {
+        return 'MopaBootstrapBundle';
+    }
+}
+
+    </pre>
+        <p>But you have to be aware that only one Bundle in your app may extend the BootstrapBundle</p>
+    </div>
+{% endspaceless %}{% endblock content %}
+
+{% block body_end_before_js_content %}
+    <p class="text-muted">&copy; Copyright 2014 SmartProject.</p>
+{% endblock body_end_before_js_content %}

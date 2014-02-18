@@ -1,8 +1,8 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "license": "MIT",
+    "name": "actualys/smart-project",
+    "license": "GPL-3.0",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "Another project management tool.",
     "autoload": {
         "psr-0": { "": "src/" }
     },
@@ -19,23 +19,21 @@
         "sensio/framework-extra-bundle": "2.3.*",
         "sensio/generator-bundle": "2.3.*",
         "friendsofsymfony/user-bundle": "~2.0@dev",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "braincrafted/bootstrap-bundle": "~2.0",
-        "twbs/bootstrap": "*",
-        "components/jquery": "1.10.2",
-        "leafo/lessphp": "0.4.*@dev",
+        "gedmo/doctrine-extensions": "2.3.*",
+        "leafo/lessphp": "*",
+        "knplabs/knp-menu": "2.0.*@dev",
+        "knplabs/knp-menu-bundle": "2.0.*@dev",
+        "mopa/bootstrap-bundle": "v3.0.0-beta3",
         "kbsali/redmine-api": "1.*"
     },
     "scripts": {
         "post-install-cmd": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ],
         "post-update-cmd": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
@@ -49,9 +47,6 @@
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
-        "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
-        },
         "branch-alias": {
             "dev-master": "2.3-dev"
         }
