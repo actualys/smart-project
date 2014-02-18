@@ -1,0 +1,22 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block head_css %}
+    {{ parent() }}
+    {% stylesheets
+    "@SmartProjectFrontBundle/Resources/public/css/error.css" %}
+    <link rel="stylesheet" href="{{ asset_url }}"/>
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+
+    <div class="blue-sky">
+        <div class="body-content">
+            <h1>Sorry, that page doesn't exist!</h1>
+
+            <p>We're going to fix it up and have things back to normal soon.</p>
+
+        </div>
+    </div>
+
+{% endblock %}

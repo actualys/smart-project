@@ -1,7 +1,16 @@
 parameters:
-#    smart_project_front.example.class: SmartProject\FrontBundle\Example
+    smart_project_front.exception.listener.class: SmartProject\FrontBundle\Listeners\ExceptionListener
+    smart_project_front.security.listener.class:  SmartProject\FrontBundle\Listeners\SecurityListener
 
 services:
-#    smart_project_front.example:
-#        class: %smart_project_front.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    smart_project_front.exception.listener:
+        class: %smart_project_front.exception.listener.class%
+        arguments: [@service_container, %kernel.debug%]
+        tags:
+            - {name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    smart_project_front.security.listener:
+        class: %smart_project_front.security.listener.class%
+        arguments: [@service_container]
+        tags:
+            - { name: kernel.event_subscriber }
