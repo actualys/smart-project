@@ -43,3 +43,15 @@ body {
 .select2-container-multi .select2-choices .select2-search-choice {
     margin: 3px 0 3px 3px;
 }
+
+.list-group-condensed .list-group-item {
+    padding: 4px 8px;
+}
+
+.list-group-striped .list-group-item:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.list-group-hover .list-group-item:hover {
+    background-color: #e8e8e8;
+}
