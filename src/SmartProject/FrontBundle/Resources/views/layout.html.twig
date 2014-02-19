@@ -11,7 +11,7 @@
 {% block navbar %}
     {% embed '@MopaBootstrap/Navbar/navbar.html.twig' with { fixedTop: true } %}
         {% block brand %}
-            <a class="navbar-brand" href="{{ path('smartproject_front_index_index') }}">SmartProject</a>
+            <a class="navbar-brand visible-lg visible-md visible-xs" href="{{ path('smartproject_front_index_index') }}">SmartProject</a>
         {% endblock %}
 
         {% block menu %}{% spaceless %}

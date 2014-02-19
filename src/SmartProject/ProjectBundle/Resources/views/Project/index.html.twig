@@ -10,9 +10,9 @@
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Description</th>
-            <th>Redmine</th>
-            <th>Website</th>
+            <th class="hidden-xs">Description</th>
+            <th class="hidden-xs">Redmine</th>
+            <th class="hidden-xs">Website</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -21,9 +21,15 @@
             <tr>
                 <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.name }}</td>
-                <td>{{ entity.description }}</td>
-                <td>#{{ entity.externalid }}</td>
-                <td>{{ entity.website }}</td>
+                <td class="hidden-xs">{{ entity.description }}</td>
+                <td class="hidden-xs">
+                    {% if entity.redmineProject %}
+                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineProject.identifier }}" target="_blank">{{ entity.redmineProject.name }}</a>
+                    {% else -%}
+                        N/A
+                    {%- endif %}
+                </td>
+                <td class="hidden-xs">{{ entity.website }}</td>
                 <td>
                     <a href="{{ path('project_show', { 'id': entity.id }) }}" class="btn btn-default btn-xs">show</a>
                     &nbsp;

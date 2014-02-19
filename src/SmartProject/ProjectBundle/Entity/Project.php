@@ -22,7 +22,7 @@ class Project
     private $id;
 
     /**
-     * @var integer
+     * @var \SmartProject\ProjectBundle\Entity\Project
      *
      * @ORM\ManyToOne(targetEntity="Project", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
@@ -63,6 +63,14 @@ class Project
      * @ORM\Column(name="external_id", type="integer", nullable=true)
      */
     private $externalId;
+
+    /**
+     * @var \SmartProject\ProjectBundle\Entity\Redmine\Project
+     *
+     * @ORM\ManyToOne(targetEntity="\SmartProject\ProjectBundle\Entity\Redmine\Project")
+     * @ORM\JoinColumn(name="redmine_project_id", referencedColumnName="id")
+     */
+    private $redmineProject;
 
     /**
      * @var string
@@ -264,5 +272,28 @@ class Project
     public function getTags()
     {
         return $this->tags;
+    }
+
+    /**
+     * Set redmineProject
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Redmine\Project $redmineProject
+     * @return Project
+     */
+    public function setRedmineProject(\SmartProject\ProjectBundle\Entity\Redmine\Project $redmineProject = null)
+    {
+        $this->redmineProject = $redmineProject;
+    
+        return $this;
+    }
+
+    /**
+     * Get redmineProject
+     *
+     * @return \SmartProject\ProjectBundle\Entity\Redmine\Project 
+     */
+    public function getRedmineProject()
+    {
+        return $this->redmineProject;
     }
 }

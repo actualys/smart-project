@@ -2,6 +2,7 @@
 
 namespace SmartProject\ProjectBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -19,6 +20,15 @@ class ProjectType extends AbstractType
           ->add('description', null, array('required' => false))
           ->add('tags', 'tag', array('required' => false))
           ->add('externalId', null, array('required' => false))
+          ->add('redmineProject', 'entity', array(
+                  'class' => 'SmartProjectProjectBundle:Redmine\Project',
+                  'query_builder' => function(EntityRepository $er) {
+                        return $er->createQueryBuilder('rp')
+                          ->orderBy('rp.name', 'ASC');
+                    },
+                  'property' => 'name',
+                  'required' => false,
+              ))
           ->add('website', null, array('required' => false));
     }
 

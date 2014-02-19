@@ -23,10 +23,8 @@ class RedmineController extends Controller
      */
     public function projectListAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
+        $em       = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('SmartProjectProjectBundle:Redmine\Project')->findAll();
-
         $redmine  = $this->container->getParameter('redmine');
 
         return array(

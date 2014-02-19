@@ -43,12 +43,13 @@ class ProjectController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
+        $em       = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('SmartProjectProjectBundle:Project')->findAll();
+        $redmine  = $this->container->getParameter('redmine');
 
         return array(
             'entities' => $entities,
+            'redmine'  => $redmine,
         );
     }
 

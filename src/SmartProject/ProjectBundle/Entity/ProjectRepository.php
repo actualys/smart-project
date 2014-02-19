@@ -12,4 +12,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProjectRepository extends EntityRepository
 {
+    /**
+     * Finds all entities in the repository.
+     *
+     * @return array The entities.
+     */
+    public function findAll()
+    {
+        $query = $this->_em->createQueryBuilder()
+          ->select('p, r')
+          ->from($this->_entityName, 'p')
+          ->leftJoin('p.redmineProject', 'r');
+
+        return $query->getQuery()->execute();
+    }
 }
