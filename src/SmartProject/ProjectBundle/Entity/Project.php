@@ -2,12 +2,15 @@
 
 namespace SmartProject\ProjectBundle\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Project
  *
- * @ORM\Table()
+ * @Gedmo\Tree(type="nested")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @ORM\Table(name="project")
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ProjectRepository")
  */
 class Project
@@ -22,19 +25,12 @@ class Project
     private $id;
 
     /**
-     * @var \SmartProject\ProjectBundle\Entity\Project
+     * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="Project", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Client", inversedBy="projects")
+     * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      */
-    private $parent;
-
-    /**
-     * @var array
-     *
-     * @ORM\OneToMany(targetEntity="Project", mappedBy="parent")
-     */
-    private $children;
+    private $client;
 
     /**
      * @var string
@@ -42,6 +38,51 @@ class Project
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
+
+    /**
+     * @var string
+     *
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(name="slug", length=128, unique=true)
+     */
+    private $slug;
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer")
+     */
+    private $lft;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer")
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\Column(name="root", type="integer", nullable=true)
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Project", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Project", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private $children;
 
     /**
      * @var string
@@ -58,26 +99,48 @@ class Project
     private $tags;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="external_id", type="integer", nullable=true)
-     */
-    private $externalId;
-
-    /**
-     * @var \SmartProject\ProjectBundle\Entity\Redmine\Project
-     *
-     * @ORM\ManyToOne(targetEntity="\SmartProject\ProjectBundle\Entity\Redmine\Project")
-     * @ORM\JoinColumn(name="redmine_project_id", referencedColumnName="id")
-     */
-    private $redmineProject;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="website", type="string", length=255, nullable=true)
      */
     private $website;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="redmine_id", type="integer", nullable=true, unique=true)
+     */
+    private $redmineId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="redmine_identifier", type="string", length=255)
+     */
+    private $redmineIdentifier;
+
+    /**
+     * @var \DateTime $createdAt
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime $updatedAt
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at", type="datetime")
+     */
+    private $updatedAt;
+
+    /**
+     * @var \DateTime $deletedAt
+     *
+     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
+     */
+    private $deletedAt;
 
     /**
      * Constructor
@@ -86,11 +149,11 @@ class Project
     {
         $this->children = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
+    
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -101,20 +164,19 @@ class Project
      * Set name
      *
      * @param string $name
-     *
      * @return Project
      */
     public function setName($name)
     {
         $this->name = $name;
-
+    
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string
+     * @return string 
      */
     public function getName()
     {
@@ -122,133 +184,141 @@ class Project
     }
 
     /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Project
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set lft
+     *
+     * @param integer $lft
+     * @return Project
+     */
+    public function setLft($lft)
+    {
+        $this->lft = $lft;
+    
+        return $this;
+    }
+
+    /**
+     * Get lft
+     *
+     * @return integer 
+     */
+    public function getLft()
+    {
+        return $this->lft;
+    }
+
+    /**
+     * Set lvl
+     *
+     * @param integer $lvl
+     * @return Project
+     */
+    public function setLvl($lvl)
+    {
+        $this->lvl = $lvl;
+    
+        return $this;
+    }
+
+    /**
+     * Get lvl
+     *
+     * @return integer 
+     */
+    public function getLvl()
+    {
+        return $this->lvl;
+    }
+
+    /**
+     * Set rgt
+     *
+     * @param integer $rgt
+     * @return Project
+     */
+    public function setRgt($rgt)
+    {
+        $this->rgt = $rgt;
+    
+        return $this;
+    }
+
+    /**
+     * Get rgt
+     *
+     * @return integer 
+     */
+    public function getRgt()
+    {
+        return $this->rgt;
+    }
+
+    /**
+     * Set root
+     *
+     * @param integer $root
+     * @return Project
+     */
+    public function setRoot($root)
+    {
+        $this->root = $root;
+    
+        return $this;
+    }
+
+    /**
+     * Get root
+     *
+     * @return integer 
+     */
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
+    /**
      * Set description
      *
      * @param string $description
-     *
      * @return Project
      */
     public function setDescription($description)
     {
         $this->description = $description;
-
+    
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set externalId
-     *
-     * @param integer $externalId
-     *
-     * @return Project
-     */
-    public function setExternalId($externalId)
-    {
-        $this->externalId = $externalId;
-
-        return $this;
-    }
-
-    /**
-     * Get externalId
-     *
-     * @return integer
-     */
-    public function getExternalId()
-    {
-        return $this->externalId;
-    }
-
-    /**
-     * Set website
-     *
-     * @param string $website
-     *
-     * @return Project
-     */
-    public function setWebsite($website)
-    {
-        $this->website = $website;
-
-        return $this;
-    }
-
-    /**
-     * Get website
-     *
-     * @return string
-     */
-    public function getWebsite()
-    {
-        return $this->website;
-    }
-
-    /**
-     * Set parent
-     *
-     * @param \SmartProject\ProjectBundle\Entity\Project $parent
-     *
-     * @return Project
-     */
-    public function setParent(\SmartProject\ProjectBundle\Entity\Project $parent = null)
-    {
-        $this->parent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * Get parent
-     *
-     * @return \SmartProject\ProjectBundle\Entity\Project
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
-     * Add children
-     *
-     * @param \SmartProject\ProjectBundle\Entity\Project $children
-     *
-     * @return Project
-     */
-    public function addChildren(\SmartProject\ProjectBundle\Entity\Project $children)
-    {
-        $this->children[] = $children;
-
-        return $this;
-    }
-
-    /**
-     * Remove children
-     *
-     * @param \SmartProject\ProjectBundle\Entity\Project $children
-     */
-    public function removeChildren(\SmartProject\ProjectBundle\Entity\Project $children)
-    {
-        $this->children->removeElement($children);
-    }
-
-    /**
-     * Get children
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getChildren()
-    {
-        return $this->children;
     }
 
     /**
@@ -275,25 +345,219 @@ class Project
     }
 
     /**
-     * Set redmineProject
+     * Set website
      *
-     * @param \SmartProject\ProjectBundle\Entity\Redmine\Project $redmineProject
+     * @param string $website
      * @return Project
      */
-    public function setRedmineProject(\SmartProject\ProjectBundle\Entity\Redmine\Project $redmineProject = null)
+    public function setWebsite($website)
     {
-        $this->redmineProject = $redmineProject;
+        $this->website = $website;
     
         return $this;
     }
 
     /**
-     * Get redmineProject
+     * Get website
      *
-     * @return \SmartProject\ProjectBundle\Entity\Redmine\Project 
+     * @return string 
      */
-    public function getRedmineProject()
+    public function getWebsite()
     {
-        return $this->redmineProject;
+        return $this->website;
+    }
+
+    /**
+     * Set redmineId
+     *
+     * @param integer $redmineId
+     * @return Project
+     */
+    public function setRedmineId($redmineId)
+    {
+        $this->redmineId = $redmineId;
+    
+        return $this;
+    }
+
+    /**
+     * Get redmineId
+     *
+     * @return integer 
+     */
+    public function getRedmineId()
+    {
+        return $this->redmineId;
+    }
+
+    /**
+     * Set redmineIdentifier
+     *
+     * @param string $redmineIdentifier
+     * @return Project
+     */
+    public function setRedmineIdentifier($redmineIdentifier)
+    {
+        $this->redmineIdentifier = $redmineIdentifier;
+    
+        return $this;
+    }
+
+    /**
+     * Get redmineIdentifier
+     *
+     * @return string 
+     */
+    public function getRedmineIdentifier()
+    {
+        return $this->redmineIdentifier;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     * @return Project
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     * @return Project
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     * @return Project
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime 
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set client
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Client $client
+     * @return Project
+     */
+    public function setClient(\SmartProject\ProjectBundle\Entity\Client $client = null)
+    {
+        $this->client = $client;
+    
+        return $this;
+    }
+
+    /**
+     * Get client
+     *
+     * @return \SmartProject\ProjectBundle\Entity\Client 
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * Set parent
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Project $parent
+     * @return Project
+     */
+    public function setParent(\SmartProject\ProjectBundle\Entity\Project $parent = null)
+    {
+        $this->parent = $parent;
+    
+        return $this;
+    }
+
+    /**
+     * Get parent
+     *
+     * @return \SmartProject\ProjectBundle\Entity\Project 
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Add children
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Project $children
+     * @return Project
+     */
+    public function addChildren(\SmartProject\ProjectBundle\Entity\Project $children)
+    {
+        $this->children[] = $children;
+    
+        return $this;
+    }
+
+    /**
+     * Remove children
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Project $children
+     */
+    public function removeChildren(\SmartProject\ProjectBundle\Entity\Project $children)
+    {
+        $this->children->removeElement($children);
+    }
+
+    /**
+     * Get children
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getChildren()
+    {
+        return $this->children;
     }
 }

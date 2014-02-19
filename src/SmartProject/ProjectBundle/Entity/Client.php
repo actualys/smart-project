@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Client
  *
- * @ORM\Table()
+ * @ORM\Table(name="client")
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ClientRepository")
  */
 class Client
@@ -43,16 +43,24 @@ class Client
     private $description;
 
     /**
-     * @var integer
+     * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\Column(name="external_id", type="integer")
+     * @ORM\OneToMany(targetEntity="Project", mappedBy="client")
      */
-    private $externalId;
+    private $projects;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -63,20 +71,19 @@ class Client
      * Set name
      *
      * @param string $name
-     *
      * @return Client
      */
     public function setName($name)
     {
         $this->name = $name;
-
+    
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string
+     * @return string 
      */
     public function getName()
     {
@@ -87,20 +94,19 @@ class Client
      * Set slug
      *
      * @param string $slug
-     *
      * @return Client
      */
     public function setSlug($slug)
     {
         $this->slug = $slug;
-
+    
         return $this;
     }
 
     /**
      * Get slug
      *
-     * @return string
+     * @return string 
      */
     public function getSlug()
     {
@@ -111,20 +117,19 @@ class Client
      * Set description
      *
      * @param string $description
-     *
      * @return Client
      */
     public function setDescription($description)
     {
         $this->description = $description;
-
+    
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string
+     * @return string 
      */
     public function getDescription()
     {
@@ -132,26 +137,35 @@ class Client
     }
 
     /**
-     * Set externalId
+     * Add projects
      *
-     * @param integer $externalId
-     *
+     * @param \SmartProject\ProjectBundle\Entity\Project $projects
      * @return Client
      */
-    public function setExternalId($externalId)
+    public function addProject(\SmartProject\ProjectBundle\Entity\Project $projects)
     {
-        $this->externalId = $externalId;
-
+        $this->projects[] = $projects;
+    
         return $this;
     }
 
     /**
-     * Get externalId
+     * Remove projects
      *
-     * @return integer
+     * @param \SmartProject\ProjectBundle\Entity\Project $projects
      */
-    public function getExternalId()
+    public function removeProject(\SmartProject\ProjectBundle\Entity\Project $projects)
     {
-        return $this->externalId;
+        $this->projects->removeElement($projects);
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }

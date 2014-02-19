@@ -20,6 +20,7 @@
         "sensio/generator-bundle": "2.3.*",
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "gedmo/doctrine-extensions": "2.3.*",
+        "stof/doctrine-extensions-bundle": "1.1.*@dev",
         "leafo/lessphp": "*",
         "knplabs/knp-menu": "2.0.*@dev",
         "knplabs/knp-menu-bundle": "2.0.*@dev",

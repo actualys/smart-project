@@ -2,7 +2,7 @@
 
 namespace SmartProject\ProjectBundle\Provider;
 
-use SmartProject\ProjectBundle\Entity\Redmine\Project;
+use SmartProject\ProjectBundle\Entity\Project;
 
 /**
  * Class RedmineProvider
@@ -33,6 +33,7 @@ class RedmineProvider
      */
     public function synchronize()
     {
+        /** @var \Doctrine\ORM\EntityManager $entityManager */
         $entityManager = $this->doctrine->getManager();
         $entities      = array();
         $offset        = 0;
@@ -49,20 +50,21 @@ class RedmineProvider
             $projects = $response['projects'];
             $offset += count($projects);
 
+            $repository = $entityManager->getRepository('SmartProjectProjectBundle:Project');
+
             foreach ($projects as $project) {
-                $entity = $entityManager->find('SmartProjectProjectBundle:Redmine\Project', $project['id']);
+                /** @var Project $entity */
+                $entity = $repository->findByRedmineId($project['id']);
 
                 if (!$entity) {
                     $entity = new Project();
-                    $entity->setId($project['id']);
+                    $entity->setDescription($project['description']);
                 }
 
-                $entity->setIdentifier($project['identifier']);
                 $entity->setName($project['name']);
-                $entity->setDescription($project['description']);
-                $entity->setCreatedOn(new \DateTime($project['created_on']));
-                $entity->setUpdatedOn(new \DateTime($project['updated_on']));
-                $entity->setParent(null);
+                $entity->setRedmineId($project['id']);
+                $entity->setRedmineIdentifier($project['identifier']);
+//                $entity->setParent(null);
 
                 $entities[$project['id']] = $entity;
 
@@ -73,9 +75,9 @@ class RedmineProvider
 
         } while ($offset < $response['total_count'] && count($projects));
 
-        foreach ($parents as $id => $parentId) {
-            $entities[$id]->setParent($entities[$parentId]);
-        }
+//        foreach ($parents as $id => $parentId) {
+//            $entities[$id]->setParent($entities[$parentId]);
+//        }
 
         if (count($entities)) {
             foreach ($entities as $entity) {
