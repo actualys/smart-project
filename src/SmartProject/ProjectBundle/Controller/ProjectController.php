@@ -2,6 +2,7 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -9,7 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use SmartProject\ProjectBundle\Entity\Project;
 use SmartProject\ProjectBundle\Form\ProjectType;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Project controller.
@@ -32,6 +32,42 @@ class ProjectController extends Controller
         $url = $this->generateUrl('project');
 
         return $this->redirect($url, 302);
+    }
+
+    /**
+     * Get tags already selected.
+     *
+     * @Route("/tags", name="project_tags")
+     * @Method("GET")
+     */
+    public function getTagsAction(Request $request)
+    {
+        $query    = $request->get('q');
+        $callback = $request->get('callback');
+
+        $words = $tags = array();
+
+        $words[] = 'CIVA';
+        $words[] = 'DR';
+        $words[] = 'Loire';
+        $words[] = 'Passion Céréales';
+        $words[] = 'La Poste';
+        $words[] = 'Presse Poste';
+        $words[] = 'TMA';
+
+        foreach ($words as $word) {
+            if (preg_match('/' . preg_quote($query) . '/i', $word)) {
+                $tags[] = array(
+                    'id'   => $word,
+                    'text' => $word,
+                );
+            }
+        }
+
+        $response = new JsonResponse(array('total' => count($tags), 'results' => $tags));
+        $response->setCallback($callback);
+
+        return $response;
     }
 
     /**

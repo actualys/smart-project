@@ -160,16 +160,70 @@
 
                 $('.select2.tags').each(function () {
                     $this = $(this);
+                    $this.attr('type', 'hidden');
                     var width = $this.attr('data-select-width') || '100%';
                     $this.select2({
                         formatNoMatches: function (term) {
                             return '';
                         },
                         tags: [],
+                        minimumInputLength: 2,
                         maximumInputLength: 20,
                         tokenSeparators: [",", ";"],
                         width : width,
-                        containerCssClass: 'form-control'
+                        cache: true,
+                        containerCssClass: 'form-control',
+                        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                            url: "{{ path('project_tags') }}",
+                            dataType: 'jsonp',
+                            data: function (term, page) {
+                                return {
+                                    q: term,
+                                    page_limit: 10
+                                };
+                            },
+                            results: function (data, page) { // parse the results into the format expected by Select2.
+                                // since we are using custom formatting functions we do not need to alter remote JSON data
+                                var results = [];
+                                $.each(data.results, function(index, item){
+                                    results.push({
+                                        id: item.id,
+                                        text: item.text
+                                    });
+                                });
+                                return {
+                                    results: results
+                                };
+                            }
+                        },
+                        matcher: function(term, text, opt) {
+                            return true;
+                        },
+                        initSelection : function (element, callback) {
+                            var data = [];
+                            $(element.val().split(",")).each(function () {
+                                data.push({id: this, text: this});
+                            });
+                            callback(data);
+                        },
+                        createSearchChoice: function(term) {
+                            return {id: term, text: term};
+                        },
+                        sortResults: function(results, container, query) {
+                            if (query.term) {
+                                // use the built in javascript sort function
+                                return results.sort(function(a, b) {
+                                    if (a.text.length > b.text.length) {
+                                        return 1;
+                                    } else if (a.text.length < b.text.length) {
+                                        return -1;
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+                            }
+                            return results;
+                        }
                     });
                 });
             });
