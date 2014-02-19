@@ -1,9 +1,18 @@
-<table class="table table-condensed table-striped table-hover">
-    <tbody>
-    {% for entity in entities %}
-        <tr>
-            <td><a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.identifier }}" target="_blank">{{ entity.name }}</a></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Redmine projects</h3>
+    </div>
+
+    <div style="height: 300px; overflow-y: scroll">
+        <table class="table table-condensed table-striped table-hover">
+            <tbody>
+            {% for entity in entities %}
+                <tr>
+                    <td><a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.identifier }}"
+                           target="_blank">{{ entity.name }}</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
