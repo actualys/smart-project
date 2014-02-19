@@ -38,3 +38,7 @@
         Create a new entry
     </a>
 {% endblock %}
+
+{% block content_sidebar %}
+    {{ render(controller('SmartProjectProjectBundle:Redmine:projectList')) }}
+{% endblock %}

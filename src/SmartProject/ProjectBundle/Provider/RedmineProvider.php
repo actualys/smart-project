@@ -19,13 +19,13 @@ class RedmineProvider
     protected $client;
 
     /**
-     * @param string $hostname
-     * @param string $apikey
+     * @param $doctrine
+     * @param $redmine
      */
-    public function __construct($doctrine, $hostname, $apikey)
+    public function __construct($doctrine, $redmine)
     {
         $this->doctrine = $doctrine;
-        $this->client   = new \Redmine\Client($hostname, $apikey);
+        $this->client   = new \Redmine\Client($redmine['hostname'], $redmine['apikey']);
     }
 
     /**

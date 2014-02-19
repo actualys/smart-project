@@ -1,0 +1,9 @@
+<table class="table table-condensed table-striped table-hover">
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td><a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.identifier }}" target="_blank">{{ entity.name }}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
