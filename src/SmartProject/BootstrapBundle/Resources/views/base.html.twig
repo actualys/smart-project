@@ -163,9 +163,6 @@
                     $this.attr('type', 'hidden');
                     var width = $this.attr('data-select-width') || '100%';
                     $this.select2({
-                        formatNoMatches: function (term) {
-                            return '';
-                        },
                         tags: [],
                         minimumInputLength: 2,
                         maximumInputLength: 20,
@@ -196,9 +193,9 @@
                                 };
                             }
                         },
-                        matcher: function(term, text, opt) {
+                        /*matcher: function(term, text, opt) {
                             return true;
-                        },
+                        },*/
                         initSelection : function (element, callback) {
                             var data = [];
                             $(element.val().split(",")).each(function () {
@@ -209,7 +206,7 @@
                         createSearchChoice: function(term) {
                             return {id: term, text: term};
                         },
-                        sortResults: function(results, container, query) {
+                        /*sortResults: function(results, container, query) {
                             if (query.term) {
                                 // use the built in javascript sort function
                                 return results.sort(function(a, b) {
@@ -223,6 +220,12 @@
                                 });
                             }
                             return results;
+                        },*/
+                        formatNoMatches: function (term) {
+                            return '';
+                        },
+                        formatResultCssClass: function(object) {
+                            return '';
                         }
                     });
                 });
