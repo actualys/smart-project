@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartProject\FrontBundle\Listeners;
+namespace SmartProject\SecurityBundle\Listeners;
 
 use FOS\UserBundle\Event\FilterUserResponseEvent;
 use FOS\UserBundle\Event\FormEvent;

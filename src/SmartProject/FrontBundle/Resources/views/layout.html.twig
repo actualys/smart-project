@@ -17,96 +17,37 @@
         {% block menu %}{% spaceless %}
             {{ mopa_bootstrap_menu('main') }}
             {{ mopa_bootstrap_menu('user') }}
+
+            <!-- The drop down menu -->
+            <!--ul class="nav navbar-nav pull-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+                    <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+                    </div>
+                </li>
+            </ul-->
         {% endspaceless %}{% endblock %}
     {% endembed %}
 {% endblock navbar %}
 
 {% block headline %}The Basic Layout{% endblock headline %}
 
-{% block content %}{% spaceless %}
-
-    <div class="col-lg-4">
-        <h3>To kick start development</h3>
-
-        <p>just create a file in app/Resources/MopaBootstrapBundle/views/layout.html.twig</p>
-
-    <pre class="prettyprint">
-{% raw %}
-        {% extends 'MopaBootstrapBundle::base.html.twig' %}
-
-{% block title %}Yourapp{% endblock %}
-
-{# and define more blocks ... #}
-        {% endraw %}
-    </pre>
-        <p>a good example is the sandbox itself:</p>
-        <ul>
-            <li>
-                <a href="https://github.com/phiamo/MopaBootstrapSandboxBundle/tree/master/Resources/views/base.html.twig">base.html.twig</a>
-            </li>
-            <li><a href="https://github.com/phiamo/MopaBootstrapSandboxBundle/tree/master/Resources/views/Examples">Resources/views/Examples</a>
-            </li>
-        </ul>
-    </div>
-    <div class="col-lg-4">
-        <h3>Use initializr</h3>
-
-        <p>Same as before just using initializr:</p>
-
-    <pre class="prettyprint">
-{% raw %}
-        {% extends 'MopaBootstrapBundle::base_initializr.html.twig' %}
-
-{% block title %}Yourapp{% endblock %}
-
-{# and define more blocks ... #}
-        {% endraw %}
-    </pre>
-        <p>or if global title is set in config.yml:</p>
-    <pre class="prettyprint">
-{% raw %}
-        {% extends 'MopaBootstrapBundle::base_initializr.html.twig' %}
-
-{% block title %}{{ parent() }} - Example subpage{% endblock %}
-
-{# and define more blocks ... #}
-        {% endraw %}
-    </pre>
-        <p>But you have at least to activate the template variables in config.yml:</p>
-    <pre class="prettyprint lang-yaml">
-mopa_bootstrap:
-    navbar: ~
-    initializr: ~
-    </pre>
-        <p>You can also configure it</p>
-        <ul>
-            <li>
-                <a href="https://github.com/phiamo/MopaBootstrapBundle/tree/master/Resources/doc/51-initializr-variables.md">51-initializr-variables.md</a>
-            </li>
-        </ul>
-    </div>
-    <div class="col-lg-4">
-        <h3>Using Bundles</h3>
-
-        <p>To overwrite the Templates you might either use the app/Resources folder</p>
-
-        <p>Or create a Bundle AcmeBootstrapSomethingBundle and use the inheritance:</p>
-
-    <pre class="prettyprint lang-php">
-class AcmeBootstrapSomethingBundle extends Bundle
-{
-
-    public function getParent()
-    {
-        return 'MopaBootstrapBundle';
-    }
-}
-
-    </pre>
-        <p>But you have to be aware that only one Bundle in your app may extend the BootstrapBundle</p>
-    </div>
-{% endspaceless %}{% endblock content %}
-
 {% block body_end_before_js_content %}
     <p class="text-muted">&copy; Copyright 2014 SmartProject.</p>
 {% endblock body_end_before_js_content %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        /*$(function() {
+            // Setup drop down menu
+            $('.dropdown-toggle').dropdown();
+
+            // Fix input element click problem
+            $('.dropdown input, .dropdown label').click(function(e) {
+                e.stopPropagation();
+            });
+        });*/
+    </script>
+{% endblock foot_script %}

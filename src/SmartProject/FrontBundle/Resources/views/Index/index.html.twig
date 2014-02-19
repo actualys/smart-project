@@ -1,115 +1,13 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
-{#{% block head_css %}#}
-    {#{{ parent() }}#}
-    {#{% stylesheets#}
-    {#"@SmartProjectFrontBundle/Resources/public/css/default.css" %}#}
-    {#<link rel="stylesheet" href="{{ asset_url }}"/>#}
-    {#{% endstylesheets %}#}
-{#{% endblock %}#}
+{% block headline %}
+    Title
+{% endblock %}
 
-{% block headline %}Dashboard{% endblock headline %}
+{% block content_content %}
+    <h4>Content</h4>
+{% endblock %}
 
-{% block content_content %}{% spaceless %}
-
-    <div id="content">
-        {#{{ mopa_bootstrap_menu('main', {'automenu': 'navbar'}) }}#}
-    </div>
-
-    <!--ul id="sidebar" class="nav nav-pills nav-stacked">
-        <li class="avatar hidden-phone">
-            <a href="#">
-                <img src="#">
-                <span>{{ app.user }}</span>
-            </a>
-        </li>
-        <li>
-            <a href="index.html">
-                <i class="micon-screen"></i>
-                <span class="hidden-phone">Dashboard</span>
-            </a>
-        </li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="micon-gift"></i>
-                <span class="hidden-phone">UI</span>
-            </a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a href="typography.html">
-                        <i class="icon-large icon-underline"></i> Typography
-                    </a>
-                </li>
-                <li>
-                    <a href="tables.html">
-                        <i class="icon-large icon-table"></i> Tables
-                    </a>
-                </li>
-                <li>
-                    <a href="buttons.html">
-                        <i class="icon-large icon-th"></i> Buttons
-                    </a>
-                </li>
-                <li>
-                    <a href="icons.html">
-                        <i class="icon-large icon-check-empty"></i> Icons
-                    </a>
-                </li>
-                <li>
-                    <a href="dropdowns.html">
-                        <i class="icon-large icon-sort"></i> Dropdowns
-                    </a>
-                </li>
-                <li>
-                    <a href="tabs.html">
-                        <i class="icon-large icon-columns"></i> Tabs
-                    </a>
-                </li>
-                <li>
-                    <a href="breadcrumbs-paginations.html">
-                        <i class="icon-large micon-loop"></i> Breadcrums &amp; Paginations
-                    </a>
-                </li>
-                <li>
-                    <a href="alerts.html">
-                        <i class="icon-large micon-bell"></i> Alerts
-                    </a>
-                </li>
-                <li>
-                    <a href="progress-bars.html">
-                        <i class="icon-large micon-paragraph-left"></i> Progress Bars
-                    </a>
-                </li>
-                <li>
-                    <a href="pickers-sliders.html">
-                        <i class="icon-large micon-equalizer"></i> Pickers &amp; Sliders
-                    </a>
-                </li>
-                <li>
-                    <a href="modals.html">
-                        <i class="icon-large micon-copy"></i> Modals
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="active">
-            <a href="charts.html">
-                <i class="micon-stats-up"></i>
-                <span class="hidden-phone">Charts</span>
-            </a>
-        </li>
-        <li>
-            <a href="maps.html">
-                <i class="micon-location"></i>
-                <span class="hidden-phone">Maps</span>
-            </a>
-        </li>
-        <li>
-            <a href="widgets.html">
-                <i class="micon-lab"></i>
-                <span class="hidden-phone">Widgets</span>
-            </a>
-        </li>
-    </ul-->
-
-{% endspaceless %}{% endblock %}
+{% block content_sidebar %}
+    <h4>Sidebar</h4>
+{% endblock %}

@@ -1,6 +1,17 @@
 smart_project_front:
     resource: "@SmartProjectFrontBundle/Controller"
     type:     annotation
+    prefix:   /
+
+smart_project_security:
+    resource: "@SmartProjectSecurityBundle/Controller"
+    type:     annotation
+    prefix:   /
+
+smart_project_project:
+    resource: "@SmartProjectProjectBundle/Controller"
+    type:     annotation
+    prefix:   /
 
 #login + logout
 fos_user_security:

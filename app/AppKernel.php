@@ -8,6 +8,7 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
+            // Symfony standard
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
@@ -17,11 +18,16 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-            new SmartProject\FrontBundle\SmartProjectFrontBundle(),
+            // Add ons
             new FOS\UserBundle\FOSUserBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
+
+            // Current Project
+            new SmartProject\SecurityBundle\SmartProjectSecurityBundle(),
             new SmartProject\BootstrapBundle\SmartProjectBootstrapBundle(),
+            new SmartProject\FrontBundle\SmartProjectFrontBundle(),
+            new SmartProject\ProjectBundle\SmartProjectProjectBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

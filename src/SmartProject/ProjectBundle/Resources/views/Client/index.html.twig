@@ -1,0 +1,38 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block headline %}
+    Client list
+{% endblock %}
+
+{% block content_content %}
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Redmine</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('client_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{{ entity.slug }}</td>
+                <td>#{{ entity.externalid }}</td>
+                <td>
+                    <a href="{{ path('client_show', { 'id': entity.id }) }}" class="btn btn-default btn-xs">show</a>
+                    &nbsp;
+                    <a href="{{ path('client_edit', { 'id': entity.id }) }}" class="btn btn-default btn-xs">edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('client_new') }}" class="btn btn-default btn-info">
+        Create a new entry
+    </a>
+{% endblock %}

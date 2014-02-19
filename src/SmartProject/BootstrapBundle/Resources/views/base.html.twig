@@ -1,159 +1,184 @@
-{% from 'MopaBootstrapBundle::flash.html.twig' import session_flash %}
 {% spaceless %}
 <!DOCTYPE html>
 
-{% block html_tag %}
-<html>
-{% endblock html_tag %}
+    {% block html_tag %}
+        <html>
+    {% endblock html_tag %}
 
-{% block head %}
-    <head>
-        <meta charset="UTF-8"/>
-        {% block head_style %}
-            {# Override this block to add your own files! #}
-            <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-            {#{% stylesheets#}
-            {#asset('/bunbles/smartprojectbootstrap/bootstrap/css/bootstrap.css') %}#}
-            {#<link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>#}
-            {#{% endstylesheets %}#}
-            {# To use this without less use the base_css.html.twig template as your base
-             # Be sure you understand whats going on: have a look into
-             # https://github.com/phiamo/MopaBootstrapBundle/blob/master/Resources/doc/css-vs-less.md
-             #}
-        {% endblock head_style %}
+    {% block head %}
+        <head>
+            <meta charset="UTF-8"/>
+            {% block head_style %}
+                {# Override this block to add your own files! #}
+                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+                {% stylesheets
+                '@SmartProjectBootstrapBundle/Resources/public/select2/select2.css'
+                '@SmartProjectBootstrapBundle/Resources/public/select2/select2-bootstrap.css' %}
+                <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
+                {% endstylesheets %}
+                {# To use this without less use the base_css.html.twig template as your base
+                 # Be sure you understand whats going on: have a look into
+                 # https://github.com/phiamo/MopaBootstrapBundle/blob/master/Resources/doc/css-vs-less.md
+                 #}
+            {% endblock head_style %}
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        {% block head_script %}
-            {# Overwrite this block to add your own js here, to get them generated into final files
-            {% javascripts
-                'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'
-            %}
-                <script type="text/javascript" src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-             #}
-        {% endblock head_script %}
+            {% block head_script %}
+                {# Overwrite this block to add your own js here, to get them generated into final files
+                {% javascripts
+                    'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'
+                %}
+                    <script type="text/javascript" src="{{ asset_url }}"></script>
+                {% endjavascripts %}
+                 #}
+            {% endblock head_script %}
 
-        <title>{% block title %}Mopa Bootstrap Bundle{% endblock title %}</title>
-        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}"/>
-        {% block head_bottom %}
-        {% endblock head_bottom %}
-    </head>
-{% endblock head %}
+            <title>{% block title %}Mopa Bootstrap Bundle{% endblock title %}</title>
+            <link rel="shortcut icon" href="{{ asset('favicon.ico') }}"/>
+            {% block head_bottom %}
+            {% endblock head_bottom %}
+        </head>
+    {% endblock head %}
 
-{% block body_tag %}
+    {% block body_tag %}
 <body data-spy="scroll">
-{% endblock body_tag %}
+    {% endblock body_tag %}
 
-{% block body_start %}
-{% endblock body_start %}
+    {% block body_start %}
+    {% endblock body_start %}
 
-{% block body %}
-    {% block navbar %}
-        <!-- No navbar included here to reduce dependencies, see https://github.com/phiamo/MopaBootstrapSandboxBundle/blob/master/Resources/views/base.html.twig for howto include it -->
-    {% endblock navbar %}
+    {% block body %}
+        {% block navbar %}
+            <!-- No navbar included here to reduce dependencies, see https://github.com/phiamo/MopaBootstrapSandboxBundle/blob/master/Resources/views/base.html.twig for howto include it -->
+        {% endblock navbar %}
 
-{% block container %}
-{% block container_div_start %}<div class="{% block container_class %}container{% endblock container_class %}">{% endblock container_div_start %}
-    {% block header %}
-    {% endblock header %}
+    {% block container %}
+    {% block container_div_start %}<div class="{% block container_class %}container{% endblock container_class %}">{% endblock container_div_start %}
+        {% block header %}
+        {% endblock header %}
 
-{% block content_div_start %}
-    <div class="content">{% endblock content_div_start %}
-    {% block page_header %}
-        <div class="page-header">
-            <h1>{% block headline %}{% endblock headline %}</h1>
-        </div>
-    {% endblock page_header %}
-
-    {% block flashes %}
-        {% if app.session.flashbag.peekAll|length > 0 %}
-            <div class="row">
-                <div class="col-sm-12">
-                    {{ session_flash() }}
-                </div>
+    {% block content_div_start %}
+        <div class="content">{% endblock content_div_start %}
+        {% block page_header %}
+            <div class="page-header">
+                <h1>{% block headline %}{% endblock headline %}</h1>
             </div>
-        {% endif %}
-    {% endblock flashes %}
+        {% endblock page_header %}
 
-    {% block content_row %}
-        <div class="row">
-            {% block content %}
-                <div class="col-sm-9">
-                    {% block content_content %}
-                        <strong></strong>
-                    {% endblock content_content %}
-                </div>
-                <div class="col-sm-3">
-                    {% block content_sidebar %}
-                        <h2>Sidebar</h2>
-                    {% endblock content_sidebar %}
-                </div>
-            {% endblock content %}
-        </div>
-    {% endblock content_row %}
-{% block content_div_end %}</div>{% endblock content_div_end %}
-{% block footer_tag_start %}
-    <footer>
-{% endblock footer_tag_start %}
-    {% block footer %}{% endblock footer %}
-{% block footer_tag_end %}
-    </footer>
-{% endblock footer_tag_end %}
-{% block container_div_end %}</div><!-- /container -->{% endblock container_div_end %}
-{% endblock container %}
+        {% block flashes %}
+        {% endblock flashes %}
+
+        {% block content_row %}
+            <div class="row">
+                {% block content %}
+                    <div class="col-sm-9">
+                        {% block content_content %}
+                            <strong></strong>
+                        {% endblock content_content %}
+                    </div>
+                    <div class="col-sm-3">
+                        {% block content_sidebar %}
+                            <h2>Sidebar</h2>
+                        {% endblock content_sidebar %}
+                    </div>
+                {% endblock content %}
+            </div>
+        {% endblock content_row %}
+    {% block content_div_end %}</div>{% endblock content_div_end %}
+    {% block footer_tag_start %}
+        <footer>
+    {% endblock footer_tag_start %}
+        {% block footer %}{% endblock footer %}
+    {% block footer_tag_end %}
+        </footer>
+    {% endblock footer_tag_end %}
+    {% block container_div_end %}</div><!-- /container -->{% endblock container_div_end %}
+    {% endblock container %}
 
     {% block body_end_before_js %}
-    <div id="footer">
-        <div class="container">
-            {% block body_end_before_js_content %}
-                <!-- Sticky Footer -->
-            {% endblock body_end_before_js_content %}
+        <div id="footer">
+            <div class="container">
+                {% block body_end_before_js_content %}
+                    <!-- Sticky Footer -->
+                {% endblock body_end_before_js_content %}
+            </div>
         </div>
-    </div>
     {% endblock body_end_before_js %}
 
-{% block foot_script %}
-    {# To only use a subset or add more js overwrite and copy paste this block
-    To speed up page loads save a copy of jQuery in your project and override this block to include the correct path
-    Otherwise the regeneration is done on every load in dev more with use_controller: true
-     #}
-{% block foot_script_assetic %}
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    {% block foot_script %}
+        {# To only use a subset or add more js overwrite and copy paste this block
+        To speed up page loads save a copy of jQuery in your project and override this block to include the correct path
+        Otherwise the regeneration is done on every load in dev more with use_controller: true
+         #}
+    {% block foot_script_assetic %}
+        <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
-    {% javascripts output='bootstrap_compiled.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/tooltip.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/affix.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/alert.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/button.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/carousel.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/collapse.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/modal.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/popover.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/scrollspy.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/tab.js'
-    '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/transition.js'
-    '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
-    '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-subnav.js'
-    '@MopaBootstrapBundle/Resources/public/js/eyecon-bootstrap-datepicker.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+        {% javascripts output='bootstrap_compiled.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap-growl/jquery.bootstrap-growl.min.js'
+        '@SmartProjectBootstrapBundle/Resources/public/select2/select2.min.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/tooltip.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/affix.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/alert.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/button.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/carousel.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/collapse.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/modal.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/popover.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/scrollspy.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/tab.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/transition.js'
+        '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
+        '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-subnav.js'
+        '@MopaBootstrapBundle/Resources/public/js/eyecon-bootstrap-datepicker.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
 
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-{% endblock foot_script_assetic %}
+    {% endblock foot_script_assetic %}
 
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            $('[data-toggle="popover"]').popover();
-        });
-    </script>
-{% endblock foot_script %}
-{% endblock body %}
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="popover"]').popover();
+                
+                {% for flashType, flashMessages in app.session.flashbag %}
+                {% for flashMessage in flashMessages %}
+                $.bootstrapGrowl("{{ flashMessage|escape }}", {
+                    ele: 'body',
+                    type: '{{ flashType }}',
+                    align: 'right',
+                    width: 300, // 'auto'
+                    offset: {from: 'bottom', amount: 20},
+                    delay: 4000,
+                    stackup_spacing: 10,
+                    allow_dismiss: true
+                });
+                {% endfor %}
+                {% endfor %}
 
-{% block body_end %}
-{% endblock body_end %}
+                $('.select2.tags').each(function () {
+                    $this = $(this);
+                    var width = $this.attr('data-select-width') || '100%';
+                    $this.select2({
+                        formatNoMatches: function (term) {
+                            return '';
+                        },
+                        tags: [],
+                        maximumInputLength: 20,
+                        tokenSeparators: [",", ";"],
+                        width : width,
+                        containerCssClass: 'form-control'
+                    });
+                });
+            });
+        </script>
+    {% endblock foot_script %}
+    {% endblock body %}
+
+    {% block body_end %}
+    {% endblock body_end %}
 </body>
 </html>
 {% endspaceless %}

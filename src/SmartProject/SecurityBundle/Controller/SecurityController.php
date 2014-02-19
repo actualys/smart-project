@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SmartProject\FrontBundle\Controller;
+namespace SmartProject\SecurityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,36 +17,29 @@ use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\SecurityContext;
 use FOS\UserBundle\Controller\SecurityController as BaseSecurityController;
 
+/**
+ * Class SecurityController
+ *
+ * @package SmartProject\SecurityBundle\Controller
+ */
 class SecurityController extends BaseSecurityController
 {
+    /**
+     * @param Request $request
+     *
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function loginAction(Request $request)
     {
         $token = $this->container->get('security.context')->getToken();
 
         if (!$token instanceof AnonymousToken) {
-            $url = $this->container->get('router')->generate('smart_project_front_homepage');
+            $path = $this->container->getParameter('smart_project_security.login.path');
+            $url  = $this->container->get('router')->generate($path);
 
             return new RedirectResponse($url, 302);
         }
 
         return parent::loginAction($request);
-    }
-
-    /**
-     * Renders the login template with the given parameters. Overwrite this function in
-     * an extended controller to provide additional data for the login template.
-     *
-     * @param array $data
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function renderLogin(array $data)
-    {
-        $template = sprintf(
-            'SmartProjectFrontBundle:Security:login.html.%s',
-            $this->container->getParameter('fos_user.template.engine')
-        );
-
-        return $this->container->get('templating')->renderResponse($template, $data);
     }
 }

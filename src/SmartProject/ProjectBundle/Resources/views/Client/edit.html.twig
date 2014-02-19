@@ -1,0 +1,22 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block headline %}
+    Client edit
+{% endblock %}
+
+{% block content_content %}
+    {{ form(edit_form) }}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('client') }}">
+                Back to the list
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
+{% endblock %}
+
+{% block content_sidebar %}
+    <h4>Sidebar</h4>
+{% endblock %}

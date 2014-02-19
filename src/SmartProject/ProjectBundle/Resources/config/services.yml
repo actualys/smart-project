@@ -1,0 +1,10 @@
+parameters:
+    redmine.hostname: https://clients.actualys.com/
+    redmine.apikey:   f647ea20e99a97ccc9d8342d58ee435e8c5d2113
+
+    smart_project_project.redmine.class: SmartProject\ProjectBundle\Provider\RedmineProvider
+
+services:
+    smart_project_project.redmine:
+        class: %smart_project_project.redmine.class%
+        arguments: [@doctrine, %redmine.hostname%, %redmine.apikey%]

@@ -5,6 +5,23 @@ namespace SmartProject\FrontBundle\Menu;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class MenuBuilder
+ *
+ *  navbar
+ *  pills
+ *  stacked
+ *  dropdown-header
+ *  dropdown
+ *  list-group
+ *  list-group-item
+ *  caret
+ *  pull-right
+ *  icon
+ *  divider
+ * 
+ * @package SmartProject\FrontBundle\Menu
+ */
 class MenuBuilder
 {
     protected $factory;
@@ -17,28 +34,46 @@ class MenuBuilder
         $this->factory = $factory;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return \Knp\Menu\ItemInterface
+     */
     public function createMainMenu(Request $request)
     {
         $menu = $this->factory->createItem('root', array(
                 'navbar' => true,
             ));
 
-        $tools = $menu->addChild('Users', array(
+        $users = $menu->addChild('Users', array(
                 'uri' => '#',
-                'icon' => '',
+                'icon' => 'glyphicon glyphicon-user',
             ));
 
-        $tools = $menu->addChild('Projects', array(
+        $projects = $menu->addChild('Projects', array(
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-th-large',
+                'dropdown' => true,
+                'caret' => true,
             ));
 
-        $tools = $menu->addChild('Todo List', array(
+        $projects->addChild('Clients list', array(
+                'route' => 'client',
+            ));
+        $projects->addChild('Projects list', array(
+                'route' => 'project',
+            ));
+        $projects->addChild('divider_1', array('divider' => true));
+        $projects->addChild('Synchronize Redmine', array(
+                'route' => 'project_synchronize',
+            ));
+
+        $todo = $menu->addChild('Todo List', array(
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-list',
             ));
 
-        $tools = $menu->addChild('Timesheet', array(
+        $timesheet = $menu->addChild('Timesheet', array(
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-dashboard',
             ));

@@ -1,0 +1,11 @@
+parameters:
+    smart_project_security.login.path: smartproject_front_index_index
+
+    smart_project_security.security.listener.class:  SmartProject\SecurityBundle\Listeners\SecurityListener
+
+services:
+    smart_project_security.security.listener:
+        class: %smart_project_security.security.listener.class%
+        arguments: [@service_container]
+        tags:
+            - { name: kernel.event_subscriber }

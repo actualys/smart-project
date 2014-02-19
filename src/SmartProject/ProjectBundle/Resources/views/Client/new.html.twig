@@ -1,0 +1,17 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block headline %}
+    Client creation
+{% endblock %}
+
+{% block content_content %}
+    {{ form(form) }}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('client') }}">
+                Back to the list
+            </a>
+        </li>
+    </ul>
+{% endblock %}

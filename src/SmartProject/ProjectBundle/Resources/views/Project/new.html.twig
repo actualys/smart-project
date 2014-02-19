@@ -1,0 +1,13 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block headline %}
+    Project creation
+{% endblock headline %}
+
+{% block content_content %}
+    {{ form(form) }}
+
+    <a href="{{ path('project') }}" class="btn btn-default">
+        Back to the list
+    </a>
+{% endblock %}

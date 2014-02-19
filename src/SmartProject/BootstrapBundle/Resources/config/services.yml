@@ -1,0 +1,8 @@
+parameters:
+    smart_project_bootstrap.form.type.tag.class: SmartProject\BootstrapBundle\Form\Type\TagType
+
+services:
+    form.type.tag:
+        class: %smart_project_bootstrap.form.type.tag.class%
+        tags:
+            - { name: form.type, alias: tag }
