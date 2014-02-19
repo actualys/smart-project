@@ -223,7 +223,7 @@ class ProjectController extends Controller
 
             $this->get('session')->getFlashBag()->add('success', 'Project updated');
 
-            return $this->redirect($this->generateUrl('project_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('project_show', array('id' => $id)));
         }
 
         return array(

@@ -142,7 +142,7 @@
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();
                 $('[data-toggle="popover"]').popover();
-                
+
                 {% for flashType, flashMessages in app.session.flashbag %}
                 {% for flashMessage in flashMessages %}
                 $.bootstrapGrowl("{{ flashMessage|escape }}", {
