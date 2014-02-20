@@ -6,16 +6,12 @@
 
 {% block content_content %}
 
-    <a href="{{ path('project_new') }}" class="btn btn-default">
-        Create a new entry
-    </a>
-
     <table class="table table-condensed table-striped table-hover">
         <thead>
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Redmine</th>
+            {#<th>Redmine</th>#}
             <th>Created</th>
             <th>Updated</th>
             <th>Actions</th>
@@ -24,7 +20,7 @@
         <tbody>
         {% for client in clients %}
             <tr>
-                <td colspan="5"><strong>{{ client.name }}</strong></td>
+                <td colspan="4"><strong>{{ client.name }}</strong></td>
                 <td>
                     <a href="{{ path('client_show', { 'id': client.id }) }}"
                        class="btn btn-default btn-xs">show</a>
@@ -35,17 +31,16 @@
             {% for entity in client.projects %}
                 <tr>
                     <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                    <td>
-                        <span style="display: inline-block; width: {{ entity.lvl * 8 }}px"></span><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
-                    </td>
-                    <td>
-                        {% if entity.redmineIdentifier %}
-                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"
-                               target="_blank">{{ entity.redmineIdentifier }}</a>
-                            <img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"
-                                 alt="External link"/>
-                        {% endif %}
-                    </td>
+                    <td><span style="display: inline-block; width: {{ entity.lvl * 8 }}px"></span><a
+                                href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                    {#<td>#}
+                    {#{% if entity.redmineIdentifier %}#}
+                    {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"#}
+                    {#target="_blank">{{ entity.redmineIdentifier }}</a>#}
+                    {#<img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"#}
+                    {#alt="External link"/>#}
+                    {#{% endif %}#}
+                    {#</td>#}
                     <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
                     <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
                     <td>
@@ -61,35 +56,34 @@
     </table>
 
     {% if projects_not_affected %}
+        <br/>
+
+        <h3>Not affected to a client</h3>
+
         <table class="table table-condensed table-striped table-hover">
             <thead>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th>Redmine</th>
+                {#<th>Redmine</th>#}
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td colspan="6"><strong>Not affected</strong></td>
-            </tr>
             {% for entity in projects_not_affected %}
                 <tr>
                     <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                    <td>
-                        {{ entity.lvl }} - <a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
-                    </td>
-                    <td>
-                        {% if entity.redmineIdentifier %}
-                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"
-                               target="_blank">{{ entity.redmineIdentifier }}</a>
-                            <img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"
-                                 alt="External link"/>
-                        {% endif %}
-                    </td>
+                    <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                    {#<td>#}
+                    {#{% if entity.redmineIdentifier %}#}
+                    {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"#}
+                    {#target="_blank">{{ entity.redmineIdentifier }}</a>#}
+                    {#<img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"#}
+                    {#alt="External link"/>#}
+                    {#{% endif %}#}
+                    {#</td>#}
                     <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
                     <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
                     <td>
@@ -103,9 +97,8 @@
             </tbody>
         </table>
     {% endif %}
+{% endblock %}
 
-
-    <a href="{{ path('project_new') }}" class="btn btn-default">
-        Create a new entry
-    </a>
+{% block content_sidebar %}
+    <a href="{{ path('project_new') }}" class="btn btn-primary btn-block">Create a new project</a>
 {% endblock %}
