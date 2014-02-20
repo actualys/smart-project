@@ -2,6 +2,8 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
+use SmartProject\ProjectBundle\Entity\ClientRepository;
+use SmartProject\ProjectBundle\Entity\ProjectRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -76,13 +78,31 @@ class ProjectController extends Controller
      */
     public function indexAction()
     {
-        $em       = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('SmartProjectProjectBundle:Project')->findAll();
-        $redmine  = $this->container->getParameter('redmine');
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var ClientRepository $repoClient */
+        $repoClient = $em->getRepository('SmartProjectProjectBundle:Client');
+
+        $builder = $repoClient->createQueryBuilder('c')
+          ->select('c, p')
+          ->join('c.projects', 'p')
+          ->orderBy('c.name', 'asc');
+        $query   = $builder->getQuery();
+
+        $clients = $query->execute();
+
+//        $entities = $repo->findBy(array(), array('root' => 'asc', 'lft' => 'asc'));
+
+        /** @var ProjectRepository $repo */
+        $repoProject = $em->getRepository('SmartProjectProjectBundle:Project');
+        $projects    = $repoProject->findBy(array('client' => null), array('root' => 'asc', 'lft' => 'asc'));
+
+        $redmine = $this->container->getParameter('redmine');
 
         return array(
-            'entities' => $entities,
-            'redmine'  => $redmine,
+            'clients'               => $clients,
+            'projects_not_affected' => $projects,
+            'redmine'               => $redmine,
         );
     }
 
@@ -175,8 +195,11 @@ class ProjectController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
+        $redmine = $this->container->getParameter('redmine');
+
         return array(
             'entity'      => $entity,
+            'redmine'     => $redmine,
             'delete_form' => $deleteForm->createView(),
         );
     }

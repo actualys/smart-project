@@ -5,53 +5,105 @@
 {% endblock %}
 
 {% block content_content %}
+
+    <a href="{{ path('project_new') }}" class="btn btn-default">
+        Create a new entry
+    </a>
+
     <table class="table table-condensed table-striped table-hover">
         <thead>
         <tr>
             <th>Id</th>
             <th>Name</th>
-            {#<th>Slug</th>#}
-            {#<th>Lft</th>#}
-            {#<th>Lvl</th>#}
-            {#<th>Rgt</th>#}
-            {#<th>Root</th>#}
-            {#<th>Description</th>#}
-            <th>Tags</th>
-            {#<th>Website</th>#}
-            {#<th>Redmineid</th>#}
             <th>Redmine</th>
             <th>Created</th>
             <th>Updated</th>
-            {#<th>Deletedat</th>#}
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
-        {% for entity in entities %}
+        {% for client in clients %}
             <tr>
-                <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                <td>{{ entity.name }}</td>
-                {#<td>{{ entity.slug }}</td>#}
-                {#<td>{{ entity.lft }}</td>#}
-                {#<td>{{ entity.lvl }}</td>#}
-                {#<td>{{ entity.rgt }}</td>#}
-                {#<td>{{ entity.root }}</td>#}
-                {#<td>{{ entity.description }}</td>#}
-                <td>{{ entity.tags }}</td>
-                {#<td>{{ entity.website }}</td>#}
-                {#<td>{{ entity.redmineId }}</td>#}
-                <td><a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}" target="_blank">{{ entity.redmineIdentifier }}</a></td>
-                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
-                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
-                {#<td>{% if entity.deletedAt %}{{ entity.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>#}
+                <td colspan="5"><strong>{{ client.name }}</strong></td>
                 <td>
-                    <a href="{{ path('project_show', { 'id': entity.id }) }}" class="btn btn-default btn-xs">show</a>
-                    <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-default btn-xs">edit</a>
+                    <a href="{{ path('client_show', { 'id': client.id }) }}"
+                       class="btn btn-default btn-xs">show</a>
+                    <a href="{{ path('client_edit', { 'id': client.id }) }}"
+                       class="btn btn-default btn-xs">edit</a>
                 </td>
             </tr>
+            {% for entity in client.projects %}
+                <tr>
+                    <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                    <td>
+                        <span style="display: inline-block; width: {{ entity.lvl * 8 }}px"></span><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
+                    </td>
+                    <td>
+                        {% if entity.redmineIdentifier %}
+                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"
+                               target="_blank">{{ entity.redmineIdentifier }}</a>
+                            <img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"
+                                 alt="External link"/>
+                        {% endif %}
+                    </td>
+                    <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
+                    <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
+                    <td>
+                        <a href="{{ path('project_show', { 'id': entity.id }) }}"
+                           class="btn btn-default btn-xs">show</a>
+                        <a href="{{ path('project_edit', { 'id': entity.id }) }}"
+                           class="btn btn-default btn-xs">edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
         {% endfor %}
         </tbody>
     </table>
+
+    {% if projects_not_affected %}
+        <table class="table table-condensed table-striped table-hover">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Redmine</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td colspan="6"><strong>Not affected</strong></td>
+            </tr>
+            {% for entity in projects_not_affected %}
+                <tr>
+                    <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                    <td>
+                        {{ entity.lvl }} - <a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
+                    </td>
+                    <td>
+                        {% if entity.redmineIdentifier %}
+                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"
+                               target="_blank">{{ entity.redmineIdentifier }}</a>
+                            <img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"
+                                 alt="External link"/>
+                        {% endif %}
+                    </td>
+                    <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
+                    <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
+                    <td>
+                        <a href="{{ path('project_show', { 'id': entity.id }) }}"
+                           class="btn btn-default btn-xs">show</a>
+                        <a href="{{ path('project_edit', { 'id': entity.id }) }}"
+                           class="btn btn-default btn-xs">edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
 
     <a href="{{ path('project_new') }}" class="btn btn-default">
         Create a new entry
