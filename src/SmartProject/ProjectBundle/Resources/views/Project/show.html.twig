@@ -136,7 +136,7 @@
                     <th>Redmine</th>
                     <td>
                         {% if entity.redmineId %}
-                            <a href="{{ redmine.hostname ~ '/projects/' ~ entity.redmineId }}">Synchronized</a>
+                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}">Synchronized</a>
                         {% else %}
                             <em>Not linked</em>
                         {% endif %}
