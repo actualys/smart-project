@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block content_content %}
-    <table class="record_properties">
+
+    <table class="table">
         <tbody>
         <tr>
             <th>Id</th>
@@ -24,8 +25,20 @@
             <td>{{ entity.description }}</td>
         </tr>
         <tr>
-            <th>Externalid</th>
-            <td>{{ entity.externalid }}</td>
+            <th>Tags</th>
+            <td>{{ entity.tags }}</td>
+        </tr>
+        <tr>
+            <th>Created at</th>
+            <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Updated at</th>
+            <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Deleted at</th>
+            <td>{% if entity.deletedAt %}{{ entity.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
         </tbody>
     </table>

@@ -37,7 +37,7 @@ class RedmineProvider
         $entityManager = $this->doctrine->getManager();
         $entities      = array();
         $offset        = 0;
-        $parents       = array();
+//        $parents       = array();
 
         do {
             $response = $this->client->api('project')->all(
@@ -68,9 +68,9 @@ class RedmineProvider
 
                 $entities[$project['id']] = $entity;
 
-                if (isset($project['parent']['id'])) {
-                    $parents[$project['id']] = $project['parent']['id'];
-                }
+//                if (isset($project['parent']['id'])) {
+//                    $parents[$project['id']] = $project['parent']['id'];
+//                }
             }
 
         } while ($offset < $response['total_count'] && count($projects));

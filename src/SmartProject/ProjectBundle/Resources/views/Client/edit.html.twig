@@ -4,7 +4,9 @@
     Client edit
 {% endblock %}
 
-{% block content_content %}
+
+{% block content_content -%}
+
     {{ form(edit_form) }}
 
     <ul class="record_actions">
@@ -15,8 +17,4 @@
         </li>
         <li>{{ form(delete_form) }}</li>
     </ul>
-{% endblock %}
-
-{% block content_sidebar %}
-    <h4>Sidebar</h4>
 {% endblock %}

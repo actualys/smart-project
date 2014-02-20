@@ -2,7 +2,6 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -56,12 +55,10 @@ class ProjectController extends Controller
         $words[] = 'TMA';
 
         foreach ($words as $word) {
-            if (preg_match('/' . preg_quote($query) . '/i', $word)) {
-                $tags[] = array(
-                    'id'   => $word,
-                    'text' => $word,
-                );
-            }
+            $tags[] = array(
+                'id'   => $word,
+                'text' => $word,
+            );
         }
 
         $response = new JsonResponse(array('total' => count($tags), 'results' => $tags));

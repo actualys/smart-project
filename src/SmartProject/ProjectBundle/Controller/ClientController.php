@@ -17,6 +17,7 @@ use SmartProject\ProjectBundle\Form\ClientType;
  */
 class ClientController extends Controller
 {
+
     /**
      * Lists all Client entities.
      *
@@ -34,7 +35,6 @@ class ClientController extends Controller
             'entities' => $entities,
         );
     }
-
     /**
      * Creates a new Client entity.
      *
@@ -45,7 +45,7 @@ class ClientController extends Controller
     public function createAction(Request $request)
     {
         $entity = new Client();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -63,22 +63,18 @@ class ClientController extends Controller
     }
 
     /**
-     * Creates a form to create a Client entity.
-     *
-     * @param Client $entity The entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
+    * Creates a form to create a Client entity.
+    *
+    * @param Client $entity The entity
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
     private function createCreateForm(Client $entity)
     {
-        $form = $this->createForm(
-            new ClientType(),
-            $entity,
-            array(
-                'action' => $this->generateUrl('client_create'),
-                'method' => 'POST',
-            )
-        );
+        $form = $this->createForm(new ClientType(), $entity, array(
+            'action' => $this->generateUrl('client_create'),
+            'method' => 'POST',
+        ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
 
@@ -145,7 +141,7 @@ class ClientController extends Controller
             throw $this->createNotFoundException('Unable to find Client entity.');
         }
 
-        $editForm   = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
@@ -156,28 +152,23 @@ class ClientController extends Controller
     }
 
     /**
-     * Creates a form to edit a Client entity.
-     *
-     * @param Client $entity The entity
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
+    * Creates a form to edit a Client entity.
+    *
+    * @param Client $entity The entity
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
     private function createEditForm(Client $entity)
     {
-        $form = $this->createForm(
-            new ClientType(),
-            $entity,
-            array(
-                'action' => $this->generateUrl('client_update', array('id' => $entity->getId())),
-                'method' => 'PUT',
-            )
-        );
+        $form = $this->createForm(new ClientType(), $entity, array(
+            'action' => $this->generateUrl('client_update', array('id' => $entity->getId())),
+            'method' => 'PUT',
+        ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
-
     /**
      * Edits an existing Client entity.
      *
@@ -196,7 +187,7 @@ class ClientController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm   = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -211,7 +202,6 @@ class ClientController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
-
     /**
      * Deletes a Client entity.
      *
@@ -224,7 +214,7 @@ class ClientController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em     = $this->getDoctrine()->getManager();
+            $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
 
             if (!$entity) {
@@ -248,9 +238,10 @@ class ClientController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-          ->setAction($this->generateUrl('client_delete', array('id' => $id)))
-          ->setMethod('DELETE')
-          ->add('submit', 'submit', array('label' => 'Delete'))
-          ->getForm();
+            ->setAction($this->generateUrl('client_delete', array('id' => $id)))
+            ->setMethod('DELETE')
+            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->getForm()
+        ;
     }
 }

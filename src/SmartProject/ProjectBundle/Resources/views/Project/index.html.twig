@@ -2,7 +2,7 @@
 
 {% block headline %}
     Project list
-{% endblock headline %}
+{% endblock %}
 
 {% block content_content %}
     <table class="table table-condensed table-striped table-hover">
@@ -10,7 +10,19 @@
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th class="hidden-xs">Description</th>
+            {#<th>Slug</th>#}
+            {#<th>Lft</th>#}
+            {#<th>Lvl</th>#}
+            {#<th>Rgt</th>#}
+            {#<th>Root</th>#}
+            {#<th>Description</th>#}
+            <th>Tags</th>
+            {#<th>Website</th>#}
+            {#<th>Redmineid</th>#}
+            <th>Redmine</th>
+            <th>Created</th>
+            <th>Updated</th>
+            {#<th>Deletedat</th>#}
             <th>Actions</th>
         </tr>
         </thead>
@@ -19,10 +31,21 @@
             <tr>
                 <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.name }}</td>
-                <td class="hidden-xs">{{ entity.description }}</td>
+                {#<td>{{ entity.slug }}</td>#}
+                {#<td>{{ entity.lft }}</td>#}
+                {#<td>{{ entity.lvl }}</td>#}
+                {#<td>{{ entity.rgt }}</td>#}
+                {#<td>{{ entity.root }}</td>#}
+                {#<td>{{ entity.description }}</td>#}
+                <td>{{ entity.tags }}</td>
+                {#<td>{{ entity.website }}</td>#}
+                {#<td>{{ entity.redmineId }}</td>#}
+                <td><a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}" target="_blank">{{ entity.redmineIdentifier }}</a></td>
+                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
+                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
+                {#<td>{% if entity.deletedAt %}{{ entity.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>#}
                 <td>
                     <a href="{{ path('project_show', { 'id': entity.id }) }}" class="btn btn-default btn-xs">show</a>
-                    &nbsp;
                     <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-default btn-xs">edit</a>
                 </td>
             </tr>
@@ -30,11 +53,7 @@
         </tbody>
     </table>
 
-    <a href="{{ path('project_new') }}" class="btn btn-default btn-info">
+    <a href="{{ path('project_new') }}" class="btn btn-default">
         Create a new entry
     </a>
-{% endblock %}
-
-{% block content_sidebar %}
-    {#{{ render(controller('SmartProjectProjectBundle:Redmine:projectList')) }}#}
 {% endblock %}

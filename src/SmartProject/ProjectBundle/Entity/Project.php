@@ -115,7 +115,7 @@ class Project
     /**
      * @var string
      *
-     * @ORM\Column(name="redmine_identifier", type="string", length=255)
+     * @ORM\Column(name="redmine_identifier", type="string", length=255, nullable=true)
      */
     private $redmineIdentifier;
 

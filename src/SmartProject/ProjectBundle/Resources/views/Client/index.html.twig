@@ -1,7 +1,7 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
 {% block headline %}
-    Client list
+    Project list
 {% endblock %}
 
 {% block content_content %}
@@ -11,7 +11,9 @@
             <th>Id</th>
             <th>Name</th>
             <th>Slug</th>
-            <th>Redmine</th>
+            <th>Tags</th>
+            <th>Created</th>
+            <th>Updated</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -21,18 +23,29 @@
                 <td><a href="{{ path('client_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
                 <td>{{ entity.name }}</td>
                 <td>{{ entity.slug }}</td>
-                <td>#{{ entity.externalid }}</td>
+                <td>{{ entity.tags }}</td>
+                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
+                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
                 <td>
-                    <a href="{{ path('client_show', { 'id': entity.id }) }}" class="btn btn-default btn-xs">show</a>
-                    &nbsp;
-                    <a href="{{ path('client_edit', { 'id': entity.id }) }}" class="btn btn-default btn-xs">edit</a>
+                    <ul>
+                        <li>
+                            <a href="{{ path('client_show', { 'id': entity.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('client_edit', { 'id': entity.id }) }}">edit</a>
+                        </li>
+                    </ul>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('client_new') }}" class="btn btn-default btn-info">
-        Create a new entry
-    </a>
+    <ul>
+        <li>
+            <a href="{{ path('client_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
 {% endblock %}

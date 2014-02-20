@@ -2,12 +2,17 @@
 
 {% block headline %}
     Project creation
-{% endblock headline %}
+{% endblock %}
 
 {% block content_content %}
+
     {{ form(form) }}
 
-    <a href="{{ path('project') }}" class="btn btn-default">
-        Back to the list
-    </a>
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('project') }}">
+                Back to the list
+            </a>
+        </li>
+    </ul>
 {% endblock %}

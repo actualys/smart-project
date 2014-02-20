@@ -2,10 +2,11 @@
 
 {% block headline %}
     Project
-{% endblock headline %}
+{% endblock %}
 
 {% block content_content %}
-    <table class="record_properties">
+
+    <table class="table">
         <tbody>
         <tr>
             <th>Id</th>
@@ -16,6 +17,34 @@
             <td>{{ entity.name }}</td>
         </tr>
         <tr>
+            <th>Slug</th>
+            <td>{{ entity.slug }}</td>
+        </tr>
+        {#<tr>#}
+        {#<th>Lft</th>#}
+        {#<td>{{ entity.lft }}</td>#}
+        {#</tr>#}
+        {#<tr>#}
+        {#<th>Lvl</th>#}
+        {#<td>{{ entity.lvl }}</td>#}
+        {#</tr>#}
+        {#<tr>#}
+        {#<th>Rgt</th>#}
+        {#<td>{{ entity.rgt }}</td>#}
+        {#</tr>#}
+        {#<tr>#}
+        {#<th>Root</th>#}
+        {#<td>{{ entity.root }}</td>#}
+        {#</tr>#}
+        <tr>
+            <th>Client</th>
+            <td>{% if entity.client %}<a href="{{ path('client_show', {id: entity.client.id}) }}">{{ entity.client.name }}</a>{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Project parent</th>
+            <td>{% if entity.parent %}<a href="{{ path('project_show', {id: entity.parent.id}) }}">{{ entity.parent.name }}</a>{% endif %}</td>
+        </tr>
+        <tr>
             <th>Description</th>
             <td>{{ entity.description }}</td>
         </tr>
@@ -24,12 +53,28 @@
             <td>{{ entity.tags }}</td>
         </tr>
         <tr>
-            <th>Externalid</th>
-            <td>{{ entity.externalid }}</td>
-        </tr>
-        <tr>
             <th>Website</th>
             <td>{{ entity.website }}</td>
+        </tr>
+        <tr>
+            <th>Redmine</th>
+            <td>{% if entity.redmineId %}#{{ entity.redmineId|default('0') }}{% else %}<em>NC</em>{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Redmine identifier</th>
+            <td>{{ entity.redmineIdentifier }}</td>
+        </tr>
+        <tr>
+            <th>Created at</th>
+            <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Updated at</th>
+            <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Deleted at</th>
+            <td>{% if entity.deletedAt %}{{ entity.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
         </tbody>
     </table>
