@@ -41,7 +41,7 @@
                         <div id="collapse_{{ contract_id }}"
                              class="panel-collapse collapse{% if contract_id == 1 %} in{% endif %}">
                             <div class="panel-body">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
                                         richardson
                                         ad
@@ -55,30 +55,48 @@
                                         nesciunt
                                         you
                                         probably haven't heard of them accusamus labore sustainable VHS.</p>
+                                    <a href="#" class="btn btn-primary btn-xs pull-right">Edit contract</a>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-8">
                                     <table class="table table-striped table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th style="text-align: right">Daily cost</th>
+                                            <th style="text-align: right">Sold</th>
+                                            <th style="text-align: right">Consumed</th>
+                                        </tr>
+                                        </thead>
                                         <tbody>
                                         <tr>
                                             <th>Project manager</th>
-                                            <td>11 days</td>
-                                            <td>610 €</td>
+                                            <td style="text-align: right">610 €</td>
+                                            <td style="text-align: right">11 days</td>
+                                            <td style="text-align: right"><a href="#">11 days</a></td>
                                         </tr>
-                                        <tr>
+                                        <tr class="success">
                                             <th>Designer</th>
-                                            <td>5.5 days</td>
-                                            <td>530 €</td>
+                                            <td style="text-align: right">530 €</td>
+                                            <td style="text-align: right">5.5 days</td>
+                                            <td style="text-align: right"><a href="#">3.5 days</a></td>
                                         </tr>
-                                        <tr>
+                                        <tr class="danger">
                                             <th>Developer</th>
-                                            <td>18 days</td>
-                                            <td>480 €</td>
+                                            <td style="text-align: right">480 €</td>
+                                            <td style="text-align: right">18 days</td>
+                                            <td style="text-align: right; font-weight: bold"><a href="#">25 days</a></td>
+                                        </tr>
+                                        <tr class="total">
+                                            <th></th>
+                                            <td></td>
+                                            <th style="text-align: right">34.5 days</th>
+                                            <th style="text-align: right; font-weight: bold"><a href="#">39.5 days</a></th>
                                         </tr>
                                         </tbody>
                                     </table>
-                                </div>
 
-                                <a href="#" class="btn btn-default btn-xs pull-right">Edit contract</a>
+                                    <a href="#" class="btn btn-warning btn-xs pull-right">View timesheet</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -105,55 +123,56 @@
     {#{{ form(delete_form) }}#}
 {% endblock %}
 
-    {% block content_sidebar %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Summary</h3>
-            </div>
-
-            <table class="table">
-                <tr>
-                    <th>Client</th>
-                    <td>
-                        {% if entity.client %}
-                            <a href="{{ path('client_show', {id: entity.client.id}) }}">{{ entity.client.name }}</a>
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Manager</th>
-                    <td>
-                        {% if entity.manager is defined %}
-                            <a href="{{ path('user_show', {id: entity.manager.id}) }}">{{ entity.manager.name }}</a>
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Redmine</th>
-                    <td>
-                        {% if entity.redmineId %}
-                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}">Synchronized</a>
-                        {% else %}
-                            <em>Not linked</em>
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Created at</th>
-                    <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
-                </tr>
-                <tr>
-                    <th>Updated at</th>
-                    <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
-                </tr>
-            </table>
+{% block content_sidebar %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Summary</h3>
         </div>
 
-        <div>
-            <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-primary btn-block">Edit project</a>
-        </div>
-    {% endblock %}
+        <table class="table">
+            <tr>
+                <th>Client</th>
+                <td>
+                    {% if entity.client %}
+                        <a href="{{ path('client_show', {id: entity.client.id}) }}">{{ entity.client.name }}</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Manager</th>
+                <td>
+                    {% if entity.manager is defined %}
+                        <a href="{{ path('user_show', {id: entity.manager.id}) }}">{{ entity.manager.name }}</a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Redmine</th>
+                <td>
+                    {% if entity.redmineId %}
+                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}">Synchronized</a>
+                    {% else %}
+                        <em>Not linked</em>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Created at</th>
+                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Updated at</th>
+                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-primary btn-block">Edit project</a>
+        <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-success btn-block">Add contract</a>
+    </div>
+{% endblock %}
