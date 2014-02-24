@@ -120,6 +120,13 @@ class Project
     private $redmineIdentifier;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Contract", mappedBy="project")
+     */
+    private $contracts;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -147,7 +154,8 @@ class Project
      */
     public function __construct()
     {
-        $this->children = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -559,5 +567,38 @@ class Project
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * Add contracts
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Contract $contracts
+     * @return Project
+     */
+    public function addContract(\SmartProject\ProjectBundle\Entity\Contract $contracts)
+    {
+        $this->contracts[] = $contracts;
+    
+        return $this;
+    }
+
+    /**
+     * Remove contracts
+     *
+     * @param \SmartProject\ProjectBundle\Entity\Contract $contracts
+     */
+    public function removeContract(\SmartProject\ProjectBundle\Entity\Contract $contracts)
+    {
+        $this->contracts->removeElement($contracts);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }

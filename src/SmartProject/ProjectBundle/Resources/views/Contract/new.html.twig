@@ -1,0 +1,22 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block headline %}
+    Contract creation
+{% endblock %}
+
+{% block headline_sub %}
+    {% if entity.project.client %}<a href="{{ path('client_show', {id: entity.project.client.id}) }}">{{ entity.project.client.name }}</a> > {% endif %}
+    <a href="{{ path('project_show', {id: entity.project.id}) }}">{{ entity.project.name }}</a>
+{% endblock %}
+
+{% block content_content %}
+    {{ form(form, {action: form_action}) }}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('contract') }}">
+                Back to the list
+            </a>
+        </li>
+    </ul>
+{% endblock %}

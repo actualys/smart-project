@@ -1,5 +1,6 @@
 parameters:
     smart_project_front.exception.listener.class: SmartProject\FrontBundle\Listeners\ExceptionListener
+    smart_project_front.twig.array.class:         SmartProject\FrontBundle\Twig\ArrayExtension
 
 services:
     smart_project_front.exception.listener:
@@ -7,3 +8,8 @@ services:
         arguments: [@service_container, %kernel.debug%]
         tags:
             - {name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    smart_project_front.twig.array:
+        class: %smart_project_front.twig.array.class%
+        tags:
+            - {name: twig.extension }

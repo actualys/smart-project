@@ -56,7 +56,7 @@
                                         nesciunt
                                         you
                                         probably haven't heard of them accusamus labore sustainable VHS.</p>
-                                    <a href="#" class="btn btn-primary btn-xs pull-right">Edit contract</a>
+                                    <a href="{{ path('contract_show', {id: 1}) }}" class="btn btn-primary btn-xs pull-right">View contract</a>
                                 </div>
                                 <div class="col-md-8">
                                     <table class="table table-striped table-condensed">
@@ -131,7 +131,7 @@
             <h3 class="panel-title">Summary</h3>
         </div>
 
-        <table class="table">
+        <table class="table table-striped table-hover">
             <tr>
                 <th>Client</th>
                 <td>
@@ -156,7 +156,7 @@
                 <th>Redmine</th>
                 <td>
                     {% if entity.redmineId %}
-                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}">Synchronized</a>
+                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}" target="_blank">Synchronized</a>
                     {% else %}
                         <em>Not linked</em>
                     {% endif %}
@@ -175,7 +175,7 @@
 
     <div class="buttons">
         <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-primary btn-block">Edit project</a>
-        <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-success btn-block">Add contract</a>
+        <a href="{{ path('contract_new_project', { 'project': entity.id }) }}" class="btn btn-success btn-block">Add contract</a>
     </div>
 
     <br/>
@@ -194,5 +194,8 @@
         </div>
     </div>
 
+    {{ form_start(delete_form) }}
+    {{ form_widget(delete_form.submit, {'attr': {'class': 'btn-block btn-danger'}}) }}
+    {{ form_end(delete_form) }}
 
 {% endblock %}

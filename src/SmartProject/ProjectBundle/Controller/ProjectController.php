@@ -4,6 +4,7 @@ namespace SmartProject\ProjectBundle\Controller;
 
 use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -43,7 +44,7 @@ class ProjectController extends Controller
      */
     public function getTagsAction(Request $request)
     {
-        $query    = $request->get('q');
+//        $query    = $request->get('q');
         $callback = $request->get('callback');
 
         $words = $tags = array();

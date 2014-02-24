@@ -17,7 +17,6 @@ use SmartProject\ProjectBundle\Form\ClientType;
  */
 class ClientController extends Controller
 {
-
     /**
      * Lists all Client entities.
      *
@@ -193,7 +192,7 @@ class ClientController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('client_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('client_show', array('id' => $id)));
         }
 
         return array(
