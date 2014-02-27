@@ -117,8 +117,13 @@ class ClientController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
 
+        $timesheet = array(
+
+        );
+
         return array(
             'entity'      => $entity,
+            'timesheet'   => $timesheet,
             'delete_form' => $deleteForm->createView(),
         );
     }
