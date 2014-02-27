@@ -1,3 +1,8 @@
+smart_project_timesheet:
+    resource: "@SmartProjectTimesheetBundle/Controller"
+    type:     annotation
+    prefix:   /
+
 smart_project_front:
     resource: "@SmartProjectFrontBundle/Controller"
     type:     annotation

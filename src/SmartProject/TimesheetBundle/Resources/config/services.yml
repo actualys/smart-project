@@ -1,0 +1,7 @@
+parameters:
+#    smart_project_timesheet.example.class: SmartProject\TimesheetBundle\Example
+
+services:
+#    smart_project_timesheet.example:
+#        class: %smart_project_timesheet.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -76,8 +76,19 @@ class MenuBuilder
         $timesheet = $menu->addChild('Timesheet', array(
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-dashboard',
+                'dropdown' => true,
+                'caret' => true,
             ));
-
+        $timesheet->addChild('Timeline', array(
+                'route' => 'project',
+            ));
+        $timesheet->addChild('Matrix', array(
+                'route' => 'project_synchronize',
+            ));
+        $timesheet->addChild('divider_2', array('divider' => true));
+        $timesheet->addChild('Consolidation', array(
+                'uri' => '#',
+            ));
 
 //        $tools->addChild('Symfony', array('uri' => 'http://www.symfony.com'));
 //        $tools->addChild('bootstrap', array('uri' => 'https://github.com/twbs/bootstrap'));
