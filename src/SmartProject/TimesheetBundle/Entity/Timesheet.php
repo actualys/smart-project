@@ -1,19 +1,18 @@
 <?php
 
-namespace SmartProject\ProjectBundle\Entity;
+namespace SmartProject\TimesheetBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use SmartProject\TimesheetBundle\Entity\ClientInterface;
 
 /**
- * Client
+ * Timesheet
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @ORM\Table(name="client")
- * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ClientRepository")
+ * @ORM\Table(name="timesheet")
+ * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\TimesheetRepository")
  */
-class Client implements ClientInterface
+class Timesheet
 {
     /**
      * @var integer
@@ -25,40 +24,40 @@ class Client implements ClientInterface
     private $id;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="date_start", type="date")
      */
-    private $name;
+    private $dateStart;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(name="slug", length=128, unique=true)
+     * @ORM\Column(name="date_end", type="date")
      */
-    private $slug;
+    private $dateEnd;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="description", type="text", nullable=true)
+     * @ORM\Column(name="status", type="smallint")
      */
-    private $description;
+    private $status;
 
     /**
-     * @var string
+     * @var UserInterface
      *
-     * @ORM\Column(name="tags", type="text", nullable=true)
+     * @ORM\ManyToOne(targetEntity="UserInterface")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private $tags;
+    private $user;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Project", mappedBy="client")
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="timesheet")
      */
-    private $projects;
+    private $tasks;
 
     /**
      * @var \DateTime $createdAt
@@ -88,7 +87,7 @@ class Client implements ClientInterface
      */
     public function __construct()
     {
-        $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -102,102 +101,79 @@ class Client implements ClientInterface
     }
 
     /**
-     * Set name
+     * Set dateStart
      *
-     * @param string $name
-     * @return Client
+     * @param \DateTime $dateStart
+     * @return Timesheet
      */
-    public function setName($name)
+    public function setDateStart($dateStart)
     {
-        $this->name = $name;
+        $this->dateStart = $dateStart;
     
         return $this;
     }
 
     /**
-     * Get name
+     * Get dateStart
      *
-     * @return string 
+     * @return \DateTime 
      */
-    public function getName()
+    public function getDateStart()
     {
-        return $this->name;
+        return $this->dateStart;
     }
 
     /**
-     * Set slug
+     * Set dateEnd
      *
-     * @param string $slug
-     * @return Client
+     * @param \DateTime $dateEnd
+     * @return Timesheet
      */
-    public function setSlug($slug)
+    public function setDateEnd($dateEnd)
     {
-        $this->slug = $slug;
+        $this->dateEnd = $dateEnd;
     
         return $this;
     }
 
     /**
-     * Get slug
+     * Get dateEnd
      *
-     * @return string 
+     * @return \DateTime 
      */
-    public function getSlug()
+    public function getDateEnd()
     {
-        return $this->slug;
+        return $this->dateEnd;
     }
 
     /**
-     * Set description
+     * Set status
      *
-     * @param string $description
-     * @return Client
+     * @param integer $status
+     * @return Timesheet
      */
-    public function setDescription($description)
+    public function setStatus($status)
     {
-        $this->description = $description;
+        $this->status = $status;
     
         return $this;
     }
 
     /**
-     * Get description
+     * Get status
      *
-     * @return string 
+     * @return integer 
      */
-    public function getDescription()
+    public function getStatus()
     {
-        return $this->description;
-    }
-
-    /**
-     * Set tags
-     *
-     * @param string $tags
-     * @return Client
-     */
-    public function setTags($tags)
-    {
-        $this->tags = $tags;
-    
-        return $this;
-    }
-
-    /**
-     * Get tags
-     *
-     * @return string 
-     */
-    public function getTags()
-    {
-        return $this->tags;
+        return $this->status;
     }
 
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Client
+     * @return Timesheet
      */
     public function setCreatedAt($createdAt)
     {
@@ -220,7 +196,7 @@ class Client implements ClientInterface
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Client
+     * @return Timesheet
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -243,7 +219,7 @@ class Client implements ClientInterface
      * Set deletedAt
      *
      * @param \DateTime $deletedAt
-     * @return Client
+     * @return Timesheet
      */
     public function setDeletedAt($deletedAt)
     {
@@ -263,35 +239,58 @@ class Client implements ClientInterface
     }
 
     /**
-     * Add projects
+     * Set user
      *
-     * @param \SmartProject\ProjectBundle\Entity\Project $projects
-     * @return Client
+     * @param \SmartProject\TimesheetBundle\Entity\UserInterface $user
+     * @return Timesheet
      */
-    public function addProject(\SmartProject\ProjectBundle\Entity\Project $projects)
+    public function setUser(\SmartProject\TimesheetBundle\Entity\UserInterface $user = null)
     {
-        $this->projects[] = $projects;
+        $this->user = $user;
     
         return $this;
     }
 
     /**
-     * Remove projects
+     * Get user
      *
-     * @param \SmartProject\ProjectBundle\Entity\Project $projects
+     * @return \SmartProject\TimesheetBundle\Entity\UserInterface 
      */
-    public function removeProject(\SmartProject\ProjectBundle\Entity\Project $projects)
+    public function getUser()
     {
-        $this->projects->removeElement($projects);
+        return $this->user;
     }
 
     /**
-     * Get projects
+     * Add tasks
+     *
+     * @param \SmartProject\TimesheetBundle\Entity\Task $tasks
+     * @return Timesheet
+     */
+    public function addTask(\SmartProject\TimesheetBundle\Entity\Task $tasks)
+    {
+        $this->tasks[] = $tasks;
+    
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \SmartProject\TimesheetBundle\Entity\Task $tasks
+     */
+    public function removeTask(\SmartProject\TimesheetBundle\Entity\Task $tasks)
+    {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getProjects()
+    public function getTasks()
     {
-        return $this->projects;
+        return $this->tasks;
     }
 }

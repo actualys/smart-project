@@ -4,6 +4,7 @@ namespace SmartProject\ProjectBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use SmartProject\TimesheetBundle\Entity\ContractInterface;
 
 /**
  * Contract
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="contract")
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ContractRepository")
  */
-class Contract
+class Contract implements ContractInterface
 {
     /**
      * @var integer

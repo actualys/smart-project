@@ -4,6 +4,7 @@ namespace SmartProject\ProjectBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use SmartProject\TimesheetBundle\Entity\ProjectInterface;
 
 /**
  * Project
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="project")
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ProjectRepository")
  */
-class Project
+class Project implements ProjectInterface
 {
     /**
      * @var integer
