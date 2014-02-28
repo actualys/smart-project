@@ -1,16 +1,25 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
 {% block headline %}
-    Timeline of week {{ timesheet.dateStart|date('Y-m-d') }}
+    Timeline of {% if mode == 'week' %}week{% else %}day{% endif %}
+    <a href="#" class="datepicker-inline" data-url="{{ path('timeline_mode', {mode: mode, date: 'REPLACE'}) }}">{{ date|date('Y-m-d') }}</a> <span class="glyphicon glyphicon-pencil" style="font-size: 0.5em"></span>
+{% endblock %}
+
+{% block headline_sub %}
+    {% if mode == 'week' %}
+        <em>from {{ timesheet.dateStart|date('Y-m-d') }} to {{ timesheet.dateEnd|date('Y-m-d') }}</em>
+    {% endif %}
 {% endblock %}
 
 {% block content_content %}
 
-    {% for date, day in days %}
+    {% for day_date, day in days %}
         {% if day.day_off %}
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <span class="timesheet-day">{{ date|date('l') }}</span> <span class="timesheet-date">{{ date|date('Y-m-d') }}</span>
+                    <span class="timesheet-day">{{ day_date|date('l') }}</span>
+                    <span class="timesheet-date">{{ day_date|date('Y-m-d') }}</span>
+
                     <div class="pull-right">Day off</div>
                 </div>
             </div>
@@ -22,8 +31,10 @@
                     {%- else -%}
                     panel-success
                     {%- endif %}">
-                <div class="panel-heading panel-heading-timeline" data-date="{{ date|date('Y-m-d') }}">
-                    <span class="timesheet-day">{{ date|date('l') }}</span> <span class="timesheet-date">{{ date|date('Y-m-d') }}</span>
+                <div class="panel-heading panel-heading-timeline" data-date="{{ day_date|date('Y-m-d') }}">
+                    <span class="timesheet-day">{{ day_date|date('l') }}</span> <span
+                            class="timesheet-date">{{ day_date|date('Y-m-d') }}</span>
+
                     <div class="pull-right">Total <span class="label {% if day.fulfillment < day_duration -%}
                     label-warning
                     {%- elseif day.fulfillment > day_duration -%}
@@ -78,5 +89,17 @@
 {% endblock %}
 
 {% block content_sidebar %}
-    {{ render(controller('SmartProjectTimesheetBundle:TaskQuick:new', {url: app.request.requestUri})) }}
+
+    <div class="btn-group btn-group-justified btn-group-timeline-mode" data-toggle="buttons">
+        <label class="btn btn-primary{% if mode == 'day' %} active{% endif %}">
+            <input type="radio" name="options" id="option1" {% if mode == 'day' %}value="" checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'day'}) }}"{% endif %}> Daily
+        </label>
+        <label class="btn btn-primary{% if mode == 'week' %} active{% endif %}">
+            <input type="radio" name="options" id="option2" {% if mode == 'week' %}value="" checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'week'}) }}"{% endif %}> Weekly
+        </label>
+    </div>
+
+    <br/>
+
+    {{ render(controller('SmartProjectTimesheetBundle:TaskQuick:new', {url: app.request.requestUri, date: date|date('Y-m-d')})) }}
 {% endblock %}

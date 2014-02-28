@@ -1,6 +1,7 @@
 parameters:
     smart_project_bootstrap.form.type.tag.class: SmartProject\BootstrapBundle\Form\Type\TagType
     smart_project_bootstrap.form.type.datepicker.class: SmartProject\BootstrapBundle\Form\Type\DatePickerType
+    smart_project_bootstrap.form.type.chosen.class: SmartProject\BootstrapBundle\Form\Type\ChosenType
 
 services:
     form.type.tag:
@@ -12,3 +13,8 @@ services:
         class: %smart_project_bootstrap.form.type.datepicker.class%
         tags:
             - { name: form.type, alias: datepicker }
+
+    form.type.chosen:
+        class: %smart_project_bootstrap.form.type.chosen.class%
+        tags:
+            - { name: form.type, alias: chosen }

@@ -2,6 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Controller;
 
+use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\TimesheetBundle\Entity\Task;
 use SmartProject\TimesheetBundle\Entity\Timesheet;
 use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
@@ -84,10 +85,14 @@ class TaskQuickController extends Controller
             $data       = array(
                 'content' => $content,
                 'action'  => '',
+                'url'     => '',
                 'message' => '',
             );
             if ($code < 400) {
-                $data['action'] = 'reload';
+                $url = $this->generateUrl('timeline_mode', array('mode' => 'auto', 'date' => $tracking->getDate()->format('Y-m-d')));
+
+                $data['action'] = 'redirect';
+                $data['url']    = $url;
             }
             $response = new JsonResponse($data, $code);
 
@@ -106,8 +111,41 @@ class TaskQuickController extends Controller
      */
     private function createCreateForm(TaskQuickModel $form_data)
     {
+        /** @var ClientRepository $repository */
+        $repository   = $this->getDoctrine()->getRepository('SmartProjectProjectBundle:Client');
+        $queryBuilder = $repository->createQueryBuilder('cl')
+          ->select('cl, pr, co')
+          ->leftJoin('cl.projects', 'pr')
+          ->leftJoin('pr.contracts', 'co')
+          ->orderBy('cl.name', 'asc')
+          ->addOrderBy('pr.name', 'asc')
+          ->addOrderBy('co.name', 'asc');
+        $clients      = $queryBuilder->getQuery()->execute();
+
+        $tasks = array();
+
+        foreach ($clients as $clientId => $client) {
+            $tasks[$clientId] = $client->getName();
+
+            foreach ($client->getProjects() as $projectId => $project) {
+                $tasks[$clientId . ':' . $projectId] = $project->getName();
+
+                foreach ($project->getContracts() as $contractId => $contract) {
+                    $tasks[$clientId . ':' . $projectId . ':' . $contractId] = $contract->getName();
+                }
+            }
+        }
+
+//          ->getRepository('SmartProjectProjectBundle:Client')
+//          ->findBy(array(), array('name' => 'asc'));
+//
+//        foreach ($clients )
+
+        $form_type = new TaskQuickType();
+        $form_type->setTasks($tasks);
+
         $form = $this->createForm(
-            new TaskQuickType(),
+            $form_type,
             $form_data,
             array(
                 'action' => $this->generateUrl('task_quick_create'),
@@ -134,14 +172,17 @@ class TaskQuickController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction(Request $request, $url = null)
+    public function newAction(Request $request, $url = null, $date = null)
     {
         if (null === $url) {
             $url = $request->getRequestUri();
         }
 
         $form_data = new TaskQuickModel();
-        $form_data->setDate(new \DateTime());
+        if (null !== $date) {
+            $date = new \DateTime($date);
+            $form_data->setDate($date);
+        }
         $form_data->setUrl($url);
 
         $form = $this->createCreateForm($form_data);

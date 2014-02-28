@@ -54,6 +54,10 @@ stof_doctrine_extensions:
             loggable:       true
             softdeleteable: true
             blameable:      true
+            uploadable:     true
 
+    uploadable:
+        default_file_path: %kernel.root_dir%/../web/uploads
+        validate_writable_directory: true
 #    mongodb:
 #        default: ~

@@ -31,6 +31,7 @@ twig:
         resources:
             - 'SmartProjectBootstrapBundle:Form:field_tag.html.twig'
             - 'SmartProjectBootstrapBundle:Form:field_datepicker.html.twig'
+            - 'SmartProjectBootstrapBundle:Form:field_chosen.html.twig'
 
 # Assetic Configuration
 assetic:

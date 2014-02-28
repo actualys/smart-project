@@ -1,7 +1,7 @@
 {% block datepicker_widget %}
     {% spaceless %}
         {% set value = value|date('Y-m-d') %}
-        {% set attr = attr|merge({'class': attr.class|default('') ~ ' datepicker'}) %}
+        {% set attr = attr|merge({'class': attr.class|default('') ~ ' field-datepicker'}) %}
         {% set attr = attr|merge({
         'data-provide': 'datepicker',
         'data-date-format': 'yyyy-mm-dd',

@@ -46,8 +46,8 @@ class TimesheetRepository extends EntityRepository
     {
         $startDate = clone $date;
         $day = $startDate->format('w');
-        if ($day == 6) {
-            $interval = new \DateInterval('P7D');
+        if ($day == 0) {
+            $interval = new \DateInterval('P6D');
         } else {
             $interval = new \DateInterval('P' . ($day - 1) . 'D');
         }

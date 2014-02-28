@@ -9,15 +9,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class TaskQuickType extends AbstractType
 {
     /**
+     * @var array
      */
-    private $doctrine;
+    private $tasks = array();
 
     /**
-     * @param $doctrine
+     * @param array $tasks
      */
-    public function __construct($doctrine = null)
+    public function setTasks($tasks)
     {
-        $this->doctrine = $doctrine;
+        $this->tasks = $tasks;
     }
 
     /**
@@ -29,6 +30,8 @@ class TaskQuickType extends AbstractType
         $builder
           ->add('url', 'hidden')
           ->add('date', 'datepicker', array(
+                  'label'  => false,
+                  'horizontal_input_wrapper_class' => 'col-sm-12',
                   'widget' => 'single_text',
                   'widget_addon_append' => array(
                       'icon' => 'calendar',
@@ -36,16 +39,18 @@ class TaskQuickType extends AbstractType
                   'attr' => array(
                       'daysOfWeekDisabled' => array(0, 6),
                       'autocomplete' => 'off',
+                      'placeholder' => 'Date',
                   ),
               ))
-          ->add('task', 'text', array(
+          ->add('task', 'chosen', array(
                   'label' => false,
+                  'choices' => $this->tasks,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
                   'widget_addon_append' => array(
                       'icon' => 'th-large',
                   ),
                   'attr' => array(
-                      'placeholder' => 'Client / Project',
+                      'data-placeholder' => 'Client / Project',
                       'autocomplete' => 'off',
                   ),
                   'required' => false,
@@ -58,6 +63,7 @@ class TaskQuickType extends AbstractType
                   ),
                   'attr' => array(
                       'placeholder' => 'Description',
+                      'class' => 'field-description',
                   ),
               ))
           ->add('tags', 'tag', array(

@@ -1,0 +1,43 @@
+{% block chosen_widget %}
+    {% spaceless %}
+        {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control chosen-select'}) %}
+        {% set type = 'select' %}
+        {% if not inline and horizontal %}
+            {% if not label_render %}
+                {% set horizontal_input_wrapper_class = horizontal_input_wrapper_class ~ ' ' ~ horizontal_label_offset_class %}
+            {% endif %}
+            <div class="{{ horizontal_input_wrapper_class }}">
+        {% endif %}
+        {% if required and empty_value is none and not empty_value_in_choices %}
+            {% set required = false %}
+        {% endif %}
+
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none %}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {% endif %}
+            {% if preferred_choices|length > 0 %}
+                {% set options = preferred_choices %}
+                {{ block('choice_widget_options') }}
+                {% if choices|length > 0 and separator is not none %}
+                    <option disabled="disabled">{{ separator }}</option>
+                {% endif %}
+            {% endif %}
+            {% set options = choices %}
+            {{ block('chosen_widget_options') }}
+        </select>
+
+        {% if not inline and horizontal %}
+            {{ block('form_message') }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock chosen_widget %}
+
+{% block chosen_widget_options %}
+    {% spaceless %}
+        {% for group_label, choice in options %}
+            <option value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %} class="chosen-level-{{ choice.value|split(':')|length }}">{{ choice.label|trans({}, translation_domain) }}</option>
+        {% endfor %}
+    {% endspaceless %}
+{% endblock chosen_widget_options %}
