@@ -1,6 +1,7 @@
 parameters:
     smart_project_front.exception.listener.class: SmartProject\FrontBundle\Listeners\ExceptionListener
     smart_project_front.twig.array.class:         SmartProject\FrontBundle\Twig\ArrayExtension
+    smart_project_front.twig.format.class:        SmartProject\FrontBundle\Twig\FormatExtension
 
 services:
     smart_project_front.exception.listener:
@@ -11,5 +12,10 @@ services:
 
     smart_project_front.twig.array:
         class: %smart_project_front.twig.array.class%
+        tags:
+            - {name: twig.extension }
+
+    smart_project_front.format.array:
+        class: %smart_project_front.twig.format.class%
         tags:
             - {name: twig.extension }

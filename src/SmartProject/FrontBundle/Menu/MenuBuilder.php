@@ -80,10 +80,10 @@ class MenuBuilder
                 'caret' => true,
             ));
         $timesheet->addChild('Timeline', array(
-                'route' => 'project',
+                'route' => 'timeline',
             ));
         $timesheet->addChild('Matrix', array(
-                'route' => 'project_synchronize',
+                'uri' => '#',
             ));
         $timesheet->addChild('divider_2', array('divider' => true));
         $timesheet->addChild('Consolidation', array(

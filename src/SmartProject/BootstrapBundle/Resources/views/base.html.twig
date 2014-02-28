@@ -13,7 +13,8 @@
                 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
                 {% stylesheets
                 '@SmartProjectBootstrapBundle/Resources/public/select2/select2.css'
-                '@SmartProjectBootstrapBundle/Resources/public/select2/select2-bootstrap.css' %}
+                '@SmartProjectBootstrapBundle/Resources/public/select2/select2-bootstrap.css'
+                '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/css/datepicker3.css' %}
                 <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
                 {% endstylesheets %}
                 {# To use this without less use the base_css.html.twig template as your base
@@ -131,7 +132,8 @@
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/transition.js'
         '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
         '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-subnav.js'
-        '@MopaBootstrapBundle/Resources/public/js/eyecon-bootstrap-datepicker.js' %}
+        '@SmartProjectBootstrapBundle/Resources/public/ajaxify/ajaxify.jquery.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/js/bootstrap-datepicker.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}
 
@@ -168,7 +170,7 @@
                         minimumInputLength: 2,
                         maximumInputLength: 20,
                         tokenSeparators: [",", ";"],
-                        width : width,
+                        width: width,
                         cache: true,
                         containerCssClass: 'form-control',
                         ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -183,7 +185,7 @@
                             results: function (data, page) { // parse the results into the format expected by Select2.
                                 // since we are using custom formatting functions we do not need to alter remote JSON data
                                 var results = [];
-                                $.each(data.results, function(index, item){
+                                $.each(data.results, function (index, item) {
                                     results.push({
                                         id: item.id,
                                         text: item.text
@@ -195,39 +197,73 @@
                             }
                         },
                         /*matcher: function(term, text, opt) {
-                            return true;
-                        },*/
-                        initSelection : function (element, callback) {
+                         return true;
+                         },*/
+                        initSelection: function (element, callback) {
                             var data = [];
                             $(element.val().split(",")).each(function () {
                                 data.push({id: this, text: this});
                             });
                             callback(data);
                         },
-                        createSearchChoice: function(term) {
+                        createSearchChoice: function (term) {
                             return {id: term, text: term};
                         },
                         /*sortResults: function(results, container, query) {
-                            if (query.term) {
-                                // use the built in javascript sort function
-                                return results.sort(function(a, b) {
-                                    if (a.text.length > b.text.length) {
-                                        return 1;
-                                    } else if (a.text.length < b.text.length) {
-                                        return -1;
-                                    } else {
-                                        return 0;
-                                    }
-                                });
-                            }
-                            return results;
-                        },*/
+                         if (query.term) {
+                         // use the built in javascript sort function
+                         return results.sort(function(a, b) {
+                         if (a.text.length > b.text.length) {
+                         return 1;
+                         } else if (a.text.length < b.text.length) {
+                         return -1;
+                         } else {
+                         return 0;
+                         }
+                         });
+                         }
+                         return results;
+                         },*/
                         formatNoMatches: function (term) {
                             return '';
                         },
-                        formatResultCssClass: function(object) {
+                        formatResultCssClass: function (object) {
                             return '';
                         }
+                    });
+                });
+
+                $('.ajaxify').ajaxForm({
+                    complete: ajaxify_complete
+                });
+
+                function ajaxify_complete(jqXHR, textStatus) {
+                    var container = $(this).closest('.panel-body');
+                    container.html(jqXHR.responseJSON.content);
+                    $('.ajaxify', container).ajaxForm({
+                        complete: ajaxify_complete
+                    });
+                    if (jqXHR.responseJSON.action == 'reload') {
+                        location.reload();
+                    }
+                    if (jqXHR.responseJSON.message != '') {
+                        $.bootstrapGrowl(jqXHR.responseJSON.message, {
+                            ele: 'body',
+                            {#type: '{{ flashType }}',#}
+                            align: 'right',
+                            width: 300, // 'auto'
+                            offset: {from: 'bottom', amount: 20},
+                            delay: 10000,
+                            stackup_spacing: 10,
+                            allow_dismiss: true
+                        });
+                    }
+                }
+
+                $('.panel-heading-timeline').each(function() {
+                    $(this).click(function () {
+                        var date = $(this).attr('data-date');
+                        $('.timesheet-quick-task .datepicker').datepicker('update', date);
                     });
                 });
             });

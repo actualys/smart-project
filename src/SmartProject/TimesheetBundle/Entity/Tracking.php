@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tracking
 {
+    const STATUS_NEW = 0;
+
     /**
      * @var integer
      *
@@ -26,14 +28,14 @@ class Tracking
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="date")
+     * @ORM\Column(name="tracking_date", type="date")
      */
     private $date;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="duration", type="decimal")
+     * @ORM\Column(name="duration", type="decimal", precision=8, scale=2)
      */
     private $duration;
 

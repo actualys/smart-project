@@ -9,5 +9,5 @@
 {% endblock %}
 
 {% block content_sidebar %}
-    <h4>Sidebar</h4>
+    {{ render(controller('SmartProjectTimesheetBundle:TaskQuick:new', {url: app.request.requestUri})) }}
 {% endblock %}

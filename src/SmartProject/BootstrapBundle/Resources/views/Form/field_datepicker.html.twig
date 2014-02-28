@@ -1,0 +1,15 @@
+{% block datepicker_widget %}
+    {% spaceless %}
+        {% set value = value|date('Y-m-d') %}
+        {% set attr = attr|merge({'class': attr.class|default('') ~ ' datepicker'}) %}
+        {% set attr = attr|merge({
+        'data-provide': 'datepicker',
+        'data-date-format': 'yyyy-mm-dd',
+        'data-date-autoclose': true,
+        'data-date-week-start': 1,
+        'data-date-today-highlight': true,
+        'data-date-days-of-week-disabled': attr.daysOfWeekDisabled|default({})|implode(',')
+        }) %}
+        {{ block('form_widget_simple') }}
+    {% endspaceless %}
+{% endblock datepicker_widget %}

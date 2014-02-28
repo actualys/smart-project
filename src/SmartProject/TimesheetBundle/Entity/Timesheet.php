@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Timesheet
 {
+    const STATUS_NEW = 0;
+
     /**
      * @var integer
      *

@@ -1,0 +1,82 @@
+{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+
+{% block headline %}
+    Timeline of week {{ timesheet.dateStart|date('Y-m-d') }}
+{% endblock %}
+
+{% block content_content %}
+
+    {% for date, day in days %}
+        {% if day.day_off %}
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <span class="timesheet-day">{{ date|date('l') }}</span> <span class="timesheet-date">{{ date|date('Y-m-d') }}</span>
+                    <div class="pull-right">Day off</div>
+                </div>
+            </div>
+        {% else %}
+            <div class="panel {% if day.fulfillment < day_duration -%}
+                    panel-warning
+                    {%- elseif day.fulfillment > day_duration -%}
+                    panel-danger
+                    {%- else -%}
+                    panel-success
+                    {%- endif %}">
+                <div class="panel-heading panel-heading-timeline" data-date="{{ date|date('Y-m-d') }}">
+                    <span class="timesheet-day">{{ date|date('l') }}</span> <span class="timesheet-date">{{ date|date('Y-m-d') }}</span>
+                    <div class="pull-right">Total <span class="label {% if day.fulfillment < day_duration -%}
+                    label-warning
+                    {%- elseif day.fulfillment > day_duration -%}
+                    label-danger
+                    {%- else -%}
+                    label-success
+                    {%- endif %}">{{ day.fulfillment|format_duration(' h ', true) }}</span></div>
+                </div>
+                <table class="table table-condensed">
+                    {#<thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Duration</th>
+                        <th></th>
+                    </tr>
+                    </thead>#}
+                    <tbody>
+                    {% for tracking in day.trackings %}
+                        <tr>
+                            <td style="width: 40%">{{ tracking.task.name }}</td>
+                            <td>
+                                {% if tracking.task.tags %}
+                                    {% set tags = tracking.task.tags|split(',') %}
+                                    {% for tag in tags %}
+                                        <span class="label label-primary">{{ tag }}</span>&nbsp;
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                            <td style="text-align: right">{{ tracking.duration|format_duration(' h ') }}</td>
+                            <td style="text-align: right; width: 60px">
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-primary btn-xs"><span
+                                                class="glyphicon glyphicon-pencil"></span></a>
+                                    <a href="#" class="btn btn-danger btn-xs"><span
+                                                class="glyphicon glyphicon-remove"></span></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3"><em>This day doesn't contain any task.</em></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {#<div class="panel-footer">
+
+                </div>#}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block content_sidebar %}
+    {{ render(controller('SmartProjectTimesheetBundle:TaskQuick:new', {url: app.request.requestUri})) }}
+{% endblock %}

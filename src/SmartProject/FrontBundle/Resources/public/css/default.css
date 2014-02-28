@@ -48,6 +48,10 @@ body {
     margin: 3px 0 3px 3px;
 }
 
+.select2-container-multi .select2-choices .select2-search-field input {
+    padding: 5px 10px;
+}
+
 .list-group-condensed .list-group-item {
     padding: 4px 8px;
 }
@@ -58,4 +62,17 @@ body {
 
 .list-group-hover .list-group-item:hover {
     background-color: #e8e8e8;
+}
+
+.panel-heading .timesheet-day {
+    font-weight: bold;
+}
+
+.panel-heading .timesheet-date {
+    font-style: italic;
+    padding-left: 0.5em;
+}
+
+.panel-heading-timeline {
+    cursor: pointer;
 }
