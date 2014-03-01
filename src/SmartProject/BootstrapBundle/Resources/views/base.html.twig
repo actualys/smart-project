@@ -10,13 +10,12 @@
             <meta charset="UTF-8"/>
             {% block head_style %}
                 {# Override this block to add your own files! #}
-                <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+                <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
                 {% stylesheets
                 '@SmartProjectBootstrapBundle/Resources/public/select2/select2.css'
-                '@SmartProjectBootstrapBundle/Resources/public/select2/select2-bootstrap.css'
-                '@SmartProjectBootstrapBundle/Resources/public/chosen/chosen.min.css'
-                '@SmartProjectBootstrapBundle/Resources/public/bootstrap-chosen/bootstrap-chosen.css'
-                '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/css/datepicker3.css' %}
+                '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/css/datepicker3.css'
+                '@SmartProjectBootstrapBundle/Resources/public/select2-bootstrap/select2-bootstrap.css'
+                %}
                 <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
                 {% endstylesheets %}
                 {# To use this without less use the base_css.html.twig template as your base
@@ -119,8 +118,6 @@
         <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
         {% javascripts output='js/bootstrap_compiled.js'
-        '@SmartProjectBootstrapBundle/Resources/public/bootstrap-growl/jquery.bootstrap-growl.min.js'
-        '@SmartProjectBootstrapBundle/Resources/public/select2/select2.min.js'
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/tooltip.js'
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/affix.js'
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/alert.js'
@@ -134,8 +131,9 @@
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap/js/plugins/transition.js'
         '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-collection.js'
         '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-subnav.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootstrap-growl/jquery.bootstrap-growl.min.js'
+        '@SmartProjectBootstrapBundle/Resources/public/select2/select2.min.js'
         '@SmartProjectBootstrapBundle/Resources/public/ajaxify/ajaxify.jquery.js'
-        '@SmartProjectBootstrapBundle/Resources/public/chosen/chosen.jquery.min.js'
         '@SmartProjectBootstrapBundle/Resources/public/bootbox/bootbox.js'
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/js/bootstrap-datepicker.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
@@ -165,15 +163,15 @@
                 {% endfor %}
                 {% endfor %}
 
-                $('.select2.tags').each(function () {
-                    $this = $(this);
-                    $this.attr('type', 'hidden');
-                    var width = $this.attr('data-select-width') || '100%';
-                    $this.select2({
+                $('.form-field-tag').each(function () {
+                    var select = $(this);
+                    select.attr('type', 'hidden');
+                    var width = select.attr('data-select-width') || '100%';
+                    select.select2({
                         tags: [],
                         minimumInputLength: 2,
                         maximumInputLength: 20,
-                        tokenSeparators: [",", ";"],
+                        tokenSeparators: [","],
                         width: width,
                         cache: true,
                         containerCssClass: 'form-control',
@@ -213,21 +211,6 @@
                         createSearchChoice: function (term) {
                             return {id: term, text: term};
                         },
-                        /*sortResults: function(results, container, query) {
-                         if (query.term) {
-                         // use the built in javascript sort function
-                         return results.sort(function(a, b) {
-                         if (a.text.length > b.text.length) {
-                         return 1;
-                         } else if (a.text.length < b.text.length) {
-                         return -1;
-                         } else {
-                         return 0;
-                         }
-                         });
-                         }
-                         return results;
-                         },*/
                         formatNoMatches: function (term) {
                             return '';
                         },
@@ -241,6 +224,13 @@
                     complete: ajaxify_complete
                 });
 
+                $('.form-field-select').select2({
+//                    disable_search_threshold: 4,
+//                    allow_single_deselect: true,
+                    allowClear: true,
+                    width: '100%'
+                });
+
                 function ajaxify_complete(jqXHR, textStatus) {
                     var container = $(this).closest('.panel-body');
                     container.html(jqXHR.responseJSON.content);
@@ -249,9 +239,11 @@
                     });
                     if (jqXHR.responseJSON.action == 'reload') {
                         location.reload();
+                        return;
                     }
                     else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
                         window.location.href = jqXHR.responseJSON.url;
+                        return;
                     }
                     else if (jqXHR.responseJSON.message != '') {
                         $.bootstrapGrowl(jqXHR.responseJSON.message, {
@@ -265,6 +257,12 @@
                             allow_dismiss: true
                         });
                     }
+
+//                    $('.chosen-select', container).chosen({
+//                        disable_search_threshold: 4,
+//                        allow_single_deselect: true,
+//                        width: '100%'
+//                    });
                 }
 
                 $('.panel-heading-timeline').each(function () {
@@ -273,12 +271,6 @@
                         $('.timesheet-quick-task .field-datepicker').datepicker('update', date);
                         $('.timesheet-quick-task .field-description').focus();
                     });
-                });
-
-                $('.chosen-select').chosen({
-                    disable_search_threshold: 4,
-                    allow_single_deselect: true,
-                    width: '100%'
                 });
 
                 $('.btn-group .btn').button();

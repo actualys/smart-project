@@ -2,7 +2,9 @@
 
 {% block headline %}
     Timeline of
-    <a href="#" class="datepicker-inline" data-url="{{ path('timeline_mode', {mode: mode, date: 'REPLACE'}) }}">{{ date|date('Y-m-d') }}</a> <span class="glyphicon glyphicon-pencil" style="font-size: 0.5em"></span>
+    <a href="#" class="datepicker-inline" data-url="{{ path('timeline_mode', {mode: mode, date: 'REPLACE'}) }}"
+       data-date-today-btn="true" data-date-today-highlight="true">{{ date|date('Y-m-d') }}</a>
+    <span class="glyphicon glyphicon-pencil" style="font-size: 0.5em"></span>
 {% endblock %}
 
 {% block headline_sub %}
@@ -19,23 +21,22 @@
         {% if day.day_off %}
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <span class="timesheet-day">{{ day_date|date('l') }}</span>
-                    <span class="timesheet-date">{{ day_date|date('Y-m-d') }}</span>
+                    <span class="timesheet-date">{{ day_date|date('l, jS F Y') }}</span>
 
                     <div class="pull-right">Day off</div>
                 </div>
             </div>
         {% else %}
-            <div class="panel {% if day.fulfillment < day_duration -%}
-                    panel-warning
-                    {%- elseif day.fulfillment > day_duration -%}
-                    panel-danger
-                    {%- else -%}
-                    panel-success
-                    {%- endif %}">
+            <div class="panel panel-primary">
+                {#{% if day.fulfillment < day_duration -%}#}
+                    {#panel-warning#}
+                    {#{%- elseif day.fulfillment > day_duration -%}#}
+                    {#panel-danger#}
+                    {#{%- else -%}#}
+                    {#panel-success#}
+                    {#{%- endif %}">#}
                 <div class="panel-heading panel-heading-timeline" data-date="{{ day_date|date('Y-m-d') }}">
-                    <span class="timesheet-day">{{ day_date|date('l') }}</span> <span
-                            class="timesheet-date">{{ day_date|date('Y-m-d') }}</span>
+                    <span class="timesheet-date">{{ day_date|date('l, jS F Y') }}</span>
 
                     <div class="pull-right">Total <span class="label {% if day.fulfillment < day_duration -%}
                     label-warning
@@ -45,14 +46,7 @@
                     label-success
                     {%- endif %}">{{ day.fulfillment|format_duration(' h ', true) }}</span></div>
                 </div>
-                <table class="table table-condensed table-timeline">
-                    {#<thead>
-                    <tr>
-                        <th>Task</th>
-                        <th>Duration</th>
-                        <th></th>
-                    </tr>
-                    </thead>#}
+                <table class="table table-condensed table-timeline table-hover table-striped">
                     <tbody>
                     {% for tracking in day.trackings %}
                         <tr>
@@ -61,11 +55,11 @@
                                 {% if tracking.task.tags %}
                                     {% set tags = tracking.task.tags|split(',') %}
                                     {% for tag in tags %}
-                                        <span class="label label-primary">{{ tag }}</span>&nbsp;
+                                        <span class="label label-success">{{ tag }}</span>&nbsp;
                                     {% endfor %}
                                 {% endif %}
                             </td>
-                            <td style="text-align: right">{{ tracking.duration|format_duration(' h ') }}</td>
+                            <td style="text-align: right; white-space: nowrap;">{{ tracking.duration|format_duration(' h ') }}</td>
                             <td style="text-align: right; width: 60px">
                                 <div class="btn-group">
                                     <a href="#" class="btn btn-primary btn-xs"><span
@@ -96,9 +90,11 @@
 
     <div class="btn-group btn-group-justified btn-group-timeline-mode" data-toggle="buttons">
         <label class="btn btn-primary{% if mode == 'day' %} active{% endif %}">
+            <span class="glyphicon glyphicon-time"></span>
             <input type="radio" name="options" id="option1" {% if mode == 'day' %}value="" checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'day'}) }}"{% endif %}> Daily
         </label>
         <label class="btn btn-primary{% if mode == 'week' %} active{% endif %}">
+            <span class="glyphicon glyphicon-calendar"></span>
             <input type="radio" name="options" id="option2" {% if mode == 'week' %}value="" checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'week'}) }}"{% endif %}> Weekly
         </label>
     </div>

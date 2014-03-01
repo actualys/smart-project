@@ -24,9 +24,18 @@ class TaskQuickModel
 
     /**
      * @var string
-     * @Assert\NotBlank(message="At least the client must be specified")
      */
-    private $task;
+    private $client;
+
+    /**
+     * @var string
+     */
+    private $project;
+
+    /**
+     * @var string
+     */
+    private $contract;
 
     /**
      * @var string
@@ -50,8 +59,8 @@ class TaskQuickModel
      */
     public function __construct()
     {
-        $this->url      = '';
-        $this->date     = new \DateTime();
+        $this->url  = '';
+        $this->date = new \DateTime();
     }
 
     /**
@@ -135,19 +144,50 @@ class TaskQuickModel
     }
 
     /**
-     * @param string $task
+     * @param string $client
      */
-    public function setTask($task)
+    public function setClient($client)
     {
-        $this->task = $task;
+        $this->client = $client;
     }
 
     /**
      * @return string
      */
-    public function getTask()
+    public function getClient()
     {
-        return $this->task;
+        return $this->client;
     }
 
+    /**
+     * @param mixed $contract
+     */
+    public function setContract($contract)
+    {
+        $this->contract = $contract;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * @param mixed $project
+     */
+    public function setProject($project)
+    {
+        $this->project = $project;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
 }

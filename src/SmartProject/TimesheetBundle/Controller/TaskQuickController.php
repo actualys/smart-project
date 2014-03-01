@@ -145,7 +145,7 @@ class TaskQuickController extends Controller
 //        foreach ($clients )
 
         $form_type = new TaskQuickType();
-        $form_type->setTasks($tasks);
+//        $form_type->setTasks($tasks);
 
         $form = $this->createForm(
             $form_type,

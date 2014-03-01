@@ -9,19 +9,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class TaskQuickType extends AbstractType
 {
     /**
-     * @var array
-     */
-    private $tasks = array();
-
-    /**
-     * @param array $tasks
-     */
-    public function setTasks($tasks)
-    {
-        $this->tasks = $tasks;
-    }
-
-    /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
@@ -41,19 +28,6 @@ class TaskQuickType extends AbstractType
                       'autocomplete' => 'off',
                       'placeholder' => 'Date',
                   ),
-              ))
-          ->add('task', 'chosen', array(
-                  'label' => false,
-                  'choices' => $this->tasks,
-                  'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append' => array(
-                      'icon' => 'th-large',
-                  ),
-                  'attr' => array(
-                      'data-placeholder' => 'Client / Project',
-                      'autocomplete' => 'off',
-                  ),
-                  'required' => false,
               ))
           ->add('name', null, array(
                   'label' => false,
@@ -75,6 +49,7 @@ class TaskQuickType extends AbstractType
                   'attr' => array(
                       'placeholder' => 'Tags',
                       'autocomplete' => 'off',
+//                      'class' => 'form-field-select',
                   ),
                   'required' => false,
               ))
@@ -88,6 +63,51 @@ class TaskQuickType extends AbstractType
                       'placeholder' => 'Duration',
                       'autocomplete' => 'off',
                   ),
+              ))
+          ->add('client', 'entity', array(
+                  'label' => false,
+                  'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget_addon_append' => array(
+                      'icon' => 'th-large',
+                  ),
+                  'attr' => array(
+                      'placeholder' => 'Client',
+                      'autocomplete' => 'off',
+                      'class' => 'form-field-select',
+                  ),
+                  'required' => false,
+                  'class' => 'SmartProject\ProjectBundle\Entity\Client',
+                  'property' => 'name',
+              ))
+          ->add('project', 'entity', array(
+                  'label' => false,
+                  'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget_addon_append' => array(
+                      'icon' => 'th-large',
+                  ),
+                  'attr' => array(
+                      'placeholder' => 'Project',
+                      'autocomplete' => 'off',
+                      'class' => 'form-field-select',
+                  ),
+                  'required' => false,
+                  'class' => 'SmartProject\ProjectBundle\Entity\Project',
+                  'property' => 'name',
+              ))
+          ->add('contract', 'entity', array(
+                  'label' => false,
+                  'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget_addon_append' => array(
+                      'icon' => 'th-large',
+                  ),
+                  'attr' => array(
+                      'placeholder' => 'Contract',
+                      'autocomplete' => 'off',
+                      'class' => 'form-field-select',
+                  ),
+                  'required' => false,
+                  'class' => 'SmartProject\ProjectBundle\Entity\Contract',
+                  'property' => 'name',
               ))
         ;
     }

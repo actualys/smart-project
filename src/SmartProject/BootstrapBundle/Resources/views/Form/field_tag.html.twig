@@ -1,6 +1,6 @@
 {% block tag_widget %}
     {% spaceless %}
-        {% set attr = attr|merge({'class': attr.class|default('') ~ ' select2 tags form-control'}) %}
+        {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-field-tag'}) %}
         {{ block('form_widget_simple') }}
     {% endspaceless %}
 {% endblock tag_widget %}
