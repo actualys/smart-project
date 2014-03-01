@@ -40,19 +40,6 @@ class TaskQuickType extends AbstractType
                       'class' => 'field-description',
                   ),
               ))
-          ->add('tags', 'tag', array(
-                  'label' => false,
-                  'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append' => array(
-                      'icon' => 'tags',
-                  ),
-                  'attr' => array(
-                      'placeholder' => 'Tags',
-                      'autocomplete' => 'off',
-//                      'class' => 'form-field-select',
-                  ),
-                  'required' => false,
-              ))
           ->add('duration', 'number', array(
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
@@ -89,6 +76,7 @@ class TaskQuickType extends AbstractType
                       'placeholder' => 'Project',
                       'autocomplete' => 'off',
                       'class' => 'form-field-select',
+                      'disabled' => true,
                   ),
                   'required' => false,
                   'class' => 'SmartProject\ProjectBundle\Entity\Project',
@@ -104,10 +92,23 @@ class TaskQuickType extends AbstractType
                       'placeholder' => 'Contract',
                       'autocomplete' => 'off',
                       'class' => 'form-field-select',
+                      'disabled' => true,
                   ),
                   'required' => false,
                   'class' => 'SmartProject\ProjectBundle\Entity\Contract',
                   'property' => 'name',
+              ))
+          ->add('tags', 'tag', array(
+                  'label' => false,
+                  'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget_addon_append' => array(
+                      'icon' => 'tags',
+                  ),
+                  'attr' => array(
+                      'placeholder' => 'Tags',
+                      'autocomplete' => 'off',
+                  ),
+                  'required' => false,
               ))
         ;
     }
