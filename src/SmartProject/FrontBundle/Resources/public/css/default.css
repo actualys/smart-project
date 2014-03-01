@@ -89,3 +89,9 @@ body {
     font-style: italic;
     padding-left: 30px;
 }
+
+.table td.empty {
+    color: #b6b6b6;
+    text-align: center;
+    font-style: italic;
+}

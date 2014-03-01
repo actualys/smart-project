@@ -1,13 +1,15 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
 {% block headline %}
-    Timeline of {% if mode == 'week' %}week{% else %}day{% endif %}
+    Timeline of
     <a href="#" class="datepicker-inline" data-url="{{ path('timeline_mode', {mode: mode, date: 'REPLACE'}) }}">{{ date|date('Y-m-d') }}</a> <span class="glyphicon glyphicon-pencil" style="font-size: 0.5em"></span>
 {% endblock %}
 
 {% block headline_sub %}
     {% if mode == 'week' %}
-        <em>from {{ timesheet.dateStart|date('Y-m-d') }} to {{ timesheet.dateEnd|date('Y-m-d') }}</em>
+        <em>weekly view from {{ timesheet.dateStart|date('Y-m-d') }} to {{ timesheet.dateEnd|date('Y-m-d') }}</em>
+    {% else %}
+        <em>daily view</em>
     {% endif %}
 {% endblock %}
 
@@ -43,7 +45,7 @@
                     label-success
                     {%- endif %}">{{ day.fulfillment|format_duration(' h ', true) }}</span></div>
                 </div>
-                <table class="table table-condensed">
+                <table class="table table-condensed table-timeline">
                     {#<thead>
                     <tr>
                         <th>Task</th>
@@ -68,14 +70,16 @@
                                 <div class="btn-group">
                                     <a href="#" class="btn btn-primary btn-xs"><span
                                                 class="glyphicon glyphicon-pencil"></span></a>
-                                    <a href="#" class="btn btn-danger btn-xs"><span
+                                    <a href="#" class="btn btn-danger btn-xs btn-delete"
+                                                data-tracking-id="{{ tracking.id }}"
+                                                data-url="{{ path('task_quick_delete', {id: tracking.id}) }}"><span
                                                 class="glyphicon glyphicon-remove"></span></a>
                                 </div>
                             </td>
                         </tr>
                     {% else %}
                         <tr>
-                            <td colspan="3"><em>This day doesn't contain any task.</em></td>
+                            <td colspan="3" class="empty">This day doesn't contain any task.</td>
                         </tr>
                     {% endfor %}
                     </tbody>

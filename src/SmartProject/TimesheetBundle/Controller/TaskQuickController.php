@@ -89,7 +89,10 @@ class TaskQuickController extends Controller
                 'message' => '',
             );
             if ($code < 400) {
-                $url = $this->generateUrl('timeline_mode', array('mode' => 'auto', 'date' => $tracking->getDate()->format('Y-m-d')));
+                $url = $this->generateUrl(
+                    'timeline_mode',
+                    array('mode' => 'auto', 'date' => $tracking->getDate()->format('Y-m-d'))
+                );
 
                 $data['action'] = 'redirect';
                 $data['url']    = $url;
@@ -279,27 +282,39 @@ class TaskQuickController extends Controller
     /**
      * Deletes a Task entity.
      *
-     * @Route("/{id}", name="task_quick_delete")
-     * @Method("DELETE")
+     * @Route("/delete/{id}", name="task_quick_delete")
+     * @Method("POST")
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
-        $form->handleRequest($request);
+//        $form = $this->createDeleteForm($id);
+//        $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em     = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('SmartProjectTimesheetBundle:TaskQuick')->find($id);
+        $code = 202;
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Task entity.');
+        if ($request->isXmlHttpRequest()) {
+            $em = $this->getDoctrine()->getManager();
+
+            /** @var Tracking $tracking */
+            $tracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking')->find($id);
+
+            if (!$tracking || $tracking->getTask()->getTimesheet()->getUser() != $this->getUser()) {
+                $code = 400;
+            } else {
+                $task = $tracking->getTask();
+
+                if ($task->getTrackings()->contains($tracking) && $task->getTrackings()->count() <= 1) {
+                    $em->remove($task);
+                }
+                $em->remove($tracking);
+
+                $em->flush();
             }
-
-            $em->remove($entity);
-            $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('task'));
+        $total = '55 h 0';
+
+        return new JsonResponse(array('content' => '', 'action' => '', 'message' => '', 'total' => $total), $code);
     }
 
     /**

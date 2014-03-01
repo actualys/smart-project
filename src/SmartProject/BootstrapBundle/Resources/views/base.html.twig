@@ -136,6 +136,7 @@
         '@MopaBootstrapBundle/Resources/public/js/mopabootstrap-subnav.js'
         '@SmartProjectBootstrapBundle/Resources/public/ajaxify/ajaxify.jquery.js'
         '@SmartProjectBootstrapBundle/Resources/public/chosen/chosen.jquery.min.js'
+        '@SmartProjectBootstrapBundle/Resources/public/bootbox/bootbox.js'
         '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/js/bootstrap-datepicker.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}
@@ -298,11 +299,40 @@
                         daysOfWeekDisabled: '0,6'
                     });
                     picker.datepicker('update', picker[0].innerText);
-                    picker.datepicker().on('changeDate', function(e) {
+                    picker.datepicker().on('changeDate', function (e) {
                         if (url = picker.attr('data-url')) {
                             window.location.href = url.replace('REPLACE', e.format());
                         }
                     });
+                });
+
+                $('.table-timeline .btn-group .btn-delete').click(function (e) {
+                    var tracking_id = $(this).attr('data-tracking-id');
+                    var delete_url = $(this).attr('data-url');
+                    var table_line = $(this).closest('tr');
+                    var panel = $(this).closest('.panel');
+                    var table_total = $('.panel-heading-timeline .pull-right .label', panel);
+
+                    if (tracking_id && delete_url) {
+                        bootbox.confirm("Do you confirm task deletion ?", function (confirmed) {
+                            if (confirmed) {
+                                $.ajax({
+                                    url: delete_url,
+                                    method: 'POST',
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status < 400) {
+                                            table_line.hide(600, function () {
+//                                                console.log(table_total, jqXHR.responseJSON.total);
+                                                table_total.html(jqXHR.responseJSON.total);
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    return false;
                 });
             });
         </script>
