@@ -7,6 +7,7 @@ use SmartProject\TimesheetBundle\Entity\Task;
 use SmartProject\TimesheetBundle\Entity\Timesheet;
 use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
 use SmartProject\TimesheetBundle\Entity\Tracking;
+use SmartProject\TimesheetBundle\Entity\TrackingRepository;
 use SmartProject\TimesheetBundle\Form\TaskQuickModel;
 use SmartProject\TimesheetBundle\Form\TaskQuickType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -290,16 +291,16 @@ class TaskQuickController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-//        $form = $this->createDeleteForm($id);
-//        $form->handleRequest($request);
-
-        $code = 202;
+        $em       = $this->getDoctrine()->getManager();
+        $code     = 202;
+        $duration = 0;
+        $total    = '';
 
         if ($request->isXmlHttpRequest()) {
-            $em = $this->getDoctrine()->getManager();
 
             /** @var Tracking $tracking */
             $tracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking')->find($id);
+            $date     = $tracking->getDate();
 
             if (!$tracking || $tracking->getTask()->getTimesheet()->getUser() != $this->getUser()) {
                 $code = 400;
@@ -313,11 +314,45 @@ class TaskQuickController extends Controller
 
                 $em->flush();
             }
+
+            /** @var TrackingRepository $repositoryTracking */
+            $repositoryTracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking');
+            $duration           = $repositoryTracking->getTotalDurationForDate($this->getUser(), $date);
+            $total              = $this->formatDuration($duration, ' h ', true);
         }
 
-        $total = '55 h 0';
+        return new JsonResponse(
+            array(
+                'content'  => '',
+                'action'   => '',
+                'message'  => '',
+                'duration' => $duration,
+                'total'    => $total
+            ),
+            $code
+        );
+    }
 
-        return new JsonResponse(array('content' => '', 'action' => '', 'message' => '', 'total' => $total), $code);
+    /**
+     * @param mixed  $duration
+     * @param string $separator
+     * @param bool   $trim
+     *
+     * @return string
+     */
+    protected function formatDuration($duration, $separator = ':', $trim = false)
+    {
+        if (!is_numeric($duration)) {
+            return $duration;
+        }
+
+        $int = floor($duration);
+
+        if ($trim && $int == $duration) {
+            return $int . $separator;
+        } else {
+            return $int . $separator . str_pad(floor(($duration - $int) * 60), 2, '0', STR_PAD_LEFT);
+        }
     }
 
     /**

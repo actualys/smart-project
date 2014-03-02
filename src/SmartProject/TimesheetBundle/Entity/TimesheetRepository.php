@@ -45,7 +45,7 @@ class TimesheetRepository extends EntityRepository
     public function createForUser(UserInterface $user, \DateTime $date)
     {
         $startDate = clone $date;
-        $day = $startDate->format('w');
+        $day       = $startDate->format('w');
         if ($day == 0) {
             $interval = new \DateInterval('P6D');
         } else {

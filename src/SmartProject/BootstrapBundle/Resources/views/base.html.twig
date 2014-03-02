@@ -313,8 +313,18 @@
                                 complete: function (jqXHR, textStatus) {
                                     if (jqXHR.status < 400) {
                                         table_line.hide(600, function () {
-//                                                console.log(table_total, jqXHR.responseJSON.total);
                                             table_total.html(jqXHR.responseJSON.total);
+                                            table_total.removeClass('label-danger');
+                                            table_total.removeClass('label-warning');
+                                            table_total.removeClass('label-success');
+
+                                            if (jqXHR.responseJSON.duration < 7) {
+                                                table_total.addClass('label-warning');
+                                            } else if (jqXHR.responseJSON.duration > 7) {
+                                                table_total.addClass('label-danger');
+                                            } else {
+                                                table_total.addClass('label-success');
+                                            }
                                         });
                                     }
                                 }
