@@ -9,6 +9,19 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class TaskQuickType extends AbstractType
 {
     /**
+     * @var string
+     */
+    private $viewMode;
+
+    /**
+     * @param string $viewMode
+     */
+    public function __construct($viewMode = 'new')
+    {
+        $this->viewMode = $viewMode;
+    }
+
+    /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
@@ -16,30 +29,6 @@ class TaskQuickType extends AbstractType
     {
         $builder
           ->add('url', 'hidden')
-          ->add('date', 'datepicker', array(
-                  'label'  => false,
-                  'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget' => 'single_text',
-                  'widget_addon_append' => array(
-                      'icon' => 'calendar',
-                  ),
-                  'attr' => array(
-                      'daysOfWeekDisabled' => array(0, 6),
-                      'autocomplete' => 'off',
-                      'placeholder' => 'Date',
-                  ),
-              ))
-          ->add('description', null, array(
-                  'label' => false,
-                  'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append' => array(
-                      'icon' => 'pencil',
-                  ),
-                  'attr' => array(
-                      'placeholder' => 'Description',
-                      'class' => 'field-description',
-                  ),
-              ))
           ->add('duration', 'number', array(
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
@@ -49,6 +38,7 @@ class TaskQuickType extends AbstractType
                   'attr' => array(
                       'placeholder' => 'Duration',
                       'autocomplete' => 'off',
+                      'class' => 'field-control-duration',
                   ),
               ))
           ->add('client', 'entity', array(
@@ -70,7 +60,7 @@ class TaskQuickType extends AbstractType
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
                   'widget_form_group_attr' => array(
-                      'class' => 'form-group hidden',
+                      'class' => $options['show_project'] ? 'form-group' : 'form-group hidden',
                   ),
                   'widget_addon_append' => array(
                       'icon' => 'th-large',
@@ -88,7 +78,7 @@ class TaskQuickType extends AbstractType
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
                   'widget_form_group_attr' => array(
-                      'class' => 'form-group hidden',
+                      'class' => $options['show_contract'] ? 'form-group' : 'form-group hidden',
                   ),
                   'widget_addon_append' => array(
                       'icon' => 'th-large',
@@ -115,6 +105,48 @@ class TaskQuickType extends AbstractType
                   'required' => false,
               ))
         ;
+
+        if ($this->viewMode == 'new') {
+            $builder
+              ->add('date', 'datepicker', array(
+                    'label'  => false,
+                    'horizontal_input_wrapper_class' => 'col-sm-12',
+                    'widget' => 'single_text',
+                    'widget_addon_append' => array(
+                        'icon' => 'calendar',
+                    ),
+                    'attr' => array(
+                        'daysOfWeekDisabled' => array(0, 6),
+                        'autocomplete' => 'off',
+                        'placeholder' => 'Date',
+                    ),
+                ))
+              ->add('description', null, array(
+                      'label' => false,
+                      'horizontal_input_wrapper_class' => 'col-sm-12',
+                      'widget_addon_append' => array(
+                          'icon' => 'pencil',
+                      ),
+                      'attr' => array(
+                          'placeholder' => 'Description',
+                          'class' => 'field-description',
+                      ),
+                  ));
+        } else {
+            $builder
+              ->add('description', 'textarea', array(
+                    'label' => false,
+                    'horizontal_input_wrapper_class' => 'col-sm-12',
+                    'widget_addon_append' => array(
+                        'icon' => 'pencil',
+                    ),
+                    'attr' => array(
+                        'placeholder' => 'Description',
+                        'class' => 'field-description',
+                        'style' => 'height: 130px',
+                    ),
+                ));
+        }
     }
 
     /**
@@ -127,6 +159,8 @@ class TaskQuickType extends AbstractType
                 'data_class'      => 'SmartProject\TimesheetBundle\Form\TaskQuickModel',
                 'render_fieldset' => false,
                 'show_legend'     => false,
+                'show_project'    => false,
+                'show_contract'   => false,
             )
         );
     }

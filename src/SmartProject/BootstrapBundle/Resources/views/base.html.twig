@@ -170,12 +170,12 @@
                     tags: [],
                     minimumInputLength: 2,
                     maximumInputLength: 20,
-                    tokenSeparators: [","],
+                    tokenSeparators: [','],
                     width: width,
                     cache: true,
                     containerCssClass: 'form-control',
                     ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                        url: "{{ path('project_tags') }}",
+                        url: '{{ path('project_tags') }}',
                         dataType: 'jsonp',
                         data: function (term, page) {
                             return {
@@ -197,12 +197,9 @@
                             };
                         }
                     },
-                    /*matcher: function(term, text, opt) {
-                     return true;
-                     },*/
                     initSelection: function (element, callback) {
                         var data = [];
-                        $(element.val().split(",")).each(function () {
+                        $(element.val().split(',')).each(function () {
                             data.push({id: this, text: this});
                         });
                         callback(data);
@@ -222,13 +219,6 @@
             $('.ajaxify').ajaxForm({
                 complete: ajaxify_complete
             });
-
-//                $('.form-field-select').select2({
-////                    disable_search_threshold: 4,
-////                    allow_single_deselect: true,
-//                    allowClear: true,
-//                    width: '100%'
-//                });
 
             function ajaxify_complete(jqXHR, textStatus) {
                 var container = $(this).closest('.panel-body');
@@ -256,12 +246,6 @@
                         allow_dismiss: true
                     });
                 }
-
-//                    $('.chosen-select', container).chosen({
-//                        disable_search_threshold: 4,
-//                        allow_single_deselect: true,
-//                        width: '100%'
-//                    });
             }
 
             $('.panel-heading-timeline').each(function () {
@@ -297,6 +281,78 @@
                 });
             });
 
+            function bootbox_update_complete(jqXHR, textStatus) {
+//                var tracking_id = jqXHR.trackingId;
+
+                if (jqXHR.status < 400) {
+                    bootbox.dialog({
+                        title: 'Edit task',
+                        message: jqXHR.responseText,
+                        onEscape: function () {
+                            bootbox.hideAll();
+                        },
+                        buttons: {
+                            cancel: {
+                                label: 'Cancel',
+                                className: 'btn-default',
+                                callback: function () {
+                                }
+                            },
+                            submit: {
+                                label: 'Update',
+                                className: 'btn-primary',
+                                callback: function () {
+                                    var form = $('.bootbox form');
+                                    $.ajax({
+                                        url: form.prop('action'),
+                                        method: 'POST',
+                                        data: form.serialize(),
+                                        complete: function (jqXHR, textStatus) {
+                                            if (jqXHR.status < 400) {
+                                                if (jqXHR.responseJSON.action == 'reload') {
+                                                    bootbox.hideAll();
+                                                    location.reload();
+                                                    return;
+                                                }
+                                                else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
+                                                    bootbox.hideAll();
+                                                    window.location.href = jqXHR.responseJSON.url;
+                                                    return;
+                                                }
+                                            } else {
+//                                                console.log(jqXHR.responseJSON);
+                                                $('.bootbox form').parent().html(jqXHR.responseJSON.content);
+                                                bootbox_update_complete(jqXHR, textStatus);
+                                            }
+//                                            bootbox.hideAll();
+                                        }
+                                    });
+
+                                    return false;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                initProjectSelection(
+                        $('.bootbox.modal select.form-field-client'),
+                        $('.bootbox.modal select.form-field-project'),
+                        $('.bootbox.modal select.form-field-contract')
+                );
+            }
+
+            $('.table-timeline .btn-group .btn-update').click(function (e) {
+//                var tracking_id = $(this).attr('data-tracking-id');
+                var update_url = $(this).attr('data-url');
+
+                $.ajax({
+                    url: update_url,
+                    method: 'GET',
+                    complete: bootbox_update_complete
+                });
+            });
+
             $('.table-timeline .btn-group .btn-delete').click(function (e) {
                 var tracking_id = $(this).attr('data-tracking-id');
                 var delete_url = $(this).attr('data-url');
@@ -305,7 +361,7 @@
                 var table_total = $('.panel-heading-timeline .pull-right .label', panel);
 
                 if (tracking_id && delete_url) {
-                    bootbox.confirm("Do you confirm task deletion ?", function (confirmed) {
+                    bootbox.confirm('Do you confirm task deletion ?', function (confirmed) {
                         if (confirmed) {
                             $.ajax({
                                 url: delete_url,
@@ -336,98 +392,102 @@
                 return false;
             });
 
-            $('.timesheet-quick-task .form-field-client').each(function () {
-                $(this).select2({
-                    allowClear: true,
-                    width: '100%'
-                });
+            initProjectSelection(
+                    $('.timesheet-quick-task select.form-field-client'),
+                    $('.timesheet-quick-task select.form-field-project'),
+                    $('.timesheet-quick-task select.form-field-contract')
+            );
 
-                $(this).change(function () {
-                    var project = $('.timesheet-quick-task .form-field-project');
-                    var project_group = project.closest('.form-group');
+            function initProjectSelection(client, project, contract) {
+                client.each(function () {
+                    $(this).select2({
+                        allowClear: true,
+                        width: '100%'
+                    });
 
-                    var contract = $('.timesheet-quick-task .form-field-contract');
-                    var contract_group = contract.closest('.form-group');
-
-                    if ($(this).val()) {
-                        project_group.removeClass('hidden');
-                        project_group.show();
-                        //project.select2('open');
-                    } else {
-                        project_group.hide();
+                    $(this).change(function () {
+                        var project_group = project.closest('.form-group');
                         project.select2('val', '');
 
-                        contract_group.hide();
-                        contract.select2('val', '');
-                    }
-                });
-            });
-
-            $('.timesheet-quick-task .form-field-project').each(function () {
-                $(this).select2({
-                    matcher: function (term, text, option) {
-                        // Check client
-                        var id = $('.timesheet-quick-task select.form-field-client').val();
-                        var label = option[0].textContent;
-
-                        if (label.indexOf(id + ':') !== 0) {
-                            return false;
+                        if ($(this).val()) {
+                            project_group.removeClass('hidden');
+                            project_group.show();
+                        } else {
+                            project_group.hide();
                         }
 
-                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-                    },
-                    formatResult: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    formatSelection: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    allowClear: true,
-                    width: '100%'
-                });
-
-                $(this).change(function () {
-                    var contract = $('.timesheet-quick-task .form-field-contract');
-                    var contract_group = contract.closest('.form-group');
-
-                    if ($(this).val()) {
-                        contract_group.removeClass('hidden');
-                        contract_group.show();
-                        //contract.select2('open');
-                    } else {
+                        var contract_group = contract.closest('.form-group');
                         contract_group.hide();
                         contract.select2('val', '');
-                    }
+                    });
                 });
-            });
 
-            $('.timesheet-quick-task .form-field-contract').each(function () {
-                $(this).select2({
-                    matcher: function (term, text, option) {
-                        // Check client
-                        var id = $('.timesheet-quick-task select.form-field-project').val();
-                        var label = option[0].textContent;
+                project.each(function () {
+                    $(this).select2({
+                        matcher: function (term, text, option) {
+                            // Check client
+                            var id = client.val();
+                            var label = option[0].textContent;
 
-                        if (label.indexOf(id + ':') !== 0) {
-                            return false;
+                            if (label.indexOf(id + ':') !== 0) {
+                                return false;
+                            }
+
+                            return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                        },
+                        formatResult: function (item) {
+                            var originalOption = item.element;
+                            return item.text.replace(/^\s*([0-9]+:)/, '');
+                        },
+                        formatSelection: function (item) {
+                            var originalOption = item.element;
+                            return item.text.replace(/^\s*([0-9]+:)/, '');
+                        },
+                        allowClear: true,
+                        width: '100%'
+                    });
+
+                    $(this).change(function () {
+                        var contract_group = contract.closest('.form-group');
+                        contract.select2('val', '');
+
+                        if ($(this).val()) {
+                            contract_group.removeClass('hidden');
+                            contract_group.show();
+                        } else {
+                            contract_group.hide();
                         }
-
-                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-                    },
-                    formatResult: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    formatSelection: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    allowClear: true,
-                    width: '100%'
+                    });
                 });
-            });
+
+                contract.each(function () {
+                    $(this).select2({
+                        matcher: function (term, text, option) {
+                            // Check client
+                            var id = project.val();
+                            var label = option[0].textContent;
+
+                            if (label.indexOf(id + ':') !== 0) {
+                                return false;
+                            }
+
+                            return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                        },
+                        formatResult: function (item) {
+                            var originalOption = item.element;
+                            return item.text.replace(/^\s*([0-9]+:)/, '');
+                        },
+                        formatSelection: function (item) {
+                            var originalOption = item.element;
+                            return item.text.replace(/^\s*([0-9]+:)/, '');
+                        },
+                        allowClear: true,
+                        width: '100%'
+                    });
+                });
+            }
+
+
         });
         </script>
     {% endblock foot_script %}

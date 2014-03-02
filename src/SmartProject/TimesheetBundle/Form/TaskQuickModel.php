@@ -20,6 +20,11 @@ class TaskQuickModel
     private $url;
 
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var \DateTime
      * @Assert\NotBlank(message="Date must be specified")
      */
@@ -64,6 +69,22 @@ class TaskQuickModel
     {
         $this->url  = '';
         $this->date = new \DateTime();
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

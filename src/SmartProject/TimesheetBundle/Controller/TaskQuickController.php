@@ -2,7 +2,6 @@
 
 namespace SmartProject\TimesheetBundle\Controller;
 
-use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\TimesheetBundle\Entity\Task;
 use SmartProject\TimesheetBundle\Entity\Timesheet;
 use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
@@ -16,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Task Quick controller.
@@ -85,7 +83,7 @@ class TaskQuickController extends Controller
             $parameters = array(
                 'form' => $form->createView(),
             );
-            $content    = $this->renderView('SmartProjectTimesheetBundle:TaskQuick:form.html.twig', $parameters);
+            $content    = $this->renderView('SmartProjectTimesheetBundle:TaskQuick:new_form.html.twig', $parameters);
             $data       = array(
                 'content' => $content,
                 'action'  => '',
@@ -118,41 +116,8 @@ class TaskQuickController extends Controller
      */
     private function createCreateForm(TaskQuickModel $form_data)
     {
-        /** @var ClientRepository $repository */
-        $repository   = $this->getDoctrine()->getRepository('SmartProjectProjectBundle:Client');
-        $queryBuilder = $repository->createQueryBuilder('cl')
-          ->select('cl, pr, co')
-          ->leftJoin('cl.projects', 'pr')
-          ->leftJoin('pr.contracts', 'co')
-          ->orderBy('cl.name', 'asc')
-          ->addOrderBy('pr.name', 'asc')
-          ->addOrderBy('co.name', 'asc');
-        $clients      = $queryBuilder->getQuery()->execute();
-
-        $tasks = array();
-
-        foreach ($clients as $clientId => $client) {
-            $tasks[$clientId] = $client->getName();
-
-            foreach ($client->getProjects() as $projectId => $project) {
-                $tasks[$clientId . ':' . $projectId] = $project->getName();
-
-                foreach ($project->getContracts() as $contractId => $contract) {
-                    $tasks[$clientId . ':' . $projectId . ':' . $contractId] = $contract->getName();
-                }
-            }
-        }
-
-//          ->getRepository('SmartProjectProjectBundle:Client')
-//          ->findBy(array(), array('name' => 'asc'));
-//
-//        foreach ($clients )
-
-        $form_type = new TaskQuickType();
-//        $form_type->setTasks($tasks);
-
         $form = $this->createForm(
-            $form_type,
+            new TaskQuickType(),
             $form_data,
             array(
                 'action' => $this->generateUrl('task_quick_create'),
@@ -210,41 +175,58 @@ class TaskQuickController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('SmartProjectTimesheetBundle:TaskQuick')->find($id);
+        /** @var Tracking $entity */
+        $entity = $em->getRepository('SmartProjectTimesheetBundle:Tracking')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Task entity.');
+            throw $this->createNotFoundException('Unable to find Tracking entity.');
         }
 
-        $editForm   = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        $editForm = $this->createEditForm($entity);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'entity' => $entity,
+            'form'   => $editForm->createView(),
         );
     }
 
     /**
      * Creates a form to edit a Task entity.
      *
-     * @param TaskQuickModel $entity The entity
+     * @param Tracking $tracking The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createEditForm(TaskQuickModel $entity)
+    private function createEditForm(Tracking $tracking)
     {
-        $form = $this->createForm(
-            new TaskQuickType(),
-            $entity,
-            array(
-                'action' => $this->generateUrl('task_quick_update', array('id' => $entity->getId())),
-                'method' => 'PUT',
-            )
+        $entity = new TaskQuickModel();
+        $entity->setId($tracking->getId());
+        $entity->setDate($tracking->getDate());
+        $entity->setDuration($tracking->getDuration());
+        $entity->setDescription($tracking->getTask()->getDescription());
+        $entity->setTags($tracking->getTask()->getTags());
+        $entity->setClient($tracking->getTask()->getClient());
+        $entity->setProject($tracking->getTask()->getProject());
+        $entity->setContract($tracking->getTask()->getContract());
+
+        $options = array(
+            'action' => $this->generateUrl('task_quick_update', array('id' => $entity->getId())),
+            'method' => 'POST',
         );
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        if ($entity->getClient()) {
+            $options['show_project'] = true;
+        }
+
+        if ($entity->getProject()) {
+            $options['show_contract'] = true;
+        }
+
+        $form = $this->createForm(
+            new TaskQuickType('edit'),
+            $entity,
+            $options
+        );
 
         return $form;
     }
@@ -252,35 +234,67 @@ class TaskQuickController extends Controller
     /**
      * Edits an existing Task entity.
      *
-     * @Route("/{id}", name="task_quick_update")
-     * @Method("PUT")
-     * @Template("SmartProjectTimesheetBundle:TaskQuick:edit.html.twig")
+     * @Route("/{id}/edit", name="task_quick_update")
+     * @Method("POST")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
+        $code = 202;
 
-        $entity = $em->getRepository('SmartProjectTimesheetBundle:TaskQuick')->find($id);
+        /** @var Tracking $tracking */
+        $tracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking')->find($id);
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Task entity.');
+        if (!$tracking) {
+            throw $this->createNotFoundException('Unable to find Tracking entity.');
         }
 
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm   = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
+        $form = $this->createEditForm($tracking);
+        $form->handleRequest($request);
 
-        if ($editForm->isValid()) {
+        if ($form->isValid()) {
+            $form_data = $form->getData();
+
+            $task = $tracking->getTask();
+            $task->setDescription($form_data->getDescription());
+            $task->setTags($form_data->getTags());
+            $task->setClient($form_data->getClient());
+            $task->setProject($form_data->getProject());
+            $task->setContract($form_data->getContract());
+
+            $tracking->setDuration($form_data->getDuration());
+
             $em->flush();
-
-            return $this->redirect($this->generateUrl('task_quick_edit', array('id' => $id)));
+        } else {
+            $code = 400;
         }
 
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        if ($request->isXmlHttpRequest()) {
+            $parameters = array(
+                'form' => $form->createView(),
+            );
+            $content    = $this->renderView('SmartProjectTimesheetBundle:TaskQuick:edit_form.html.twig', $parameters);
+            $data       = array(
+                'content' => $content,
+                'action'  => '',
+                'url'     => '',
+                'message' => '',
+            );
+            if ($code < 400) {
+                $url = $this->generateUrl(
+                    'timeline_mode',
+                    array('mode' => 'auto', 'date' => $tracking->getDate()->format('Y-m-d'))
+                );
+
+                $data['action'] = 'reload';//'redirect';
+                $data['url']    = $url;
+            }
+            $response = new JsonResponse($data, $code);
+
+            return $response;
+        } else {
+            return $this->redirect($this->generateUrl('timeline'));
+        }
     }
 
     /**
@@ -353,21 +367,5 @@ class TaskQuickController extends Controller
         } else {
             return $int . $separator . str_pad(floor(($duration - $int) * 60), 2, '0', STR_PAD_LEFT);
         }
-    }
-
-    /**
-     * Creates a form to delete a Task entity by id.
-     *
-     * @param mixed $id The entity id
-     *
-     * @return \Symfony\Component\Form\Form The form
-     */
-    private function createDeleteForm($id)
-    {
-        return $this->createFormBuilder()
-          ->setAction($this->generateUrl('task_quick_delete', array('id' => $id)))
-          ->setMethod('DELETE')
-          ->add('submit', 'submit', array('label' => 'Delete'))
-          ->getForm();
     }
 }
