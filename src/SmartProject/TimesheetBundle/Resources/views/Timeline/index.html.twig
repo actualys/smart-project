@@ -29,12 +29,12 @@
         {% else %}
             <div class="panel panel-primary">
                 {#{% if day.fulfillment < day_duration -%}#}
-                    {#panel-warning#}
-                    {#{%- elseif day.fulfillment > day_duration -%}#}
-                    {#panel-danger#}
-                    {#{%- else -%}#}
-                    {#panel-success#}
-                    {#{%- endif %}">#}
+                {#panel-warning#}
+                {#{%- elseif day.fulfillment > day_duration -%}#}
+                {#panel-danger#}
+                {#{%- else -%}#}
+                {#panel-success#}
+                {#{%- endif %}">#}
                 <div class="panel-heading panel-heading-timeline" data-date="{{ day_date|date('Y-m-d') }}">
                     <span class="timesheet-date">{{ day_date|date('l, jS F Y') }}</span>
 
@@ -50,8 +50,23 @@
                     <tbody>
                     {% for tracking in day.trackings %}
                         <tr>
-                            <td style="width: 40%">{{ tracking.task.name }}</td>
+                            <td style="width: 40%">
+                                {% if tracking.task.client %}
+                                    <a href="{{ path('client_show', {id: tracking.task.client.id}) }}">{{ tracking.task.client.name }}</a>
+                                    {% if tracking.task.project %}
+                                        &gt;&nbsp;<a href="{{ path('project_show', {id: tracking.task.project.id}) }}">{{ tracking.task.project.name }}</a>
+                                        {% if tracking.task.contract %}
+                                            &gt;&nbsp;<a href="{{ path('contract_show', {id: tracking.task.contract.id}) }}">{{ tracking.task.contract.name }}</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
                             <td>
+                                {% if tracking.task.description %}
+                                    {{ tracking.task.description }}<br/>
+                                {% endif %}
                                 {% if tracking.task.tags %}
                                     {% set tags = tracking.task.tags|split(',') %}
                                     {% for tag in tags %}
@@ -65,8 +80,8 @@
                                     <a href="#" class="btn btn-primary btn-xs"><span
                                                 class="glyphicon glyphicon-pencil"></span></a>
                                     <a href="#" class="btn btn-danger btn-xs btn-delete"
-                                                data-tracking-id="{{ tracking.id }}"
-                                                data-url="{{ path('task_quick_delete', {id: tracking.id}) }}"><span
+                                       data-tracking-id="{{ tracking.id }}"
+                                       data-url="{{ path('task_quick_delete', {id: tracking.id}) }}"><span
                                                 class="glyphicon glyphicon-remove"></span></a>
                                 </div>
                             </td>
@@ -91,11 +106,15 @@
     <div class="btn-group btn-group-justified btn-group-timeline-mode" data-toggle="buttons">
         <label class="btn btn-primary{% if mode == 'day' %} active{% endif %}">
             <span class="glyphicon glyphicon-time"></span>
-            <input type="radio" name="options" id="option1" {% if mode == 'day' %}value="" checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'day'}) }}"{% endif %}> Daily
+            <input type="radio" name="options" id="option1" {% if mode == 'day' %}value=""
+                   checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'day'}) }}"{% endif %}>
+            Daily
         </label>
         <label class="btn btn-primary{% if mode == 'week' %} active{% endif %}">
             <span class="glyphicon glyphicon-calendar"></span>
-            <input type="radio" name="options" id="option2" {% if mode == 'week' %}value="" checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'week'}) }}"{% endif %}> Weekly
+            <input type="radio" name="options" id="option2" {% if mode == 'week' %}value=""
+                   checked{% else %}value="{{ path('timeline_mode', {date: date|date('Y-m-d'), mode: 'week'}) }}"{% endif %}>
+            Weekly
         </label>
     </div>
 

@@ -14,8 +14,7 @@
                 {% stylesheets
                 '@SmartProjectBootstrapBundle/Resources/public/select2/select2.css'
                 '@SmartProjectBootstrapBundle/Resources/public/bootstrap-datepicker/css/datepicker3.css'
-                '@SmartProjectBootstrapBundle/Resources/public/select2-bootstrap/select2-bootstrap.css'
-                %}
+                '@SmartProjectBootstrapBundle/Resources/public/select2-bootstrap/select2-bootstrap.css' %}
                 <link href="{{ asset_url }}" type="text/css" rel="stylesheet"/>
                 {% endstylesheets %}
                 {# To use this without less use the base_css.html.twig template as your base
@@ -144,189 +143,282 @@
     {% endblock foot_script_assetic %}
 
         <script type="text/javascript">
-            $(document).ready(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-                $('[data-toggle="popover"]').popover();
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover();
 
-                {% for flashType, flashMessages in app.session.flashbag %}
-                {% for flashMessage in flashMessages %}
-                $.bootstrapGrowl("{{ flashMessage|escape }}", {
-                    ele: 'body',
-                    type: '{{ flashType }}',
-                    align: 'right',
-                    width: 300, // 'auto'
-                    offset: {from: 'bottom', amount: 20},
-                    delay: 4000,
-                    stackup_spacing: 10,
-                    allow_dismiss: true
-                });
-                {% endfor %}
-                {% endfor %}
+            {% for flashType, flashMessages in app.session.flashbag %}
+            {% for flashMessage in flashMessages %}
+            $.bootstrapGrowl("{{ flashMessage|escape }}", {
+                ele: 'body',
+                type: '{{ flashType }}',
+                align: 'right',
+                width: 300, // 'auto'
+                offset: {from: 'bottom', amount: 20},
+                delay: 4000,
+                stackup_spacing: 10,
+                allow_dismiss: true
+            });
+            {% endfor %}
+            {% endfor %}
 
-                $('.form-field-tag').each(function () {
-                    var select = $(this);
-                    select.attr('type', 'hidden');
-                    var width = select.attr('data-select-width') || '100%';
-                    select.select2({
-                        tags: [],
-                        minimumInputLength: 2,
-                        maximumInputLength: 20,
-                        tokenSeparators: [","],
-                        width: width,
-                        cache: true,
-                        containerCssClass: 'form-control',
-                        ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                            url: "{{ path('project_tags') }}",
-                            dataType: 'jsonp',
-                            data: function (term, page) {
-                                return {
-                                    q: term,
-                                    page_limit: 10
-                                };
-                            },
-                            results: function (data, page) { // parse the results into the format expected by Select2.
-                                // since we are using custom formatting functions we do not need to alter remote JSON data
-                                var results = [];
-                                $.each(data.results, function (index, item) {
-                                    results.push({
-                                        id: item.id,
-                                        text: item.text
-                                    });
+            $('.form-field-tag').each(function () {
+                var select = $(this);
+                select.attr('type', 'hidden');
+                var width = select.attr('data-select-width') || '100%';
+                select.select2({
+                    tags: [],
+                    minimumInputLength: 2,
+                    maximumInputLength: 20,
+                    tokenSeparators: [","],
+                    width: width,
+                    cache: true,
+                    containerCssClass: 'form-control',
+                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                        url: "{{ path('project_tags') }}",
+                        dataType: 'jsonp',
+                        data: function (term, page) {
+                            return {
+                                q: term,
+                                page_limit: 10
+                            };
+                        },
+                        results: function (data, page) { // parse the results into the format expected by Select2.
+                            // since we are using custom formatting functions we do not need to alter remote JSON data
+                            var results = [];
+                            $.each(data.results, function (index, item) {
+                                results.push({
+                                    id: item.id,
+                                    text: item.text
                                 });
-                                return {
-                                    results: results
-                                };
-                            }
-                        },
-                        /*matcher: function(term, text, opt) {
-                         return true;
-                         },*/
-                        initSelection: function (element, callback) {
-                            var data = [];
-                            $(element.val().split(",")).each(function () {
-                                data.push({id: this, text: this});
                             });
-                            callback(data);
-                        },
-                        createSearchChoice: function (term) {
-                            return {id: term, text: term};
-                        },
-                        formatNoMatches: function (term) {
-                            return '';
-                        },
-                        formatResultCssClass: function (object) {
-                            return '';
+                            return {
+                                results: results
+                            };
                         }
-                    });
+                    },
+                    /*matcher: function(term, text, opt) {
+                     return true;
+                     },*/
+                    initSelection: function (element, callback) {
+                        var data = [];
+                        $(element.val().split(",")).each(function () {
+                            data.push({id: this, text: this});
+                        });
+                        callback(data);
+                    },
+                    createSearchChoice: function (term) {
+                        return {id: term, text: term};
+                    },
+                    formatNoMatches: function (term) {
+                        return '';
+                    },
+                    formatResultCssClass: function (object) {
+                        return '';
+                    }
                 });
+            });
 
-                $('.ajaxify').ajaxForm({
+            $('.ajaxify').ajaxForm({
+                complete: ajaxify_complete
+            });
+
+//                $('.form-field-select').select2({
+////                    disable_search_threshold: 4,
+////                    allow_single_deselect: true,
+//                    allowClear: true,
+//                    width: '100%'
+//                });
+
+            function ajaxify_complete(jqXHR, textStatus) {
+                var container = $(this).closest('.panel-body');
+                container.html(jqXHR.responseJSON.content);
+                $('.ajaxify', container).ajaxForm({
                     complete: ajaxify_complete
                 });
-
-                $('.form-field-select').select2({
-//                    disable_search_threshold: 4,
-//                    allow_single_deselect: true,
-                    allowClear: true,
-                    width: '100%'
-                });
-
-                function ajaxify_complete(jqXHR, textStatus) {
-                    var container = $(this).closest('.panel-body');
-                    container.html(jqXHR.responseJSON.content);
-                    $('.ajaxify', container).ajaxForm({
-                        complete: ajaxify_complete
+                if (jqXHR.responseJSON.action == 'reload') {
+                    location.reload();
+                    return;
+                }
+                else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
+                    window.location.href = jqXHR.responseJSON.url;
+                    return;
+                }
+                else if (jqXHR.responseJSON.message != '') {
+                    $.bootstrapGrowl(jqXHR.responseJSON.message, {
+                        ele: 'body',
+                        {#type: '{{ flashType }}',#}
+                        align: 'right',
+                        width: 300, // 'auto'
+                        offset: {from: 'bottom', amount: 20},
+                        delay: 10000,
+                        stackup_spacing: 10,
+                        allow_dismiss: true
                     });
-                    if (jqXHR.responseJSON.action == 'reload') {
-                        location.reload();
-                        return;
-                    }
-                    else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
-                        window.location.href = jqXHR.responseJSON.url;
-                        return;
-                    }
-                    else if (jqXHR.responseJSON.message != '') {
-                        $.bootstrapGrowl(jqXHR.responseJSON.message, {
-                            ele: 'body',
-                            {#type: '{{ flashType }}',#}
-                            align: 'right',
-                            width: 300, // 'auto'
-                            offset: {from: 'bottom', amount: 20},
-                            delay: 10000,
-                            stackup_spacing: 10,
-                            allow_dismiss: true
-                        });
-                    }
+                }
 
 //                    $('.chosen-select', container).chosen({
 //                        disable_search_threshold: 4,
 //                        allow_single_deselect: true,
 //                        width: '100%'
 //                    });
-                }
+            }
 
-                $('.panel-heading-timeline').each(function () {
-                    $(this).click(function () {
-                        var date = $(this).attr('data-date');
-                        $('.timesheet-quick-task .field-datepicker').datepicker('update', date);
-                        $('.timesheet-quick-task .field-description').focus();
-                    });
-                });
-
-                $('.btn-group .btn').button();
-
-                $('.btn-group-timeline-mode .btn').click(function () {
-                    var url = $('input', this).val();
-                    if (url) {
-                        window.location.href = url;
-                    }
-                });
-
-                $('.datepicker-inline').each(function () {
-                    var picker = $(this);
-                    picker.datepicker({
-                        autoclose: true,
-                        format: 'yyyy-mm-dd',
-                        weekStart: 1,
-                        daysOfWeekDisabled: '0,6'
-                    });
-                    picker.datepicker('update', picker[0].innerText);
-                    picker.datepicker().on('changeDate', function (e) {
-                        if (url = picker.attr('data-url')) {
-                            window.location.href = url.replace('REPLACE', e.format());
-                        }
-                    });
-                });
-
-                $('.table-timeline .btn-group .btn-delete').click(function (e) {
-                    var tracking_id = $(this).attr('data-tracking-id');
-                    var delete_url = $(this).attr('data-url');
-                    var table_line = $(this).closest('tr');
-                    var panel = $(this).closest('.panel');
-                    var table_total = $('.panel-heading-timeline .pull-right .label', panel);
-
-                    if (tracking_id && delete_url) {
-                        bootbox.confirm("Do you confirm task deletion ?", function (confirmed) {
-                            if (confirmed) {
-                                $.ajax({
-                                    url: delete_url,
-                                    method: 'POST',
-                                    complete: function (jqXHR, textStatus) {
-                                        if (jqXHR.status < 400) {
-                                            table_line.hide(600, function () {
-//                                                console.log(table_total, jqXHR.responseJSON.total);
-                                                table_total.html(jqXHR.responseJSON.total);
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-
-                    return false;
+            $('.panel-heading-timeline').each(function () {
+                $(this).click(function () {
+                    var date = $(this).attr('data-date');
+                    $('.timesheet-quick-task .field-datepicker').datepicker('update', date);
+                    $('.timesheet-quick-task .field-description').focus();
                 });
             });
+
+            $('.btn-group .btn').button();
+
+            $('.btn-group-timeline-mode .btn').click(function () {
+                var url = $('input', this).val();
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+
+            $('.datepicker-inline').each(function () {
+                var picker = $(this);
+                picker.datepicker({
+                    autoclose: true,
+                    format: 'yyyy-mm-dd',
+                    weekStart: 1,
+                    daysOfWeekDisabled: '0,6'
+                });
+                picker.datepicker('update', picker[0].innerText);
+                picker.datepicker().on('changeDate', function (e) {
+                    if (url = picker.attr('data-url')) {
+                        window.location.href = url.replace('REPLACE', e.format());
+                    }
+                });
+            });
+
+            $('.table-timeline .btn-group .btn-delete').click(function (e) {
+                var tracking_id = $(this).attr('data-tracking-id');
+                var delete_url = $(this).attr('data-url');
+                var table_line = $(this).closest('tr');
+                var panel = $(this).closest('.panel');
+                var table_total = $('.panel-heading-timeline .pull-right .label', panel);
+
+                if (tracking_id && delete_url) {
+                    bootbox.confirm("Do you confirm task deletion ?", function (confirmed) {
+                        if (confirmed) {
+                            $.ajax({
+                                url: delete_url,
+                                method: 'POST',
+                                complete: function (jqXHR, textStatus) {
+                                    if (jqXHR.status < 400) {
+                                        table_line.hide(600, function () {
+//                                                console.log(table_total, jqXHR.responseJSON.total);
+                                            table_total.html(jqXHR.responseJSON.total);
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+                return false;
+            });
+
+            $('.timesheet-quick-task .form-field-client').each(function () {
+                $(this).select2({
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                $(this).change(function () {
+                    var project = $('.timesheet-quick-task .form-field-project');
+                    var project_group = project.closest('.form-group');
+
+                    var contract = $('.timesheet-quick-task .form-field-contract');
+                    var contract_group = contract.closest('.form-group');
+
+                    if ($(this).val()) {
+                        project_group.removeClass('hidden');
+                        project_group.show();
+                        //project.select2('open');
+                    } else {
+                        project_group.hide();
+                        project.select2('val', '');
+
+                        contract_group.hide();
+                        contract.select2('val', '');
+                    }
+                });
+            });
+
+            $('.timesheet-quick-task .form-field-project').each(function () {
+                $(this).select2({
+                    matcher: function (term, text, option) {
+                        // Check client
+                        var id = $('.timesheet-quick-task select.form-field-client').val();
+                        var label = option[0].textContent;
+
+                        if (label.indexOf(id + ':') !== 0) {
+                            return false;
+                        }
+
+                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                    },
+                    formatResult: function (item) {
+                        var originalOption = item.element;
+                        return item.text.replace(/^\s*([0-9]+:)/, '');
+                    },
+                    formatSelection: function (item) {
+                        var originalOption = item.element;
+                        return item.text.replace(/^\s*([0-9]+:)/, '');
+                    },
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                $(this).change(function () {
+                    var contract = $('.timesheet-quick-task .form-field-contract');
+                    var contract_group = contract.closest('.form-group');
+
+                    if ($(this).val()) {
+                        contract_group.removeClass('hidden');
+                        contract_group.show();
+                        //contract.select2('open');
+                    } else {
+                        contract_group.hide();
+                        contract.select2('val', '');
+                    }
+                });
+            });
+
+            $('.timesheet-quick-task .form-field-contract').each(function () {
+                $(this).select2({
+                    matcher: function (term, text, option) {
+                        // Check client
+                        var id = $('.timesheet-quick-task select.form-field-project').val();
+                        var label = option[0].textContent;
+
+                        if (label.indexOf(id + ':') !== 0) {
+                            return false;
+                        }
+
+                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                    },
+                    formatResult: function (item) {
+                        var originalOption = item.element;
+                        return item.text.replace(/^\s*([0-9]+:)/, '');
+                    },
+                    formatSelection: function (item) {
+                        var originalOption = item.element;
+                        return item.text.replace(/^\s*([0-9]+:)/, '');
+                    },
+                    allowClear: true,
+                    width: '100%'
+                });
+            });
+        });
         </script>
     {% endblock foot_script %}
     {% endblock body %}

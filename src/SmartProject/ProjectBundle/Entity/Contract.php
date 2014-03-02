@@ -135,6 +135,20 @@ class Contract implements ContractInterface
     }
 
     /**
+     * Get name and project id
+     *
+     * @return string
+     */
+    public function getProjectIdName()
+    {
+        if ($this->project) {
+            return $this->project->getId() . ':' . $this->name;
+        } else {
+            return '0:' . $this->name;
+        }
+    }
+
+    /**
      * Set slug
      *
      * @param string $slug

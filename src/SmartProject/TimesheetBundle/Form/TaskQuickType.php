@@ -29,7 +29,7 @@ class TaskQuickType extends AbstractType
                       'placeholder' => 'Date',
                   ),
               ))
-          ->add('name', null, array(
+          ->add('description', null, array(
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
                   'widget_addon_append' => array(
@@ -60,7 +60,7 @@ class TaskQuickType extends AbstractType
                   'attr' => array(
                       'placeholder' => 'Client',
                       'autocomplete' => 'off',
-                      'class' => 'form-field-select',
+                      'class' => 'form-field-select form-field-client',
                   ),
                   'required' => false,
                   'class' => 'SmartProject\ProjectBundle\Entity\Client',
@@ -69,34 +69,38 @@ class TaskQuickType extends AbstractType
           ->add('project', 'entity', array(
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget_form_group_attr' => array(
+                      'class' => 'form-group hidden',
+                  ),
                   'widget_addon_append' => array(
                       'icon' => 'th-large',
                   ),
                   'attr' => array(
                       'placeholder' => 'Project',
                       'autocomplete' => 'off',
-                      'class' => 'form-field-select',
-                      'disabled' => true,
+                      'class' => 'form-field-select form-field-project',
                   ),
                   'required' => false,
                   'class' => 'SmartProject\ProjectBundle\Entity\Project',
-                  'property' => 'name',
+                  'property' => 'clientIdName',
               ))
           ->add('contract', 'entity', array(
                   'label' => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget_form_group_attr' => array(
+                      'class' => 'form-group hidden',
+                  ),
                   'widget_addon_append' => array(
                       'icon' => 'th-large',
                   ),
                   'attr' => array(
                       'placeholder' => 'Contract',
                       'autocomplete' => 'off',
-                      'class' => 'form-field-select',
-                      'disabled' => true,
+                      'class' => 'form-field-select form-field-contract',
                   ),
                   'required' => false,
                   'class' => 'SmartProject\ProjectBundle\Entity\Contract',
-                  'property' => 'name',
+                  'property' => 'projectIdName',
               ))
           ->add('tags', 'tag', array(
                   'label' => false,

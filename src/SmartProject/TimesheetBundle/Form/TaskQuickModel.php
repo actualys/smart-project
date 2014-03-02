@@ -2,6 +2,9 @@
 
 namespace SmartProject\TimesheetBundle\Form;
 
+use SmartProject\TimesheetBundle\Entity\ClientInterface;
+use SmartProject\TimesheetBundle\Entity\ContractInterface;
+use SmartProject\TimesheetBundle\Entity\ProjectInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,17 +26,17 @@ class TaskQuickModel
     private $date;
 
     /**
-     * @var string
+     * @var ClientInterface
      */
     private $client;
 
     /**
-     * @var string
+     * @var ProjectInterface
      */
     private $project;
 
     /**
-     * @var string
+     * @var ContractInterface
      */
     private $contract;
 
@@ -41,7 +44,7 @@ class TaskQuickModel
      * @var string
      * @Assert\NotBlank(message="Description must be specified")
      */
-    private $name;
+    private $description;
 
     /**
      * @var string
@@ -112,19 +115,19 @@ class TaskQuickModel
     }
 
     /**
-     * @param string $name
+     * @param string $description
      */
-    public function setName($name)
+    public function setDescription($description)
     {
-        $this->name = $name;
+        $this->description = $description;
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getDescription()
     {
-        return $this->name;
+        return $this->description;
     }
 
     /**
@@ -144,7 +147,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param string $client
+     * @param \SmartProject\TimesheetBundle\Entity\ClientInterface $client
      */
     public function setClient($client)
     {
@@ -152,7 +155,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return string
+     * @return \SmartProject\TimesheetBundle\Entity\ClientInterface
      */
     public function getClient()
     {
@@ -160,7 +163,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param mixed $contract
+     * @param \SmartProject\TimesheetBundle\Entity\ContractInterface $contract
      */
     public function setContract($contract)
     {
@@ -168,7 +171,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return mixed
+     * @return \SmartProject\TimesheetBundle\Entity\ContractInterface
      */
     public function getContract()
     {
@@ -176,7 +179,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param mixed $project
+     * @param \SmartProject\TimesheetBundle\Entity\ProjectInterface $project
      */
     public function setProject($project)
     {
@@ -184,7 +187,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return mixed
+     * @return \SmartProject\TimesheetBundle\Entity\ProjectInterface
      */
     public function getProject()
     {

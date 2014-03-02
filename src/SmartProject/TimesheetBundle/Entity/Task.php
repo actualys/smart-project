@@ -9,7 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Task
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @ORM\Table(name="timesheet_task")
+ * @ORM\Table(name="timesheet_task",
+ *            indexes={
+ *            })
  * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\TaskRepository")
  */
 class Task
@@ -26,9 +28,9 @@ class Task
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
-    private $name;
+    private $description;
 
     /**
      * @var string
@@ -118,26 +120,26 @@ class Task
     }
 
     /**
-     * Set name
+     * Set description
      *
-     * @param string $name
+     * @param string $description
      * @return Task
      */
-    public function setName($name)
+    public function setDescription($description)
     {
-        $this->name = $name;
+        $this->description = $description;
     
         return $this;
     }
 
     /**
-     * Get name
+     * Get description
      *
      * @return string 
      */
-    public function getName()
+    public function getDescription()
     {
-        return $this->name;
+        return $this->description;
     }
 
     /**

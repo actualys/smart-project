@@ -53,8 +53,11 @@ class TaskQuickController extends Controller
 
             $task = new Task();
             $task->setTimesheet($timesheet);
-            $task->setName($form_data->getName());
+            $task->setDescription($form_data->getDescription());
             $task->setTags($form_data->getTags());
+            $task->setClient($form_data->getClient());
+            $task->setProject($form_data->getProject());
+            $task->setContract($form_data->getContract());
 
             $tracking = new Tracking();
             $tracking->setTask($task);

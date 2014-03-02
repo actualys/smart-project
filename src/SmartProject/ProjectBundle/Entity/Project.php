@@ -185,11 +185,25 @@ class Project implements ProjectInterface
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Get name and client id
+     *
+     * @return string
+     */
+    public function getClientIdName()
+    {
+        if ($this->client) {
+            return $this->client->getId() . ':' . $this->name;
+        } else {
+            return '0:' . $this->name;
+        }
     }
 
     /**

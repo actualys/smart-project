@@ -90,7 +90,6 @@ class TimelineController extends Controller
               ->where('task.timesheet = :timesheet')
               ->setParameter(':timesheet', $timesheet)
               ->orderBy('tracking.date', 'asc')
-              ->addOrderBy('task.name', 'asc')
               ->addOrderBy('task.id', 'asc')
               ->getQuery();
             $entities     = $query->execute();
