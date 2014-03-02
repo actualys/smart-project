@@ -27,14 +27,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="panel panel-primary">
-                {#{% if day.fulfillment < day_duration -%}#}
-                {#panel-warning#}
-                {#{%- elseif day.fulfillment > day_duration -%}#}
-                {#panel-danger#}
-                {#{%- else -%}#}
-                {#panel-success#}
-                {#{%- endif %}">#}
+            <div class="panel panel-default">
                 <div class="panel-heading panel-heading-timeline" data-date="{{ day_date|date('Y-m-d') }}">
                     <span class="timesheet-date">{{ day_date|date('l, jS F Y') }}</span>
 
@@ -75,13 +68,13 @@
                                 {% endif %}
                             </td>
                             <td style="text-align: right; white-space: nowrap;">{{ tracking.duration|format_duration(' h ') }}</td>
-                            <td style="text-align: right; width: 60px">
+                            <td style="text-align: right; width: 80px">
                                 <div class="btn-group">
-                                    <a href="#" class="btn btn-primary btn-xs btn-update"
+                                    <a href="#" class="btn btn-primary btn-sm btn-update"
                                        data-tracking-id="{{ tracking.id }}"
                                        data-url="{{ path('task_quick_edit', {id: tracking.id}) }}"><span
                                                 class="glyphicon glyphicon-pencil"></span></a>
-                                    <a href="#" class="btn btn-danger btn-xs btn-delete"
+                                    <a href="#" class="btn btn-danger btn-sm btn-delete"
                                        data-tracking-id="{{ tracking.id }}"
                                        data-url="{{ path('task_quick_delete', {id: tracking.id}) }}"><span
                                                 class="glyphicon glyphicon-remove"></span></a>

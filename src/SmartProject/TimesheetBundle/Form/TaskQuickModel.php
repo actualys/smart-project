@@ -58,7 +58,12 @@ class TaskQuickModel
 
     /**
      * @var double
-     * @Assert\NotBlank(message="duration must be specified")
+     * @Assert\NotBlank(message="Duration must be specified")
+     * @Assert\Range(
+     *          min=0.1,
+     *          max=100,
+     *          minMessage="Duration can't be lower than 0.1",
+     *          maxMessage="Duration can't be greater than 100")
      */
     private $duration;
 
