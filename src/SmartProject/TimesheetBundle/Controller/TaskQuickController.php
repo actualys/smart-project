@@ -117,7 +117,7 @@ class TaskQuickController extends Controller
     private function createCreateForm(TaskQuickModel $form_data)
     {
         $form = $this->createForm(
-            new TaskQuickType(),
+            new TaskQuickType(TaskQuickType::MODE_NEW),
             $form_data,
             array(
                 'action' => $this->generateUrl('task_quick_create'),
@@ -209,23 +209,13 @@ class TaskQuickController extends Controller
         $entity->setProject($tracking->getTask()->getProject());
         $entity->setContract($tracking->getTask()->getContract());
 
-        $options = array(
-            'action' => $this->generateUrl('task_quick_update', array('id' => $entity->getId())),
-            'method' => 'POST',
-        );
-
-        if ($entity->getClient()) {
-            $options['show_project'] = true;
-        }
-
-        if ($entity->getProject()) {
-            $options['show_contract'] = true;
-        }
-
         $form = $this->createForm(
-            new TaskQuickType('edit'),
+            new TaskQuickType(TaskQuickType::MODE_EDIT),
             $entity,
-            $options
+            array(
+                'action' => $this->generateUrl('task_quick_update', array('id' => $entity->getId())),
+                'method' => 'POST',
+            )
         );
 
         return $form;
@@ -262,6 +252,7 @@ class TaskQuickController extends Controller
             $task->setProject($form_data->getProject());
             $task->setContract($form_data->getContract());
 
+            $tracking->setDate($form_data->getDate());
             $tracking->setDuration($form_data->getDuration());
 
             $em->flush();

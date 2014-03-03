@@ -1,4 +1,4 @@
-{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+{% extends 'SmartProjectTimesheetBundle::layout-with-widget.html.twig' %}
 
 {% block headline %}
     Timeline of
@@ -94,6 +94,7 @@
             </div>
         {% endif %}
     {% endfor %}
+
 {% endblock %}
 
 {% block content_sidebar %}
@@ -115,5 +116,157 @@
 
     <br/>
 
-    {{ render(controller('SmartProjectTimesheetBundle:TaskQuick:new', {url: app.request.requestUri, date: date|date('Y-m-d')})) }}
+    {{ parent() }}
+{% endblock %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-group-timeline-mode .btn').click(function () {
+                var url = $('input', this).val();
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+
+            $('.datepicker-inline').each(function () {
+                var picker = $(this);
+                picker.datepicker({
+                    autoclose: true,
+                    format: 'yyyy-mm-dd',
+                    weekStart: 1,
+                    daysOfWeekDisabled: '0,6'
+                });
+                picker.datepicker('update', picker[0].innerText);
+                picker.datepicker().on('changeDate', function (e) {
+                    if (url = picker.attr('data-url')) {
+                        window.location.href = url.replace('REPLACE', e.format());
+                    }
+                });
+            });
+
+            $('.panel-heading-timeline').each(function () {
+                $(this).click(function () {
+                    var date = $(this).attr('data-date');
+                    $('.timesheet-quick-task .field-datepicker').datepicker('update', date);
+                    $('.timesheet-quick-task .field-description').focus();
+                });
+            });
+
+            /**
+             * @param jqXHR
+             * @param textStatus
+             */
+            function bootbox_update_complete(jqXHR, textStatus) {
+                if (jqXHR.status < 400) {
+                    bootbox.dialog({
+                        title: 'Edit task',
+                        message: jqXHR.responseText,
+                        onEscape: function () {
+                            bootbox.hideAll();
+                        },
+                        buttons: {
+                            cancel: {
+                                label: 'Cancel',
+                                className: 'btn-default',
+                                callback: function () {
+                                }
+                            },
+                            submit: {
+                                label: 'Update',
+                                className: 'btn-primary',
+                                callback: function () {
+                                    var form = $('.bootbox form');
+                                    $.ajax({
+                                        url: form.prop('action'),
+                                        method: 'POST',
+                                        data: form.serialize(),
+                                        complete: function (jqXHR, textStatus) {
+                                            if (jqXHR.status < 400) {
+                                                if (jqXHR.responseJSON.action == 'reload') {
+                                                    bootbox.hideAll();
+                                                    location.reload();
+                                                    return;
+                                                }
+                                                else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
+                                                    bootbox.hideAll();
+                                                    window.location.href = jqXHR.responseJSON.url;
+                                                    return;
+                                                }
+                                            } else {
+//                                                console.log(jqXHR.responseJSON);
+                                                $('.bootbox form').parent().html(jqXHR.responseJSON.content);
+                                                bootbox_update_complete(jqXHR, textStatus);
+                                            }
+                                        }
+                                    });
+
+                                    return false;
+                                }
+                            }
+                        }
+                    });
+                }
+
+                initProjectSelection(
+                        $('.bootbox.modal select.form-field-client'),
+                        $('.bootbox.modal select.form-field-project'),
+                        $('.bootbox.modal select.form-field-contract')
+                );
+            }
+
+            $('.table-timeline .btn-group .btn-update').click(function (e) {
+                var update_url = $(this).attr('data-url');
+
+                $.ajax({
+                    url: update_url,
+                    method: 'GET',
+                    complete: bootbox_update_complete
+                });
+
+                return false;
+            });
+
+            $('.table-timeline .btn-group .btn-delete').click(function (e) {
+                var tracking_id = $(this).attr('data-tracking-id');
+                var delete_url = $(this).attr('data-url');
+                var table_line = $(this).closest('tr');
+                var panel = $(this).closest('.panel');
+                var table_total = $('.panel-heading-timeline .pull-right .label', panel);
+
+                if (tracking_id && delete_url) {
+                    bootbox.confirm('Do you confirm task deletion ?', function (confirmed) {
+                        if (confirmed) {
+                            $.ajax({
+                                url: delete_url,
+                                method: 'POST',
+                                complete: function (jqXHR, textStatus) {
+                                    if (jqXHR.status < 400) {
+                                        table_line.hide(600, function () {
+                                            table_total.html(jqXHR.responseJSON.total);
+                                            table_total.removeClass('label-danger');
+                                            table_total.removeClass('label-warning');
+                                            table_total.removeClass('label-success');
+
+                                            if (jqXHR.responseJSON.duration < 7) {
+                                                table_total.addClass('label-warning');
+                                            } else if (jqXHR.responseJSON.duration > 7) {
+                                                table_total.addClass('label-danger');
+                                            } else {
+                                                table_total.addClass('label-success');
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+                return false;
+            });
+        });
+    </script>
 {% endblock %}

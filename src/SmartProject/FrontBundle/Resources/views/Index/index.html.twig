@@ -1,4 +1,4 @@
-{% extends 'SmartProjectFrontBundle::layout.html.twig' %}
+{% extends 'SmartProjectTimesheetBundle::layout-with-widget.html.twig' %}
 
 {% block headline %}
     Title
@@ -9,5 +9,5 @@
 {% endblock %}
 
 {% block content_sidebar %}
-    {{ render(controller('SmartProjectTimesheetBundle:TaskQuick:new', {url: app.request.requestUri})) }}
+    {{ parent() }}
 {% endblock %}

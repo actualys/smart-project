@@ -8,6 +8,10 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TaskQuickType extends AbstractType
 {
+    const MODE_NEW = 'new';
+
+    const MODE_EDIT = 'edit';
+
     /**
      * @var string
      */
@@ -16,7 +20,7 @@ class TaskQuickType extends AbstractType
     /**
      * @param string $viewMode
      */
-    public function __construct($viewMode = 'new')
+    public function __construct($viewMode = self::MODE_NEW)
     {
         $this->viewMode = $viewMode;
     }
@@ -29,123 +33,153 @@ class TaskQuickType extends AbstractType
     {
         $builder
           ->add('url', 'hidden')
-          ->add('duration', 'number', array(
-                  'label' => false,
+          ->add(
+              'duration',
+              'number',
+              array(
+                  'label'                          => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append' => array(
+                  'widget_addon_append'            => array(
                       'icon' => 'time',
                   ),
-                  'attr' => array(
-                      'placeholder' => 'Duration',
+                  'attr'                           => array(
+                      'placeholder'  => 'Duration',
                       'autocomplete' => 'off',
-                      'class' => 'field-control-duration',
+                      'class'        => 'field-control-duration',
                   ),
-              ))
-          ->add('client', 'entity', array(
-                  'label' => false,
+              )
+          )
+          ->add(
+              'client',
+              'entity',
+              array(
+                  'label'                          => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append' => array(
+                  'widget_addon_append'            => array(
                       'icon' => 'th-large',
                   ),
-                  'attr' => array(
-                      'placeholder' => 'Client',
+                  'attr'                           => array(
+                      'placeholder'  => 'Client',
                       'autocomplete' => 'off',
-                      'class' => 'form-field-select form-field-client',
+                      'class'        => 'form-field-select form-field-client',
                   ),
-                  'required' => false,
-                  'class' => 'SmartProject\ProjectBundle\Entity\Client',
-                  'property' => 'name',
-              ))
-          ->add('project', 'entity', array(
-                  'label' => false,
+                  'required'                       => false,
+                  'class'                          => 'SmartProject\ProjectBundle\Entity\Client',
+                  'property'                       => 'name',
+              )
+          )
+          ->add(
+              'project',
+              'entity',
+              array(
+                  'label'                          => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_form_group_attr' => array(
-                      'class' => $options['show_project'] ? 'form-group' : 'form-group hidden',
+                  'widget_form_group_attr'         => array(
+                      'class' => 'form-group hidden',
                   ),
-                  'widget_addon_append' => array(
+                  'widget_addon_append'            => array(
                       'icon' => 'th-large',
                   ),
-                  'attr' => array(
-                      'placeholder' => 'Project',
+                  'attr'                           => array(
+                      'placeholder'  => 'Project',
                       'autocomplete' => 'off',
-                      'class' => 'form-field-select form-field-project',
+                      'class'        => 'form-field-select form-field-project',
                   ),
-                  'required' => false,
-                  'class' => 'SmartProject\ProjectBundle\Entity\Project',
-                  'property' => 'clientIdName',
-              ))
-          ->add('contract', 'entity', array(
-                  'label' => false,
+                  'required'                       => false,
+                  'class'                          => 'SmartProject\ProjectBundle\Entity\Project',
+                  'property'                       => 'clientIdName',
+              )
+          )
+          ->add(
+              'contract',
+              'entity',
+              array(
+                  'label'                          => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_form_group_attr' => array(
-                      'class' => $options['show_contract'] ? 'form-group' : 'form-group hidden',
+                  'widget_form_group_attr'         => array(
+                      'class' => 'form-group hidden',
                   ),
-                  'widget_addon_append' => array(
+                  'widget_addon_append'            => array(
                       'icon' => 'th-large',
                   ),
-                  'attr' => array(
-                      'placeholder' => 'Contract',
+                  'attr'                           => array(
+                      'placeholder'  => 'Contract',
                       'autocomplete' => 'off',
-                      'class' => 'form-field-select form-field-contract',
+                      'class'        => 'form-field-select form-field-contract',
                   ),
-                  'required' => false,
-                  'class' => 'SmartProject\ProjectBundle\Entity\Contract',
-                  'property' => 'projectIdName',
-              ))
-          ->add('tags', 'tag', array(
-                  'label' => false,
+                  'required'                       => false,
+                  'class'                          => 'SmartProject\ProjectBundle\Entity\Contract',
+                  'property'                       => 'projectIdName',
+              )
+          )
+          ->add(
+              'tags',
+              'tag',
+              array(
+                  'label'                          => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append' => array(
+                  'widget_addon_append'            => array(
                       'icon' => 'tags',
                   ),
-                  'attr' => array(
-                      'placeholder' => 'Tags',
+                  'attr'                           => array(
+                      'placeholder'  => 'Tags',
                       'autocomplete' => 'off',
                   ),
-                  'required' => false,
-              ))
-        ;
+                  'required'                       => false,
+              )
+          )
+          ->add(
+              'date',
+              'datepicker',
+              array(
+                  'label'                          => false,
+                  'horizontal_input_wrapper_class' => 'col-sm-12',
+                  'widget'                         => 'single_text',
+                  'widget_addon_append'            => array(
+                      'icon' => 'calendar',
+                  ),
+                  'attr'                           => array(
+                      'autocomplete'       => 'off',
+                      'placeholder'        => 'Date',
+                  ),
+              )
+          );
 
         if ($this->viewMode == 'new') {
             $builder
-              ->add('date', 'datepicker', array(
-                    'label'  => false,
-                    'horizontal_input_wrapper_class' => 'col-sm-12',
-                    'widget' => 'single_text',
-                    'widget_addon_append' => array(
-                        'icon' => 'calendar',
-                    ),
-                    'attr' => array(
-                        'daysOfWeekDisabled' => array(0, 6),
-                        'autocomplete' => 'off',
-                        'placeholder' => 'Date',
-                    ),
-                ))
-              ->add('description', null, array(
-                      'label' => false,
+              ->add(
+                  'description',
+                  null,
+                  array(
+                      'label'                          => false,
                       'horizontal_input_wrapper_class' => 'col-sm-12',
-                      'widget_addon_append' => array(
+                      'widget_addon_append'            => array(
                           'icon' => 'pencil',
                       ),
-                      'attr' => array(
+                      'attr'                           => array(
                           'placeholder' => 'Description',
-                          'class' => 'field-description',
+                          'class'       => 'field-description',
                       ),
-                  ));
+                  )
+              );
         } else {
             $builder
-              ->add('description', 'textarea', array(
-                    'label' => false,
-                    'horizontal_input_wrapper_class' => 'col-sm-12',
-                    'widget_addon_append' => array(
-                        'icon' => 'pencil',
-                    ),
-                    'attr' => array(
-                        'placeholder' => 'Description',
-                        'class' => 'field-description',
-                        'style' => 'height: 130px',
-                    ),
-                ));
+              ->add(
+                  'description',
+                  'textarea',
+                  array(
+                      'label'                          => false,
+                      'horizontal_input_wrapper_class' => 'col-sm-12',
+                      'widget_addon_append'            => array(
+                          'icon' => 'pencil',
+                      ),
+                      'attr'                           => array(
+                          'placeholder' => 'Description',
+                          'class'       => 'field-description',
+                          'style'       => 'height: 130px',
+                      ),
+                  )
+              );
         }
     }
 
@@ -159,8 +193,6 @@ class TaskQuickType extends AbstractType
                 'data_class'      => 'SmartProject\TimesheetBundle\Form\TaskQuickModel',
                 'render_fieldset' => false,
                 'show_legend'     => false,
-                'show_project'    => false,
-                'show_contract'   => false,
             )
         );
     }

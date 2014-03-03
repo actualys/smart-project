@@ -40,14 +40,28 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        /*$(function() {
-            // Setup drop down menu
-            $('.dropdown-toggle').dropdown();
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').popover();
+            $('.btn-group .btn').button();
 
-            // Fix input element click problem
-            $('.dropdown input, .dropdown label').click(function(e) {
-                e.stopPropagation();
+            {% for flashType, flashMessages in app.session.flashbag %}
+            {% for flashMessage in flashMessages %}
+            $.bootstrapGrowl("{{ flashMessage|escape }}", {
+                ele: 'body',
+                type: '{{ flashType }}',
+                align: 'right',
+                width: 300, // 'auto'
+                offset: {from: 'bottom', amount: 20},
+                delay: 4000,
+                stackup_spacing: 10,
+                allow_dismiss: true
             });
-        });*/
+            {% endfor %}
+            {% endfor %}
+        });
     </script>
 {% endblock foot_script %}
+
+{% block content_sidebar %}
+{% endblock %}
