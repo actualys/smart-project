@@ -10,205 +10,207 @@
     {{ parent() }}
 
     <script type="text/javascript">
-        function initProjectSelection(client, project, contract) {
-            client.each(function () {
-                $(this).select2({
-                    allowClear: true,
-                    width: '100%'
-                });
+    function initProjectSelection(client, project, contract, tag) {
+        client.each(function () {
+            $(this).select2({
+                allowClear: true,
+                width: '100%'
+            });
 
-                $(this).change(function () {
-                    var project_group = project.closest('.form-group');
-                    project.select2('val', '');
+            $(this).change(function () {
+                var project_group = project.closest('.form-group');
+                project.select2('val', '');
 
-                    if ($(this).val()) {
-                        project_group.removeClass('hidden');
-                        project_group.show();
-                    } else {
-                        project_group.hide();
-                    }
-
-                    var contract_group = contract.closest('.form-group');
-                    contract_group.hide();
-                    contract.select2('val', '');
-                });
-
-                if (client.val()) {
-                    var project_group = project.closest('.form-group');
+                if ($(this).val()) {
                     project_group.removeClass('hidden');
+                    project_group.show();
+                } else {
+                    project_group.hide();
                 }
+
+                var contract_group = contract.closest('.form-group');
+                contract_group.hide();
+                contract.select2('val', '');
             });
 
-            project.each(function () {
-                $(this).select2({
-                    matcher: function (term, text, option) {
-                        // Check client
-                        var id = client.val();
-                        var label = option[0].textContent;
-
-                        if (label.indexOf(id + ':') !== 0) {
-                            return false;
-                        }
-
-                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-                    },
-                    formatResult: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    formatSelection: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    allowClear: true,
-                    width: '100%'
-                });
-
-                $(this).change(function () {
-                    var contract_group = contract.closest('.form-group');
-                    contract.select2('val', '');
-
-                    if ($(this).val()) {
-                        contract_group.removeClass('hidden');
-                        contract_group.show();
-                    } else {
-                        contract_group.hide();
-                    }
-                });
-
-                if (project.val()) {
-                    var contract_group = contract.closest('.form-group');
-                    contract_group.removeClass('hidden');
-                }
-            });
-
-            contract.each(function () {
-                $(this).select2({
-                    matcher: function (term, text, option) {
-                        // Check client
-                        var id = project.val();
-                        var label = option[0].textContent;
-
-                        if (label.indexOf(id + ':') !== 0) {
-                            return false;
-                        }
-
-                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-                    },
-                    formatResult: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    formatSelection: function (item) {
-                        var originalOption = item.element;
-                        return item.text.replace(/^\s*([0-9]+:)/, '');
-                    },
-                    allowClear: true,
-                    width: '100%'
-                });
-            });
-        }
-
-        function ajaxify_complete(jqXHR, textStatus) {
-            var container = $(this).closest('.panel-body');
-            container.html(jqXHR.responseJSON.content);
-
-            $('.ajaxify', container).ajaxForm({
-                complete: ajaxify_complete
-            });
-            if (jqXHR.responseJSON.action == 'reload') {
-                location.reload();
-                return;
+            if (client.val()) {
+                var project_group = project.closest('.form-group');
+                project_group.removeClass('hidden');
             }
-            else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
-                window.location.href = jqXHR.responseJSON.url;
-                return;
-            }
-            else if (jqXHR.responseJSON.message != '') {
-                $.bootstrapGrowl(jqXHR.responseJSON.message, {
-                    ele: 'body',
-                    {#type: '{{ flashType }}',#}
-                    align: 'right',
-                    width: 300, // 'auto'
-                    offset: {from: 'bottom', amount: 20},
-                    delay: 10000,
-                    stackup_spacing: 10,
-                    allow_dismiss: true
-                });
-            }
-
-            initProjectSelection(
-                    $('select.form-field-client', container),
-                    $('select.form-field-project', container),
-                    $('select.form-field-contract', container)
-            );
-        }
-
-        $(document).ready(function () {
-            $('.timesheet-quick-task.ajaxify').ajaxForm({
-                complete: ajaxify_complete
-            });
-
-            $('.timesheet-quick-task .form-field-tag').each(function () {
-                var select = $(this);
-                select.attr('type', 'hidden');
-                var width = select.attr('data-select-width') || '100%';
-                select.select2({
-                    tags: [],
-                    minimumInputLength: 2,
-                    maximumInputLength: 20,
-                    tokenSeparators: [','],
-                    width: width,
-                    cache: true,
-                    containerCssClass: 'form-control',
-                    ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                        url: '{{ path('project_tags') }}',
-                        dataType: 'jsonp',
-                        data: function (term, page) {
-                            return {
-                                q: term,
-                                page_limit: 10
-                            };
-                        },
-                        results: function (data, page) { // parse the results into the format expected by Select2.
-                            // since we are using custom formatting functions we do not need to alter remote JSON data
-                            var results = [];
-                            $.each(data.results, function (index, item) {
-                                results.push({
-                                    id: item.id,
-                                    text: item.text
-                                });
-                            });
-                            return {
-                                results: results
-                            };
-                        }
-                    },
-                    initSelection: function (element, callback) {
-                        var data = [];
-                        $(element.val().split(',')).each(function () {
-                            data.push({id: this, text: this});
-                        });
-                        callback(data);
-                    },
-                    createSearchChoice: function (term) {
-                        return {id: term, text: term};
-                    },
-                    formatNoMatches: function (term) {
-                        return '';
-                    },
-                    formatResultCssClass: function (object) {
-                        return '';
-                    }
-                });
-            });
-
-            initProjectSelection(
-                    $('.timesheet-quick-task select.form-field-client'),
-                    $('.timesheet-quick-task select.form-field-project'),
-                    $('.timesheet-quick-task select.form-field-contract')
-            );
         });
+
+        project.each(function () {
+            $(this).select2({
+                matcher: function (term, text, option) {
+                    // Check client
+                    var id = client.val();
+                    var label = option[0].textContent;
+
+                    if (label.indexOf(id + ':') !== 0) {
+                        return false;
+                    }
+
+                    return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                },
+                formatResult: function (item) {
+                    var originalOption = item.element;
+                    return item.text.replace(/^\s*([0-9]+:)/, '');
+                },
+                formatSelection: function (item) {
+                    var originalOption = item.element;
+                    return item.text.replace(/^\s*([0-9]+:)/, '');
+                },
+                allowClear: true,
+                width: '100%'
+            });
+
+            $(this).change(function () {
+                var contract_group = contract.closest('.form-group');
+                contract.select2('val', '');
+
+                if ($(this).val()) {
+                    contract_group.removeClass('hidden');
+                    contract_group.show();
+                } else {
+                    contract_group.hide();
+                }
+            });
+
+            if (project.val()) {
+                var contract_group = contract.closest('.form-group');
+                contract_group.removeClass('hidden');
+            }
+        });
+
+        contract.each(function () {
+            $(this).select2({
+                matcher: function (term, text, option) {
+                    // Check client
+                    var id = project.val();
+                    var label = option[0].textContent;
+
+                    if (label.indexOf(id + ':') !== 0) {
+                        return false;
+                    }
+
+                    return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                },
+                formatResult: function (item) {
+                    var originalOption = item.element;
+                    return item.text.replace(/^\s*([0-9]+:)/, '');
+                },
+                formatSelection: function (item) {
+                    var originalOption = item.element;
+                    return item.text.replace(/^\s*([0-9]+:)/, '');
+                },
+                allowClear: true,
+                width: '100%'
+            });
+        });
+
+        tag.each(function () {
+            var select = $(this);
+            select.attr('type', 'hidden');
+            var width = select.attr('data-select-width') || '100%';
+            select.select2({
+                tags: [],
+                minimumInputLength: 2,
+                maximumInputLength: 20,
+                tokenSeparators: [','],
+                width: width,
+                cache: true,
+                containerCssClass: 'form-control',
+                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                    url: '{{ path('project_tags') }}',
+                    dataType: 'jsonp',
+                    data: function (term, page) {
+                        return {
+                            q: term,
+                            page_limit: 10
+                        };
+                    },
+                    results: function (data, page) { // parse the results into the format expected by Select2.
+                        // since we are using custom formatting functions we do not need to alter remote JSON data
+                        var results = [];
+                        $.each(data.results, function (index, item) {
+                            results.push({
+                                id: item.id,
+                                text: item.text
+                            });
+                        });
+                        return {
+                            results: results
+                        };
+                    }
+                },
+                initSelection: function (element, callback) {
+                    var data = [];
+                    $(element.val().split(',')).each(function () {
+                        data.push({id: this, text: this});
+                    });
+                    callback(data);
+                },
+                createSearchChoice: function (term) {
+                    return {id: term, text: term};
+                },
+                formatNoMatches: function (term) {
+                    return '';
+                },
+                formatResultCssClass: function (object) {
+                    return '';
+                }
+            });
+        });
+    }
+
+    function ajaxify_complete(jqXHR, textStatus) {
+        var container = $(this).closest('.panel-body');
+        container.html(jqXHR.responseJSON.content);
+
+        $('.ajaxify', container).ajaxForm({
+            complete: ajaxify_complete
+        });
+        if (jqXHR.responseJSON.action == 'reload') {
+            location.reload();
+            return;
+        }
+        else if (jqXHR.responseJSON.action == 'redirect' && jqXHR.responseJSON.url != '') {
+            window.location.href = jqXHR.responseJSON.url;
+            return;
+        }
+        else if (jqXHR.responseJSON.message != '') {
+            $.bootstrapGrowl(jqXHR.responseJSON.message, {
+                ele: 'body',
+                {#type: '{{ flashType }}',#}
+                align: 'right',
+                width: 300, // 'auto'
+                offset: {from: 'bottom', amount: 20},
+                delay: 10000,
+                stackup_spacing: 10,
+                allow_dismiss: true
+            });
+        }
+
+        initProjectSelection(
+                $('select.form-field-client', container),
+                $('select.form-field-project', container),
+                $('select.form-field-contract', container),
+                $('.form-field-tag', container)
+        );
+    }
+
+    $(document).ready(function () {
+        $('.timesheet-quick-task.ajaxify').ajaxForm({
+            complete: ajaxify_complete
+        });
+
+        initProjectSelection(
+                $('.timesheet-quick-task select.form-field-client'),
+                $('.timesheet-quick-task select.form-field-project'),
+                $('.timesheet-quick-task select.form-field-contract'),
+                $('.timesheet-quick-task .form-field-tag')
+        );
+    });
 
     </script>
 {% endblock %}

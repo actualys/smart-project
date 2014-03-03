@@ -47,9 +47,11 @@
                                 {% if tracking.task.client %}
                                     <a href="{{ path('client_show', {id: tracking.task.client.id}) }}">{{ tracking.task.client.name }}</a>
                                     {% if tracking.task.project %}
-                                        &gt;&nbsp;<a href="{{ path('project_show', {id: tracking.task.project.id}) }}">{{ tracking.task.project.name }}</a>
+                                        &gt;&nbsp;<a
+                                            href="{{ path('project_show', {id: tracking.task.project.id}) }}">{{ tracking.task.project.name }}</a>
                                         {% if tracking.task.contract %}
-                                            &gt;&nbsp;<a href="{{ path('contract_show', {id: tracking.task.contract.id}) }}">{{ tracking.task.contract.name }}</a>
+                                            &gt;&nbsp;<a
+                                                href="{{ path('contract_show', {id: tracking.task.contract.id}) }}">{{ tracking.task.contract.name }}</a>
                                         {% endif %}
                                     {% endif %}
                                 {% else %}
@@ -213,7 +215,8 @@
                 initProjectSelection(
                         $('.bootbox.modal select.form-field-client'),
                         $('.bootbox.modal select.form-field-project'),
-                        $('.bootbox.modal select.form-field-contract')
+                        $('.bootbox.modal select.form-field-contract'),
+                        $('.bootbox.modal .form-field-tag')
                 );
             }
 
