@@ -12,7 +12,7 @@ class ArrayExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'implode' => new \Twig_Filter_Method($this, 'implodeFilter'),
+            new \Twig_SimpleFilter('implode', 'implodeFilter'),
         );
     }
 
