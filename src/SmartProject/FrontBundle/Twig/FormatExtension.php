@@ -12,7 +12,7 @@ class FormatExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'format_duration' => new \Twig_Filter_Method($this, 'durationFilter'),
+            new \Twig_SimpleFilter('format_duration', 'durationFilter'),
         );
     }
 
