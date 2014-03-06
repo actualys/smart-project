@@ -1,8 +1,4 @@
 parameters:
-    redmine:
-        hostname: https://clients.actualys.com/
-        apikey:   f647ea20e99a97ccc9d8342d58ee435e8c5d2113
-
     smart_project_project.redmine.class: SmartProject\ProjectBundle\Provider\RedmineProvider
 
 services:
