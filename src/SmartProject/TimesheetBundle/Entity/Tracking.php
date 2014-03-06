@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Tracking
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\Loggable
  * @ORM\Table(name="timesheet_tracking")
  * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\TrackingRepository")
  */
@@ -29,6 +30,7 @@ class Tracking
      * @var \DateTime
      *
      * @ORM\Column(name="tracking_date", type="date")
+     * @Gedmo\Versioned
      */
     private $date;
 
@@ -36,6 +38,7 @@ class Tracking
      * @var string
      *
      * @ORM\Column(name="duration", type="decimal", precision=8, scale=2)
+     * @Gedmo\Versioned
      */
     private $duration;
 
@@ -43,6 +46,7 @@ class Tracking
      * @var integer
      *
      * @ORM\Column(name="status", type="smallint")
+     * @Gedmo\Versioned
      */
     private $status;
 

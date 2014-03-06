@@ -111,13 +111,12 @@
         tag.each(function () {
             var select = $(this);
             select.attr('type', 'hidden');
-            var width = select.attr('data-select-width') || '100%';
             select.select2({
                 tags: [],
                 minimumInputLength: 2,
                 maximumInputLength: 20,
                 tokenSeparators: [','],
-                width: width,
+                width: '100%',
                 cache: true,
                 containerCssClass: 'form-control',
                 ajax: { // instead of writing the function to execute the request we use Select2's convenient helper

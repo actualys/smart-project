@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Task
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\Loggable
  * @ORM\Table(name="timesheet_task",
  *            indexes={
  *            })
@@ -29,6 +30,7 @@ class Task
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
+     * @Gedmo\Versioned
      */
     private $description;
 
@@ -36,6 +38,7 @@ class Task
      * @var string
      *
      * @ORM\Column(name="tags", type="string", length=255, nullable=true)
+     * @Gedmo\Versioned
      */
     private $tags;
 
@@ -52,6 +55,7 @@ class Task
      *
      * @ORM\ManyToOne(targetEntity="ClientInterface")
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id", nullable=true)
+     * @Gedmo\Versioned
      */
     private $client;
 
@@ -60,6 +64,7 @@ class Task
      *
      * @ORM\ManyToOne(targetEntity="ProjectInterface")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     * @Gedmo\Versioned
      */
     private $project;
 
@@ -68,6 +73,7 @@ class Task
      *
      * @ORM\ManyToOne(targetEntity="ContractInterface")
      * @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=true)
+     * @Gedmo\Versioned
      */
     private $contract;
 
