@@ -15,10 +15,11 @@ class TimesheetRepository extends EntityRepository
     /**
      * @param UserInterface $user
      * @param \DateTime     $date
+     * @param boolean       $create
      *
      * @return mixed|null
      */
-    public function findByUser(UserInterface $user, \DateTime $date)
+    public function findByUser(UserInterface $user, \DateTime $date, $create = false)
     {
         $entities = $this->createQueryBuilder('t')
           ->where('t.user = :user')
@@ -32,7 +33,11 @@ class TimesheetRepository extends EntityRepository
         if ($entities) {
             return current($entities);
         } else {
-            return null;
+            if ($create) {
+                return $this->createForUser($user, $date);
+            } else {
+                return null;
+            }
         }
     }
 

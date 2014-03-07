@@ -28,14 +28,8 @@ class TaskProjectRepository extends EntityRepository
         /** @var TimesheetRepository $timesheetRepository */
         $timesheetRepository = $this->_em->getRepository('SmartProjectTimesheetBundle:Timesheet');
 
-        $date = $form->getDate();
-
         /** @var Timesheet $timesheet */
-        $timesheet = $timesheetRepository->findByUser($user, $date);
-
-        if (null === $timesheet) {
-            $timesheet = $timesheetRepository->createForUser($user, $date);
-        }
+        $timesheet = $timesheetRepository->findByUser($user, $form->getDate(), true);
 
         $task = new TaskProject();
         $task->setTimesheet($timesheet);
@@ -47,7 +41,7 @@ class TaskProjectRepository extends EntityRepository
 
         $tracking = new Tracking();
         $tracking->setTask($task);
-        $tracking->setDate($date);
+        $tracking->setDate($form->getDate());
         $tracking->setDuration($form->getDuration());
         $tracking->setStatus(Tracking::STATUS_NEW);
 
@@ -72,14 +66,8 @@ class TaskProjectRepository extends EntityRepository
             /** @var TimesheetRepository $timesheetRepository */
             $timesheetRepository = $this->_em->getRepository('SmartProjectTimesheetBundle:Timesheet');
 
-            $date = $form->getDate();
-
             /** @var Timesheet $timesheet */
-            $timesheet = $timesheetRepository->findByUser($user, $date);
-
-            if (null === $timesheet) {
-                $timesheet = $timesheetRepository->createForUser($user, $date);
-            }
+            $timesheet = $timesheetRepository->findByUser($user, $form->getDate(), true);
 
             /** @var TaskProject $task */
             $task = $tracking->getTask();
