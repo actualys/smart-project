@@ -307,8 +307,10 @@ class TaskQuickController extends Controller
 
             /** @var TrackingRepository $repositoryTracking */
             $repositoryTracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking');
-            $duration           = $repositoryTracking->getTotalDurationForDate($this->getUser(), $date);
-            $total              = $this->formatDuration($duration, ' h ', true);
+            /** @var UserInterface $user */
+            $user     = $this->getUser();
+            $duration = $repositoryTracking->getTotalDurationForDate($user, $date);
+            $total    = $this->formatDuration($duration, ' h ', true);
         }
 
         return new JsonResponse(
