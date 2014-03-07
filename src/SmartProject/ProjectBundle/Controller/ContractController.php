@@ -19,7 +19,6 @@ use SmartProject\ProjectBundle\Form\ContractType;
  */
 class ContractController extends Controller
 {
-
     /**
      * Lists all Contract entities.
      *
@@ -104,7 +103,7 @@ class ContractController extends Controller
      * @ParamConverter("project", class="SmartProjectProjectBundle:Project", options={"id" = "project"})
      * @Template()
      */
-    public function newAction(Request $request, Project $project)
+    public function newAction(Project $project)
     {
         $entity = new Contract();
 
@@ -157,6 +156,7 @@ class ContractController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Contract $entity */
         $entity = $em->getRepository('SmartProjectProjectBundle:Contract')->find($id);
 
         if (!$entity) {
@@ -207,6 +207,7 @@ class ContractController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Contract $entity */
         $entity = $em->getRepository('SmartProjectProjectBundle:Contract')->find($id);
 
         if (!$entity) {

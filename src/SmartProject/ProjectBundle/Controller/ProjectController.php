@@ -216,6 +216,7 @@ class ProjectController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Project $entity */
         $entity = $em->getRepository('SmartProjectProjectBundle:Project')->find($id);
 
         if (!$entity) {
@@ -266,6 +267,7 @@ class ProjectController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Project $entity */
         $entity = $em->getRepository('SmartProjectProjectBundle:Project')->find($id);
 
         if (!$entity) {

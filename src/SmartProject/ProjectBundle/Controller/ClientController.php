@@ -139,6 +139,7 @@ class ClientController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Client $entity */
         $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
 
         if (!$entity) {
@@ -184,6 +185,7 @@ class ClientController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Client $entity */
         $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
 
         if (!$entity) {

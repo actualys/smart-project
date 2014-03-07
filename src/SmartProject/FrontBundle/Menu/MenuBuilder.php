@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
  *  pull-right
  *  icon
  *  divider
- * 
+ *
  * @package SmartProject\FrontBundle\Menu
  */
 class MenuBuilder
@@ -49,6 +49,12 @@ class MenuBuilder
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-user',
             ));
+        $users->addChild('Users', array(
+                'uri' => '#',
+            ));
+        $users->addChild('Groups', array(
+                'uri' => '#',
+            ));
 
         $projects = $menu->addChild('Projects', array(
                 'uri' => '#',
@@ -72,6 +78,9 @@ class MenuBuilder
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-list',
             ));
+        $todo->addChild('Synchronize Redmine', array(
+                'uri' => '#',
+            ));
 
         $timesheet = $menu->addChild('Timesheet', array(
                 'uri' => '#',
@@ -89,20 +98,6 @@ class MenuBuilder
         $timesheet->addChild('Consolidation', array(
                 'uri' => '#',
             ));
-
-//        $tools->addChild('Symfony', array('uri' => 'http://www.symfony.com'));
-//        $tools->addChild('bootstrap', array('uri' => 'https://github.com/twbs/bootstrap'));
-//        $tools->addChild('node.js', array('uri' => 'http://nodejs.org/'));
-//        $tools->addChild('less', array('uri' => 'http://lesscss.org/'));
-//
-//        //adding a nice divider
-//        $tools->addChild('divider_1', array('divider' => true));
-//        $tools->addChild('google', array('uri' => 'http://www.google.com/'));
-//        $tools->addChild('node.js', array('uri' => 'http://nodejs.org/'));
-//
-//        //adding a nice divider
-//        $tools->addChild('divider_2', array('divider' => true));
-//        $tools->addChild('Mohrenweiser & Partner', array('uri' => 'http://www.mohrenweiserpartner.de'));
 
         return $menu;
     }
