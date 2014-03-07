@@ -6,6 +6,7 @@ use SmartProject\TimesheetBundle\Entity\Task\TaskProject;
 use SmartProject\TimesheetBundle\Entity\Task\TaskProjectRepository;
 use SmartProject\TimesheetBundle\Entity\Tracking;
 use SmartProject\TimesheetBundle\Entity\TrackingRepository;
+use SmartProject\TimesheetBundle\Entity\UserInterface;
 use SmartProject\TimesheetBundle\Form\TaskQuickModel;
 use SmartProject\TimesheetBundle\Form\TaskQuickType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,7 +46,9 @@ class TaskQuickController extends Controller
                 'SmartProjectTimesheetBundle:Task\TaskProject'
             );
 
-            $task = $taskProjectRepository->createTaskFromQuickForm($form_data, $this->getUser());
+            /** @var UserInterface $user */
+            $user = $this->getUser();
+            $task = $taskProjectRepository->createTaskFromQuickForm($form_data, $user);
             $code = 201;
             $date = $form_data->getDate();
 
@@ -234,7 +237,9 @@ class TaskQuickController extends Controller
                 'SmartProjectTimesheetBundle:Task\TaskProject'
             );
 
-            $done = $taskProjectRepository->updateTaskFromQuickForm($form_data, $this->getUser(), $tracking);
+            /** @var UserInterface $user */
+            $user = $this->getUser();
+            $done = $taskProjectRepository->updateTaskFromQuickForm($form_data, $user, $tracking);
 
             if ($done) {
                 $code = 202;

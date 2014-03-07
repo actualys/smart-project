@@ -2,7 +2,9 @@
 
 namespace SmartProject\ProjectBundle\Provider;
 
+use Redmine\Client;
 use SmartProject\ProjectBundle\Entity\Project;
+use SmartProject\ProjectBundle\Entity\ProjectRepository;
 
 /**
  * Class RedmineProvider
@@ -25,7 +27,7 @@ class RedmineProvider
     public function __construct($doctrine, $redmine)
     {
         $this->doctrine = $doctrine;
-        $this->client   = new \Redmine\Client($redmine['hostname'], $redmine['apikey']);
+        $this->client   = new Client($redmine['hostname'], $redmine['apikey']);
     }
 
     /**
@@ -49,17 +51,20 @@ class RedmineProvider
             $projects = $response['projects'];
             $offset += count($projects);
 
+            /** @var ProjectRepository $repository */
             $repository = $entityManager->getRepository('SmartProjectProjectBundle:Project');
 
             foreach ($projects as $project) {
-                /** @var Project $entity */
+                /** @var array $entity */
                 $entity = $repository->findBy(array('redmineId' => $project['id']));
 
                 if (!$entity) {
+                    /** @var Project $entity */
                     $entity = new Project();
                     $entity->setDescription($project['description']);
                 } else {
                     $entity = reset($entity);
+                    /** @var Project $entity */
                 }
 
                 $entity->setName($project['name']);
