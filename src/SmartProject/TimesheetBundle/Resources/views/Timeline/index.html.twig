@@ -27,7 +27,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="panel panel-default">
+            <div class="panel panel-default{% if day_date|date('Y-m-d') == date|date('Y-m-d') %} panel-primary{% endif %}">
                 <div class="panel-heading panel-heading-timeline" data-date="{{ day_date|date('Y-m-d') }}">
                     <span class="timesheet-date">{{ day_date|date('l, jS F Y') }}</span>
 
@@ -152,6 +152,13 @@
             $('.panel-heading-timeline').each(function () {
                 $(this).click(function () {
                     var date = $(this).attr('data-date');
+
+                    $(this).closest('.panel').parent().each(function() {
+                        $('.panel', this).removeClass('panel-primary');
+                    });
+
+                    $(this).closest('.panel').addClass('panel-primary');
+
                     $('.timesheet-quick-task .field-datepicker').datepicker('update', date);
                     $('.timesheet-quick-task .field-description').focus();
                 });

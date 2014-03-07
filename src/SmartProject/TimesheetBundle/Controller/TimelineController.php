@@ -61,7 +61,6 @@ class TimelineController extends Controller
 
         $days = array();
 
-
         if ($mode == 'week') {
             /** @var \DateTime $dateStart */
             $dateStart = clone $timesheet->getDateStart();
