@@ -57,7 +57,7 @@ class TaskProject extends Task
     /**
      * Get client
      *
-     * @return \SmartProject\TimesheetBundle\Entity\Task\ClientInterface
+     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ClientInterface
      */
     public function getClient()
     {
@@ -80,7 +80,7 @@ class TaskProject extends Task
     /**
      * Get project
      *
-     * @return \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface
+     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ProjectInterface
      */
     public function getProject()
     {
@@ -103,7 +103,7 @@ class TaskProject extends Task
     /**
      * Get contract
      *
-     * @return \SmartProject\TimesheetBundle\Entity\Task\ContractInterface
+     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ContractInterface
      */
     public function getContract()
     {
