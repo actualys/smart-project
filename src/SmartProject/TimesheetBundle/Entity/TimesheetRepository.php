@@ -17,7 +17,7 @@ class TimesheetRepository extends EntityRepository
      * @param \DateTime     $date
      * @param boolean       $create
      *
-     * @return mixed|null
+     * @return null|Timesheet
      */
     public function findByUser(UserInterface $user, \DateTime $date, $create = false)
     {

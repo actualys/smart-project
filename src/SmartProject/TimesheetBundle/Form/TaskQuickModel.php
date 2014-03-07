@@ -157,7 +157,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param mixed $tags
+     * @param string $tags
      */
     public function setTags($tags)
     {
@@ -165,7 +165,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTags()
     {
