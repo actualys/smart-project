@@ -2,15 +2,16 @@
 
 namespace SmartProject\ProjectBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use SmartProject\TimesheetBundle\Entity\ClientInterface;
+use SmartProject\TimesheetBundle\Entity\Task\ClientInterface;
 
 /**
  * Client
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @ORM\Table(name="client")
+ * @ORM\Table(name="project_client")
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ClientRepository")
  */
 class Client implements ClientInterface
@@ -88,7 +89,7 @@ class Client implements ClientInterface
      */
     public function __construct()
     {
-        $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->projects = new ArrayCollection();
     }
     
     /**
@@ -268,7 +269,7 @@ class Client implements ClientInterface
      * @param \SmartProject\ProjectBundle\Entity\Project $projects
      * @return Client
      */
-    public function addProject(\SmartProject\ProjectBundle\Entity\Project $projects)
+    public function addProject(Project $projects)
     {
         $this->projects[] = $projects;
     
@@ -280,7 +281,7 @@ class Client implements ClientInterface
      *
      * @param \SmartProject\ProjectBundle\Entity\Project $projects
      */
-    public function removeProject(\SmartProject\ProjectBundle\Entity\Project $projects)
+    public function removeProject(Project $projects)
     {
         $this->projects->removeElement($projects);
     }

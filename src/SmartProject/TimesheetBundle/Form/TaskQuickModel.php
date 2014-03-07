@@ -2,9 +2,9 @@
 
 namespace SmartProject\TimesheetBundle\Form;
 
-use SmartProject\TimesheetBundle\Entity\ClientInterface;
-use SmartProject\TimesheetBundle\Entity\ContractInterface;
-use SmartProject\TimesheetBundle\Entity\ProjectInterface;
+use SmartProject\TimesheetBundle\Entity\Task\ClientInterface;
+use SmartProject\TimesheetBundle\Entity\Task\ContractInterface;
+use SmartProject\TimesheetBundle\Entity\Task\ProjectInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -173,7 +173,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param \SmartProject\TimesheetBundle\Entity\ClientInterface $client
+     * @param \SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
      */
     public function setClient($client)
     {
@@ -181,7 +181,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return \SmartProject\TimesheetBundle\Entity\ClientInterface
+     * @return \SmartProject\TimesheetBundle\Entity\Task\ClientInterface
      */
     public function getClient()
     {
@@ -189,7 +189,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param \SmartProject\TimesheetBundle\Entity\ContractInterface $contract
+     * @param \SmartProject\TimesheetBundle\Entity\Task\ContractInterface $contract
      */
     public function setContract($contract)
     {
@@ -197,7 +197,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return \SmartProject\TimesheetBundle\Entity\ContractInterface
+     * @return \SmartProject\TimesheetBundle\Entity\Task\ContractInterface
      */
     public function getContract()
     {
@@ -205,7 +205,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param \SmartProject\TimesheetBundle\Entity\ProjectInterface $project
+     * @param \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface $project
      */
     public function setProject($project)
     {
@@ -213,7 +213,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return \SmartProject\TimesheetBundle\Entity\ProjectInterface
+     * @return \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface
      */
     public function getProject()
     {

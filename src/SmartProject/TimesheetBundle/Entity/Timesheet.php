@@ -2,6 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -89,7 +90,7 @@ class Timesheet
      */
     public function __construct()
     {
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
     
     /**
@@ -246,7 +247,7 @@ class Timesheet
      * @param \SmartProject\TimesheetBundle\Entity\UserInterface $user
      * @return Timesheet
      */
-    public function setUser(\SmartProject\TimesheetBundle\Entity\UserInterface $user = null)
+    public function setUser(UserInterface $user = null)
     {
         $this->user = $user;
     
@@ -269,7 +270,7 @@ class Timesheet
      * @param \SmartProject\TimesheetBundle\Entity\Task $tasks
      * @return Timesheet
      */
-    public function addTask(\SmartProject\TimesheetBundle\Entity\Task $tasks)
+    public function addTask(Task $tasks)
     {
         $this->tasks[] = $tasks;
     
@@ -281,7 +282,7 @@ class Timesheet
      *
      * @param \SmartProject\TimesheetBundle\Entity\Task $tasks
      */
-    public function removeTask(\SmartProject\TimesheetBundle\Entity\Task $tasks)
+    public function removeTask(Task $tasks)
     {
         $this->tasks->removeElement($tasks);
     }

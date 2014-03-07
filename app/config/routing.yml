@@ -1,3 +1,8 @@
+#smart_project_sync:
+#    resource: "@SmartProjectSyncBundle/Resources/config/routing.yml"
+#    type:     annotation
+#    prefix:   /sync
+
 smart_project_timesheet:
     resource: "@SmartProjectTimesheetBundle/Controller"
     type:     annotation

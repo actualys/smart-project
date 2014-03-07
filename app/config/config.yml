@@ -71,10 +71,10 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         auto_mapping: true
         resolve_target_entities:
-            SmartProject\TimesheetBundle\Entity\ClientInterface:   SmartProject\ProjectBundle\Entity\Client
-            SmartProject\TimesheetBundle\Entity\ContractInterface: SmartProject\ProjectBundle\Entity\Contract
-            SmartProject\TimesheetBundle\Entity\ProjectInterface:  SmartProject\ProjectBundle\Entity\Project
-            SmartProject\TimesheetBundle\Entity\UserInterface:     SmartProject\SecurityBundle\Entity\User
+            SmartProject\TimesheetBundle\Entity\Task\ClientInterface:   SmartProject\ProjectBundle\Entity\Client
+            SmartProject\TimesheetBundle\Entity\Task\ContractInterface: SmartProject\ProjectBundle\Entity\Contract
+            SmartProject\TimesheetBundle\Entity\Task\ProjectInterface:  SmartProject\ProjectBundle\Entity\Project
+            SmartProject\TimesheetBundle\Entity\UserInterface:          SmartProject\SecurityBundle\Entity\User
 
 # Swiftmailer Configuration
 swiftmailer:

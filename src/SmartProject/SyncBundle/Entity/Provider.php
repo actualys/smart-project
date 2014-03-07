@@ -1,22 +1,22 @@
 <?php
 
-namespace SmartProject\TimesheetBundle\Entity;
+namespace SmartProject\SyncBundle\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Tracking
+ * Provider
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @Gedmo\Loggable
- * @ORM\Table(name="timesheet_tracking")
- * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\TrackingRepository")
+ * @ORM\Table(name="provider")
+ * @ORM\Entity(repositoryClass="SmartProject\SyncBundle\Entity\ProviderRepository")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discriminator", type="string")
+ * @ORM\DiscriminatorMap({"redmine" = "\SmartProject\SyncBundle\Entity\Provider\Redmine"})
  */
-class Tracking
+abstract class Provider
 {
-    const STATUS_NEW = 0;
-
     /**
      * @var integer
      *
@@ -27,36 +27,18 @@ class Tracking
     private $id;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="tracking_date", type="date")
-     * @Gedmo\Versioned
-     */
-    private $date;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="duration", type="decimal", precision=8, scale=2)
-     * @Gedmo\Versioned
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    private $duration;
+    private $name;
 
     /**
-     * @var integer
+     * @var boolean
      *
-     * @ORM\Column(name="status", type="smallint")
-     * @Gedmo\Versioned
+     * @ORM\Column(name="enabled", type="boolean")
      */
-    private $status;
-
-    /**
-     * @var Task
-     *
-     * @ORM\ManyToOne(targetEntity="Task", inversedBy="trackings")
-     * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
-     */
-    private $task;
+    private $enabled;
 
     /**
      * @var \DateTime $createdAt
@@ -81,7 +63,6 @@ class Tracking
      */
     private $deletedAt;
 
-
     /**
      * Get id
      *
@@ -93,79 +74,56 @@ class Tracking
     }
 
     /**
-     * Set date
+     * Set name
      *
-     * @param \DateTime $date
-     * @return Tracking
+     * @param string $name
+     * @return Provider
      */
-    public function setDate($date)
+    public function setName($name)
     {
-        $this->date = $date;
+        $this->name = $name;
     
         return $this;
     }
 
     /**
-     * Get date
-     *
-     * @return \DateTime 
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * Set duration
-     *
-     * @param string $duration
-     * @return Tracking
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-    
-        return $this;
-    }
-
-    /**
-     * Get duration
+     * Get name
      *
      * @return string 
      */
-    public function getDuration()
+    public function getName()
     {
-        return $this->duration;
+        return $this->name;
     }
 
     /**
-     * Set status
+     * Set enabled
      *
-     * @param integer $status
-     * @return Tracking
+     * @param boolean $enabled
+     * @return Provider
      */
-    public function setStatus($status)
+    public function setEnabled($enabled)
     {
-        $this->status = $status;
+        $this->enabled = $enabled;
     
         return $this;
     }
 
     /**
-     * Get status
+     * Get enabled
      *
-     * @return integer 
+     * @return boolean 
      */
-    public function getStatus()
+    public function getEnabled()
     {
-        return $this->status;
+        return $this->enabled;
     }
 
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Tracking
+     * @return Provider
      */
     public function setCreatedAt($createdAt)
     {
@@ -188,7 +146,7 @@ class Tracking
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Tracking
+     * @return Provider
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -211,7 +169,7 @@ class Tracking
      * Set deletedAt
      *
      * @param \DateTime $deletedAt
-     * @return Tracking
+     * @return Provider
      */
     public function setDeletedAt($deletedAt)
     {
@@ -228,28 +186,5 @@ class Tracking
     public function getDeletedAt()
     {
         return $this->deletedAt;
-    }
-
-    /**
-     * Set task
-     *
-     * @param \SmartProject\TimesheetBundle\Entity\Task $task
-     * @return Tracking
-     */
-    public function setTask(Task $task = null)
-    {
-        $this->task = $task;
-    
-        return $this;
-    }
-
-    /**
-     * Get task
-     *
-     * @return \SmartProject\TimesheetBundle\Entity\Task 
-     */
-    public function getTask()
-    {
-        return $this->task;
     }
 }

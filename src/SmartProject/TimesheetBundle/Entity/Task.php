@@ -2,6 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,8 +15,14 @@ use Doctrine\ORM\Mapping as ORM;
  *            indexes={
  *            })
  * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\TaskRepository")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discriminator", type="string")
+ * @ORM\DiscriminatorMap({
+ *              "project" = "\SmartProject\TimesheetBundle\Entity\Task\TaskProject",
+ *              "calendar" = "\SmartProject\TimesheetBundle\Entity\Task\TaskCalendar"
+ *          })
  */
-class Task
+abstract class Task
 {
     /**
      * @var integer
@@ -49,33 +56,6 @@ class Task
      * @ORM\JoinColumn(name="timesheet_id", referencedColumnName="id")
      */
     private $timesheet;
-
-    /**
-     * @var ClientInterface
-     *
-     * @ORM\ManyToOne(targetEntity="ClientInterface")
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id", nullable=true)
-     * @Gedmo\Versioned
-     */
-    private $client;
-
-    /**
-     * @var ProjectInterface
-     *
-     * @ORM\ManyToOne(targetEntity="ProjectInterface")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
-     * @Gedmo\Versioned
-     */
-    private $project;
-
-    /**
-     * @var ContractInterface
-     *
-     * @ORM\ManyToOne(targetEntity="ContractInterface")
-     * @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=true)
-     * @Gedmo\Versioned
-     */
-    private $contract;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -112,7 +92,7 @@ class Task
      */
     public function __construct()
     {
-        $this->trackings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->trackings = new ArrayCollection();
     }
     
     /**
@@ -246,7 +226,7 @@ class Task
      * @param \SmartProject\TimesheetBundle\Entity\Timesheet $timesheet
      * @return Task
      */
-    public function setTimesheet(\SmartProject\TimesheetBundle\Entity\Timesheet $timesheet = null)
+    public function setTimesheet(Timesheet $timesheet = null)
     {
         $this->timesheet = $timesheet;
     
@@ -264,81 +244,12 @@ class Task
     }
 
     /**
-     * Set client
-     *
-     * @param \SmartProject\TimesheetBundle\Entity\ClientInterface $client
-     * @return Task
-     */
-    public function setClient(\SmartProject\TimesheetBundle\Entity\ClientInterface $client = null)
-    {
-        $this->client = $client;
-    
-        return $this;
-    }
-
-    /**
-     * Get client
-     *
-     * @return \SmartProject\TimesheetBundle\Entity\ClientInterface 
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * Set project
-     *
-     * @param \SmartProject\TimesheetBundle\Entity\ProjectInterface $project
-     * @return Task
-     */
-    public function setProject(\SmartProject\TimesheetBundle\Entity\ProjectInterface $project = null)
-    {
-        $this->project = $project;
-    
-        return $this;
-    }
-
-    /**
-     * Get project
-     *
-     * @return \SmartProject\TimesheetBundle\Entity\ProjectInterface 
-     */
-    public function getProject()
-    {
-        return $this->project;
-    }
-
-    /**
-     * Set contract
-     *
-     * @param \SmartProject\TimesheetBundle\Entity\ContractInterface $contract
-     * @return Task
-     */
-    public function setContract(\SmartProject\TimesheetBundle\Entity\ContractInterface $contract = null)
-    {
-        $this->contract = $contract;
-    
-        return $this;
-    }
-
-    /**
-     * Get contract
-     *
-     * @return \SmartProject\TimesheetBundle\Entity\ContractInterface 
-     */
-    public function getContract()
-    {
-        return $this->contract;
-    }
-
-    /**
      * Add trackings
      *
      * @param \SmartProject\TimesheetBundle\Entity\Tracking $trackings
      * @return Task
      */
-    public function addTracking(\SmartProject\TimesheetBundle\Entity\Tracking $trackings)
+    public function addTracking(Tracking $trackings)
     {
         $this->trackings[] = $trackings;
     
@@ -350,7 +261,7 @@ class Task
      *
      * @param \SmartProject\TimesheetBundle\Entity\Tracking $trackings
      */
-    public function removeTracking(\SmartProject\TimesheetBundle\Entity\Tracking $trackings)
+    public function removeTracking(Tracking $trackings)
     {
         $this->trackings->removeElement($trackings);
     }

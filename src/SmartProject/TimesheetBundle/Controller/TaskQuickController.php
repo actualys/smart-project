@@ -2,7 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Controller;
 
-use SmartProject\TimesheetBundle\Entity\Task;
+use SmartProject\TimesheetBundle\Entity\Task\TaskProject;
 use SmartProject\TimesheetBundle\Entity\Timesheet;
 use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
 use SmartProject\TimesheetBundle\Entity\Tracking;
@@ -50,7 +50,7 @@ class TaskQuickController extends Controller
                 $timesheet = $timesheetRepository->createForUser($user, $date);
             }
 
-            $task = new Task();
+            $task = new TaskProject();
             $task->setTimesheet($timesheet);
             $task->setDescription($form_data->getDescription());
             $task->setTags($form_data->getTags());
@@ -199,15 +199,21 @@ class TaskQuickController extends Controller
      */
     private function createEditForm(Tracking $tracking)
     {
+        $task = $tracking->getTask();
+
+        if (!$task instanceof TaskProject) {
+            return null;
+        }
+
         $entity = new TaskQuickModel();
         $entity->setId($tracking->getId());
         $entity->setDate($tracking->getDate());
         $entity->setDuration($tracking->getDuration());
-        $entity->setDescription($tracking->getTask()->getDescription());
-        $entity->setTags($tracking->getTask()->getTags());
-        $entity->setClient($tracking->getTask()->getClient());
-        $entity->setProject($tracking->getTask()->getProject());
-        $entity->setContract($tracking->getTask()->getContract());
+        $entity->setDescription($task->getDescription());
+        $entity->setTags($task->getTags());
+        $entity->setClient($task->getClient());
+        $entity->setProject($task->getProject());
+        $entity->setContract($task->getContract());
 
         $form = $this->createForm(
             new TaskQuickType(TaskQuickType::MODE_EDIT),
@@ -245,6 +251,7 @@ class TaskQuickController extends Controller
         if ($form->isValid()) {
             $form_data = $form->getData();
 
+            /** @var TaskProject $task */
             $task = $tracking->getTask();
             $task->setDescription($form_data->getDescription());
             $task->setTags($form_data->getTags());

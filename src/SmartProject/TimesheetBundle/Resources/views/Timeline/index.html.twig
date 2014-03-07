@@ -138,8 +138,7 @@
                 picker.datepicker({
                     autoclose: true,
                     format: 'yyyy-mm-dd',
-                    weekStart: 1,
-                    daysOfWeekDisabled: '0,6'
+                    weekStart: 1
                 });
                 picker.datepicker('update', picker[0].innerText);
                 picker.datepicker().on('changeDate', function (e) {

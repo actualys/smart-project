@@ -8,7 +8,7 @@ use SmartProject\TimesheetBundle\Entity\UserInterface;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user_account")
+ * @ORM\Table(name="security_user")
  */
 class User extends BaseUser implements UserInterface
 {

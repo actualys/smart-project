@@ -4,13 +4,13 @@ namespace SmartProject\ProjectBundle\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use SmartProject\TimesheetBundle\Entity\ContractInterface;
+use SmartProject\TimesheetBundle\Entity\Task\ContractInterface;
 
 /**
  * Contract
  *
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @ORM\Table(name="contract")
+ * @ORM\Table(name="project_contract")
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ContractRepository")
  */
 class Contract implements ContractInterface
@@ -323,7 +323,7 @@ class Contract implements ContractInterface
      *
      * @return Contract
      */
-    public function setProject(\SmartProject\ProjectBundle\Entity\Project $project = null)
+    public function setProject(Project $project = null)
     {
         $this->project = $project;
 

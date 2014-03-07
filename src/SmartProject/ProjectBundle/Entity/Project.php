@@ -2,9 +2,10 @@
 
 namespace SmartProject\ProjectBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use SmartProject\TimesheetBundle\Entity\ProjectInterface;
+use SmartProject\TimesheetBundle\Entity\Task\ProjectInterface;
 
 /**
  * Project
@@ -155,8 +156,8 @@ class Project implements ProjectInterface
      */
     public function __construct()
     {
-        $this->children  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contracts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->children  = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
     }
     
     /**
@@ -511,7 +512,7 @@ class Project implements ProjectInterface
      * @param \SmartProject\ProjectBundle\Entity\Client $client
      * @return Project
      */
-    public function setClient(\SmartProject\ProjectBundle\Entity\Client $client = null)
+    public function setClient(Client $client = null)
     {
         $this->client = $client;
     
@@ -534,7 +535,7 @@ class Project implements ProjectInterface
      * @param \SmartProject\ProjectBundle\Entity\Project $parent
      * @return Project
      */
-    public function setParent(\SmartProject\ProjectBundle\Entity\Project $parent = null)
+    public function setParent(Project $parent = null)
     {
         $this->parent = $parent;
     
@@ -557,7 +558,7 @@ class Project implements ProjectInterface
      * @param \SmartProject\ProjectBundle\Entity\Project $children
      * @return Project
      */
-    public function addChildren(\SmartProject\ProjectBundle\Entity\Project $children)
+    public function addChildren(Project $children)
     {
         $this->children[] = $children;
     
@@ -569,7 +570,7 @@ class Project implements ProjectInterface
      *
      * @param \SmartProject\ProjectBundle\Entity\Project $children
      */
-    public function removeChildren(\SmartProject\ProjectBundle\Entity\Project $children)
+    public function removeChildren(Project $children)
     {
         $this->children->removeElement($children);
     }
@@ -590,7 +591,7 @@ class Project implements ProjectInterface
      * @param \SmartProject\ProjectBundle\Entity\Contract $contracts
      * @return Project
      */
-    public function addContract(\SmartProject\ProjectBundle\Entity\Contract $contracts)
+    public function addContract(Contract $contracts)
     {
         $this->contracts[] = $contracts;
     
@@ -602,7 +603,7 @@ class Project implements ProjectInterface
      *
      * @param \SmartProject\ProjectBundle\Entity\Contract $contracts
      */
-    public function removeContract(\SmartProject\ProjectBundle\Entity\Contract $contracts)
+    public function removeContract(Contract $contracts)
     {
         $this->contracts->removeElement($contracts);
     }

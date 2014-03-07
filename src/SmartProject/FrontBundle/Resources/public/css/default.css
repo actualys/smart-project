@@ -101,3 +101,7 @@ body {
     text-align: center;
     font-style: italic;
 }
+
+.datepicker {
+    z-index: 11000;
+}

@@ -59,6 +59,10 @@
             });
             {% endfor %}
             {% endfor %}
+
+            // Select2 fix
+            // cf : http://stackoverflow.com/a/19574076/1931915
+            $.fn.modal.Constructor.prototype.enforceFocus = function() {};
         });
     </script>
 {% endblock foot_script %}
