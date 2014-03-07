@@ -1,0 +1,7 @@
+parameters:
+#    smart_project_calendar.example.class: SmartProject\CalendarBundle\Example
+
+services:
+#    smart_project_calendar.example:
+#        class: %smart_project_calendar.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

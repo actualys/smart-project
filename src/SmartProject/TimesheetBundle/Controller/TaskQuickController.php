@@ -3,8 +3,7 @@
 namespace SmartProject\TimesheetBundle\Controller;
 
 use SmartProject\TimesheetBundle\Entity\Task\TaskProject;
-use SmartProject\TimesheetBundle\Entity\Timesheet;
-use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
+use SmartProject\TimesheetBundle\Entity\Task\TaskProjectRepository;
 use SmartProject\TimesheetBundle\Entity\Tracking;
 use SmartProject\TimesheetBundle\Entity\TrackingRepository;
 use SmartProject\TimesheetBundle\Form\TaskQuickModel;
@@ -37,52 +36,28 @@ class TaskQuickController extends Controller
         $form->handleRequest($request);
         $url = $form_data->getUrl();
 
+        $date = new \DateTime();
+        $code = 400;
+
         if ($form->isValid()) {
-            $user = $this->getUser();
+            /** @var TaskProjectRepository $taskProjectRepository */
+            $taskProjectRepository = $this->getDoctrine()->getRepository(
+                'SmartProjectTimesheetBundle:Task\TaskProject'
+            );
+
+            $task = $taskProjectRepository->createTaskFromQuickForm($form_data, $this->getUser());
+            $code = 201;
             $date = $form_data->getDate();
 
-            /** @var TimesheetRepository $timesheetRepository */
-            $timesheetRepository = $this->getDoctrine()->getRepository('SmartProjectTimesheetBundle:Timesheet');
-            /** @var Timesheet $timesheet */
-            $timesheet = $timesheetRepository->findByUser($user, $date);
-
-            if (null === $timesheet) {
-                $timesheet = $timesheetRepository->createForUser($user, $date);
-            }
-
-            $task = new TaskProject();
-            $task->setTimesheet($timesheet);
-            $task->setDescription($form_data->getDescription());
-            $task->setTags($form_data->getTags());
-            $task->setClient($form_data->getClient());
-            $task->setProject($form_data->getProject());
-            $task->setContract($form_data->getContract());
-
-            $tracking = new Tracking();
-            $tracking->setTask($task);
-            $tracking->setDate($date);
-            $tracking->setDuration($form_data->getDuration());
-            $tracking->setStatus(Tracking::STATUS_NEW);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($timesheet);
-            $em->persist($task);
-            $em->persist($tracking);
-            $em->flush();
-
-            $code      = 201;
+            // Reset form
             $form_data = new TaskQuickModel();
             $form      = $this->createCreateForm($form_data);
 
             $this->get('session')->getFlashBag()->add('success', 'Task correctly created: #' . $task->getId());
-        } else {
-            $code = 400;
         }
 
         if ($request->isXmlHttpRequest()) {
-            $parameters = array(
-                'form' => $form->createView(),
-            );
+            $parameters = array('form' => $form->createView());
             $content    = $this->renderView('SmartProjectTimesheetBundle:TaskQuick:new_form.html.twig', $parameters);
             $data       = array(
                 'content' => $content,
@@ -90,15 +65,17 @@ class TaskQuickController extends Controller
                 'url'     => '',
                 'message' => '',
             );
+
             if ($code < 400) {
                 $url = $this->generateUrl(
                     'timeline_mode',
-                    array('mode' => 'auto', 'date' => $tracking->getDate()->format('Y-m-d'))
+                    array('mode' => 'auto', 'date' => $date->format('Y-m-d'))
                 );
 
                 $data['action'] = 'redirect';
                 $data['url']    = $url;
             }
+
             $response = new JsonResponse($data, $code);
 
             return $response;
@@ -151,12 +128,13 @@ class TaskQuickController extends Controller
         }
 
         $form_data = new TaskQuickModel();
+
         if (null !== $date) {
             $date = new \DateTime($date);
             $form_data->setDate($date);
         }
-        $form_data->setUrl($url);
 
+        $form_data->setUrl($url);
         $form = $this->createCreateForm($form_data);
 
         return array(
@@ -235,8 +213,8 @@ class TaskQuickController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $code = 202;
+        $em   = $this->getDoctrine()->getManager();
+        $code = 400;
 
         /** @var Tracking $tracking */
         $tracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking')->find($id);
@@ -251,26 +229,20 @@ class TaskQuickController extends Controller
         if ($form->isValid()) {
             $form_data = $form->getData();
 
-            /** @var TaskProject $task */
-            $task = $tracking->getTask();
-            $task->setDescription($form_data->getDescription());
-            $task->setTags($form_data->getTags());
-            $task->setClient($form_data->getClient());
-            $task->setProject($form_data->getProject());
-            $task->setContract($form_data->getContract());
+            /** @var TaskProjectRepository $taskProjectRepository */
+            $taskProjectRepository = $this->getDoctrine()->getRepository(
+                'SmartProjectTimesheetBundle:Task\TaskProject'
+            );
 
-            $tracking->setDate($form_data->getDate());
-            $tracking->setDuration($form_data->getDuration());
+            $done = $taskProjectRepository->updateTaskFromQuickForm($form_data, $this->getUser(), $tracking);
 
-            $em->flush();
-        } else {
-            $code = 400;
+            if ($done) {
+                $code = 202;
+            }
         }
 
         if ($request->isXmlHttpRequest()) {
-            $parameters = array(
-                'form' => $form->createView(),
-            );
+            $parameters = array('form' => $form->createView());
             $content    = $this->renderView('SmartProjectTimesheetBundle:TaskQuick:edit_form.html.twig', $parameters);
             $data       = array(
                 'content' => $content,
@@ -278,13 +250,14 @@ class TaskQuickController extends Controller
                 'url'     => '',
                 'message' => '',
             );
+
             if ($code < 400) {
                 $url = $this->generateUrl(
                     'timeline_mode',
                     array('mode' => 'auto', 'date' => $tracking->getDate()->format('Y-m-d'))
                 );
 
-                $data['action'] = 'reload';//'redirect';
+                $data['action'] = 'reload';
                 $data['url']    = $url;
             }
             $response = new JsonResponse($data, $code);
@@ -304,7 +277,7 @@ class TaskQuickController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $em       = $this->getDoctrine()->getManager();
-        $code     = 202;
+        $code     = 400;
         $duration = 0;
         $total    = '';
 
@@ -314,17 +287,17 @@ class TaskQuickController extends Controller
             $tracking = $em->getRepository('SmartProjectTimesheetBundle:Tracking')->find($id);
             $date     = $tracking->getDate();
 
-            if (!$tracking || $tracking->getTask()->getTimesheet()->getUser() != $this->getUser()) {
-                $code = 400;
-            } else {
+            if ($tracking && $tracking->getTask()->getTimesheet()->getUser() == $this->getUser()) {
                 $task = $tracking->getTask();
 
                 if ($task->getTrackings()->contains($tracking) && $task->getTrackings()->count() <= 1) {
                     $em->remove($task);
                 }
-                $em->remove($tracking);
 
+                $em->remove($tracking);
                 $em->flush();
+
+                $code = 202;
             }
 
             /** @var TrackingRepository $repositoryTracking */

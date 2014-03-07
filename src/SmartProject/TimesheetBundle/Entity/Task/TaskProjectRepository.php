@@ -3,6 +3,11 @@
 namespace SmartProject\TimesheetBundle\Entity\Task;
 
 use Doctrine\ORM\EntityRepository;
+use SmartProject\TimesheetBundle\Entity\Timesheet;
+use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
+use SmartProject\TimesheetBundle\Entity\Tracking;
+use SmartProject\TimesheetBundle\Entity\UserInterface;
+use SmartProject\TimesheetBundle\Form\TaskQuickModel;
 
 /**
  * TaskProjectRepository
@@ -12,4 +17,90 @@ use Doctrine\ORM\EntityRepository;
  */
 class TaskProjectRepository extends EntityRepository
 {
+    /**
+     * @param TaskQuickModel $form
+     * @param UserInterface  $user
+     *
+     * @return TaskProject
+     */
+    public function createTaskFromQuickForm(TaskQuickModel $form, UserInterface $user)
+    {
+        /** @var TimesheetRepository $timesheetRepository */
+        $timesheetRepository = $this->_em->getRepository('SmartProjectTimesheetBundle:Timesheet');
+
+        $date = $form->getDate();
+
+        /** @var Timesheet $timesheet */
+        $timesheet = $timesheetRepository->findByUser($user, $date);
+
+        if (null === $timesheet) {
+            $timesheet = $timesheetRepository->createForUser($user, $date);
+        }
+
+        $task = new TaskProject();
+        $task->setTimesheet($timesheet);
+        $task->setDescription($form->getDescription());
+        $task->setTags($form->getTags());
+        $task->setClient($form->getClient());
+        $task->setProject($form->getProject());
+        $task->setContract($form->getContract());
+
+        $tracking = new Tracking();
+        $tracking->setTask($task);
+        $tracking->setDate($date);
+        $tracking->setDuration($form->getDuration());
+        $tracking->setStatus(Tracking::STATUS_NEW);
+
+        $this->_em->persist($timesheet);
+        $this->_em->persist($task);
+        $this->_em->persist($tracking);
+        $this->_em->flush();
+        
+        return $task;
+    }
+
+    /**
+     * @param TaskQuickModel $form
+     * @param UserInterface  $user
+     * @param Tracking       $tracking
+     *
+     * @return bool
+     */
+    public function updateTaskFromQuickForm(TaskQuickModel $form, UserInterface $user, Tracking $tracking)
+    {
+        try {
+            /** @var TimesheetRepository $timesheetRepository */
+            $timesheetRepository = $this->_em->getRepository('SmartProjectTimesheetBundle:Timesheet');
+
+            $date = $form->getDate();
+
+            /** @var Timesheet $timesheet */
+            $timesheet = $timesheetRepository->findByUser($user, $date);
+
+            if (null === $timesheet) {
+                $timesheet = $timesheetRepository->createForUser($user, $date);
+            }
+
+            /** @var TaskProject $task */
+            $task = $tracking->getTask();
+
+            $task->setTimesheet($timesheet);
+            $task->setDescription($form->getDescription());
+            $task->setTags($form->getTags());
+            $task->setClient($form->getClient());
+            $task->setProject($form->getProject());
+            $task->setContract($form->getContract());
+
+            $tracking->setDate($form->getDate());
+            $tracking->setDuration($form->getDuration());
+
+            $this->_em->persist($task);
+            $this->_em->persist($tracking);
+            $this->_em->flush();
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
 }

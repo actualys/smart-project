@@ -31,6 +31,7 @@ class AppKernel extends Kernel
             new SmartProject\ProjectBundle\SmartProjectProjectBundle(),
             new SmartProject\TimesheetBundle\SmartProjectTimesheetBundle(),
             new SmartProject\SyncBundle\SmartProjectSyncBundle(),
+            new SmartProject\CalendarBundle\SmartProjectCalendarBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
