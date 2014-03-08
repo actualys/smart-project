@@ -28,7 +28,7 @@ class ClientController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('SmartProjectProjectBundle:Client')->findAll();
+        $entities = $em->getRepository('SmartProjectProjectBundle:Client')->findBy(array(), array('name' => 'asc'));
 
         return array(
             'entities' => $entities,
