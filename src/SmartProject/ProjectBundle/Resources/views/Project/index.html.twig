@@ -31,8 +31,11 @@
             {% for entity in client.projects %}
                 <tr>
                     <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                    <td><span style="display: inline-block; width: {{ entity.lvl * 8 }}px"></span><a
-                                href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                    <td>
+                        {% if entity.lvl %}
+                            <span style="display: inline-block; width: {{ entity.lvl * 15 }}px; text-align: right; padding-right: 10px">\</span>
+                        {% endif %}
+                        <a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
                     {#<td>#}
                     {#{% if entity.redmineIdentifier %}#}
                     {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"#}
@@ -75,7 +78,12 @@
             {% for entity in projects_not_affected %}
                 <tr>
                     <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
-                    <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a></td>
+                    <td>
+                        {% for i in range(0, entity.lvl) if entity.lvl > 0 %}
+                            <span style="display: inline-block; width: 15px"></span>
+                        {% endfor %}
+                        <a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.name }}</a>
+                    </td>
                     {#<td>#}
                     {#{% if entity.redmineIdentifier %}#}
                     {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"#}
@@ -91,6 +99,10 @@
                            class="btn btn-default btn-xs">show</a>
                         <a href="{{ path('project_edit', { 'id': entity.id }) }}"
                            class="btn btn-default btn-xs">edit</a>
+                        {% if entity.lvl == 0 %}
+                            <a href="{{ path('project_create_client', { 'id': entity.id }) }}"
+                               class="btn btn-default btn-xs">create project</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

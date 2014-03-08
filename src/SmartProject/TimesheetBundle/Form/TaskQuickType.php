@@ -2,6 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -66,6 +67,10 @@ class TaskQuickType extends AbstractType
                   'required'                       => false,
                   'class'                          => 'SmartProject\ProjectBundle\Entity\Client',
                   'property'                       => 'name',
+                  'query_builder'                  => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('c')
+                          ->orderBy('c.name', 'ASC');
+                    },
               )
           )
           ->add(
@@ -88,6 +93,11 @@ class TaskQuickType extends AbstractType
                   'required'                       => false,
                   'class'                          => 'SmartProject\ProjectBundle\Entity\Project',
                   'property'                       => 'clientIdName',
+                  'query_builder'                  => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('p')
+                          ->orderBy('p.root', 'ASC')
+                          ->addOrderBy('p.lft', 'ASC');
+                    },
               )
           )
           ->add(
@@ -110,6 +120,10 @@ class TaskQuickType extends AbstractType
                   'required'                       => false,
                   'class'                          => 'SmartProject\ProjectBundle\Entity\Contract',
                   'property'                       => 'projectIdName',
+                  'query_builder'                  => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('c')
+                          ->orderBy('c.name', 'ASC');
+                    },
               )
           )
           ->add(
@@ -139,8 +153,8 @@ class TaskQuickType extends AbstractType
                       'icon' => 'calendar',
                   ),
                   'attr'                           => array(
-                      'autocomplete'       => 'off',
-                      'placeholder'        => 'Date',
+                      'autocomplete' => 'off',
+                      'placeholder'  => 'Date',
                   ),
               )
           );

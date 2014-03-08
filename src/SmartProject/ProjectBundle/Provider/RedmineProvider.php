@@ -38,21 +38,22 @@ class RedmineProvider
         /** @var \Doctrine\ORM\EntityManager $entityManager */
         $entityManager = $this->doctrine->getManager();
         $entities      = array();
+        $parents       = array();
         $offset        = 0;
+
+        /** @var ProjectRepository $repository */
+        $repository = $entityManager->getRepository('SmartProjectProjectBundle:Project');
 
         do {
             $response = $this->client->api('project')->all(
                 array(
-                    'limit'  => 25,
+                    'limit' => 25,
                     'offset' => $offset,
                 )
             );
 
             $projects = $response['projects'];
             $offset += count($projects);
-
-            /** @var ProjectRepository $repository */
-            $repository = $entityManager->getRepository('SmartProjectProjectBundle:Project');
 
             foreach ($projects as $project) {
                 /** @var array $entity */
@@ -67,14 +68,40 @@ class RedmineProvider
                     /** @var Project $entity */
                 }
 
-                $entity->setName($project['name']);
+                $entity->setName(trim($project['name']));
                 $entity->setRedmineId($project['id']);
                 $entity->setRedmineIdentifier($project['identifier']);
+                $entity->setParent(null);
 
                 $entities[$project['id']] = $entity;
+
+                if (isset($project['parent']['id'])) {
+                    $parents[$project['parent']['id']][] = $entity;
+                }
             }
 
         } while ($offset < $response['total_count'] && count($projects));
+
+        uasort(
+            $entities,
+            function ($a, $b) {
+                return strcasecmp($a->getName(), $b->getName());
+            }
+        );
+
+        foreach ($parents as $parentId => $projects) {
+            if (isset($entities[$parentId])) {
+                /** @var Project $parent */
+                $parent = $entities[$parentId];
+
+                // Set new positions
+                /** @var Project $project */
+                foreach ($projects as $project) {
+                    $parent->addChildren($project);
+                    $project->setParent($parent);
+                }
+            }
+        }
 
         if (count($entities)) {
             foreach ($entities as $entity) {
@@ -83,5 +110,17 @@ class RedmineProvider
 
             $entityManager->flush();
         }
+
+        foreach ($parents as $parentId => $projects) {
+            if (isset($entities[$parentId])) {
+                /** @var Project $parent */
+                $parent = $entities[$parentId];
+                if (null === $parent->getParent() && $parent->getChildren()) {
+                    $repository->reorder($parent, 'name', 'asc', false);
+                }
+            }
+        }
+
+        $repository->verify();
     }
-} 
+}

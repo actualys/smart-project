@@ -48,6 +48,8 @@ class MenuBuilder
         $users = $menu->addChild('Users', array(
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-user',
+                'dropdown' => true,
+                'caret' => true,
             ));
         $users->addChild('Users', array(
                 'uri' => '#',
@@ -77,8 +79,17 @@ class MenuBuilder
         $todo = $menu->addChild('Todo List', array(
                 'uri' => '#',
                 'icon' => 'glyphicon glyphicon-list',
+                'dropdown' => true,
+                'caret' => true,
             ));
-        $todo->addChild('Synchronize Redmine', array(
+        $todo->addChild('Listing', array(
+                'uri' => '#',
+            ));
+        $todo->addChild('Add task', array(
+                'uri' => '#',
+            ));
+        $todo->addChild('divider_3', array('divider' => true));
+        $todo->addChild('Archives', array(
                 'uri' => '#',
             ));
 

@@ -2,6 +2,7 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
+use SmartProject\ProjectBundle\Entity\Client;
 use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -10,8 +11,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartProject\ProjectBundle\Entity\Project;
 use SmartProject\ProjectBundle\Form\ProjectType;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Project controller.
@@ -30,6 +33,35 @@ class ProjectController extends Controller
     {
         $this->get('smart_project_project.redmine')->synchronize();
         $this->get('session')->getFlashBag()->add('success', 'Project Redmine : synchronized');
+
+        $url = $this->generateUrl('project');
+
+        return $this->redirect($url, 302);
+    }
+
+    /**
+     * @Route("/{id}/create-client", name="project_create_client")
+     * @Method("GET")
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project", options={"id" = "project"})
+     */
+    public function createClient(Request $request, Project $project)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $client = new Client();
+        $client->setName($project->getName());
+        $project->setClient($client);
+
+        /** @var ProjectRepository $repository */
+        $repository = $em->getRepository('SmartProjectProjectBundle:Project');
+        $children   = $repository->getChildren($project);
+        /** @var Project $project */
+        foreach ($children as $project) {
+            $project->setClient($client);
+        }
+
+        $em->persist($client);
+        $em->flush();
 
         $url = $this->generateUrl('project');
 
@@ -87,7 +119,8 @@ class ProjectController extends Controller
         $builder = $repoClient->createQueryBuilder('c')
           ->select('c, p')
           ->join('c.projects', 'p')
-          ->orderBy('c.name', 'asc');
+          ->orderBy('c.name', 'asc')
+          ->addOrderBy('p.lft', 'asc');
         $query   = $builder->getQuery();
 
         $clients = $query->execute();
@@ -279,6 +312,16 @@ class ProjectController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            // Additional updates
+
+            /** @var ProjectRepository $repository */
+            $repository = $em->getRepository('SmartProjectProjectBundle:Project');
+            $children   = $repository->getChildren($entity);
+            /** @var Project $project */
+            foreach ($children as $project) {
+                $project->setClient($entity->getClient());
+            }
+
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Project updated');

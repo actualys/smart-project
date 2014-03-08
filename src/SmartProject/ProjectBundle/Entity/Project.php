@@ -201,7 +201,7 @@ class Project implements ProjectInterface
     public function getClientIdName()
     {
         if ($this->client) {
-            return $this->client->getId() . ':' . $this->name;
+            return $this->client->getId() . ':' . str_repeat('.', 2 * $this->lvl) . $this->name;
         } else {
             return '0:' . $this->name;
         }
