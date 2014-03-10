@@ -2,6 +2,7 @@
 
 namespace SmartProject\SyncBundle\Controller\Provider;
 
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -17,7 +18,6 @@ use SmartProject\SyncBundle\Form\Provider\ProviderRedmineType;
  */
 class ProviderRedmineController extends Controller
 {
-
     /**
      * Lists all Provider\ProviderRedmine entities.
      *
@@ -35,6 +35,7 @@ class ProviderRedmineController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new Provider\ProviderRedmine entity.
      *
@@ -45,7 +46,7 @@ class ProviderRedmineController extends Controller
     public function createAction(Request $request)
     {
         $entity = new ProviderRedmine();
-        $form = $this->createCreateForm($entity);
+        $form   = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -63,18 +64,22 @@ class ProviderRedmineController extends Controller
     }
 
     /**
-    * Creates a form to create a Provider\ProviderRedmine entity.
-    *
-    * @param ProviderRedmine $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to create a Provider\ProviderRedmine entity.
+     *
+     * @param ProviderRedmine $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createCreateForm(ProviderRedmine $entity)
     {
-        $form = $this->createForm(new ProviderRedmineType(), $entity, array(
-            'action' => $this->generateUrl('provider_redmine_create'),
-            'method' => 'POST',
-        ));
+        $form = $this->createForm(
+            new ProviderRedmineType(),
+            $entity,
+            array(
+                'action' => $this->generateUrl('provider_redmine_create'),
+                'method' => 'POST',
+            )
+        );
 
         $form->add('submit', 'submit', array('label' => 'Create'));
 
@@ -141,7 +146,7 @@ class ProviderRedmineController extends Controller
             throw $this->createNotFoundException('Unable to find Provider\ProviderRedmine entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $editForm   = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
@@ -152,23 +157,28 @@ class ProviderRedmineController extends Controller
     }
 
     /**
-    * Creates a form to edit a Provider\ProviderRedmine entity.
-    *
-    * @param ProviderRedmine $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Provider\ProviderRedmine entity.
+     *
+     * @param ProviderRedmine $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(ProviderRedmine $entity)
     {
-        $form = $this->createForm(new ProviderRedmineType(), $entity, array(
-            'action' => $this->generateUrl('provider_redmine_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
+        $form = $this->createForm(
+            new ProviderRedmineType(),
+            $entity,
+            array(
+                'action' => $this->generateUrl('provider_redmine_update', array('id' => $entity->getId())),
+                'method' => 'PUT',
+            )
+        );
 
         $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
+
     /**
      * Edits an existing Provider\ProviderRedmine entity.
      *
@@ -187,7 +197,7 @@ class ProviderRedmineController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $editForm   = $this->createEditForm($entity);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -202,6 +212,7 @@ class ProviderRedmineController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Provider\ProviderRedmine entity.
      *
@@ -214,7 +225,7 @@ class ProviderRedmineController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em     = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('SmartProjectSyncBundle:Provider\ProviderRedmine')->find($id);
 
             if (!$entity) {
@@ -237,11 +248,12 @@ class ProviderRedmineController extends Controller
      */
     private function createDeleteForm($id)
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('provider_redmine_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+        /** @var FormBuilder $formBuilder */
+        $formBuilder = $this->createFormBuilder()
+          ->setAction($this->generateUrl('provider_redmine_delete', array('id' => $id)))
+          ->setMethod('DELETE')
+          ->add('submit', 'submit', array('label' => 'Delete'));
+
+        return $formBuilder->getForm();
     }
 }
