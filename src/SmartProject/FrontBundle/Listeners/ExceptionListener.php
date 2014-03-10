@@ -77,10 +77,7 @@ class ExceptionListener
             $response->setSharedMaxAge(0);
             $event->setResponse($response);
         } elseif ($exception instanceof AccessDeniedHttpException) {
-            $response = new RedirectResponse(
-                $this->container->get('router')->generate('fos_user_security_login'),
-                302
-            );
+            $response = new RedirectResponse('/', 302);
             $response->setSharedMaxAge(0);
             $event->setResponse($response);
         } else {
