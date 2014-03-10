@@ -38,11 +38,9 @@ class MenuBuilder
     }
 
     /**
-     * @param Request $request
-     *
      * @return \Knp\Menu\ItemInterface
      */
-    public function createMainMenu(Request $request)
+    public function createMainMenu() // Request $request
     {
         $menu = $this->factory->createItem('root', array(
                 'navbar' => true,
@@ -125,7 +123,10 @@ class MenuBuilder
         return $menu;
     }
 
-    public function createUserMenu(Request $request)
+    /**
+     * @return \Knp\Menu\ItemInterface
+     */
+    public function createUserMenu() // Request $request
     {
         $menu = $this->factory->createItem('root', array(
                 'navbar' => true,
