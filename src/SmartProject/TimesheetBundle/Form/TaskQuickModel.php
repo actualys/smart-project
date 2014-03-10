@@ -31,17 +31,17 @@ class TaskQuickModel
     private $date;
 
     /**
-     * @var ClientInterface
+     * @var ClientInterface|null
      */
     private $client;
 
     /**
-     * @var ProjectInterface
+     * @var ProjectInterface|null
      */
     private $project;
 
     /**
-     * @var ContractInterface
+     * @var ContractInterface|null
      */
     private $contract;
 
@@ -175,7 +175,7 @@ class TaskQuickModel
     /**
      * @param \SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
      */
-    public function setClient($client)
+    public function setClient($client = null)
     {
         $this->client = $client;
     }
@@ -191,7 +191,7 @@ class TaskQuickModel
     /**
      * @param \SmartProject\TimesheetBundle\Entity\Task\ContractInterface $contract
      */
-    public function setContract($contract)
+    public function setContract($contract = null)
     {
         $this->contract = $contract;
     }
@@ -207,7 +207,7 @@ class TaskQuickModel
     /**
      * @param \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface $project
      */
-    public function setProject($project)
+    public function setProject($project = null)
     {
         $this->project = $project;
     }
