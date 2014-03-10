@@ -35,24 +35,24 @@ class SecurityListener extends ContainerAware implements EventSubscriberInterfac
     public static function getSubscribedEvents()
     {
         return array(
-            FOSUserEvents::SECURITY_IMPLICIT_LOGIN => 'onImplicitLogin',
-            'security.interactive_login'           => 'onLoginSuccess',
+//            FOSUserEvents::SECURITY_IMPLICIT_LOGIN => 'onImplicitLogin',
+//            'security.interactive_login'           => 'onLoginSuccess',
         );
     }
 
-    /**
-     * @param UserEvent $event
-     */
-    public function onImplicitLogin(UserEvent $event)
-    {
-        // TODO : log connexion
-    }
-
-    /**
-     * @param InteractiveLoginEvent $event
-     */
-    public function onLoginSuccess(InteractiveLoginEvent $event)
-    {
-        // TODO : log connexion
-    }
+//    /**
+//     * @param UserEvent $event
+//     */
+//    public function onImplicitLogin(UserEvent $event)
+//    {
+//        // TODO : log connexion
+//    }
+//
+//    /**
+//     * @param InteractiveLoginEvent $event
+//     */
+//    public function onLoginSuccess(InteractiveLoginEvent $event)
+//    {
+//        // TODO : log connexion
+//    }
 }
