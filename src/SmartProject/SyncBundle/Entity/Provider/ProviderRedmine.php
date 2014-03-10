@@ -7,7 +7,7 @@ use SmartProject\SyncBundle\Entity\Provider;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Redmine Provider
+ * ProviderRedmine Provider
  *
  * @Gedmo\Loggable
  * @ORM\Table(name="provider_redmine")
@@ -55,7 +55,7 @@ class ProviderRedmine extends Provider
      * Set apiUser
      *
      * @param string $apiUser
-     * @return Redmine
+     * @return ProviderRedmine
      */
     public function setApiUser($apiUser)
     {
@@ -78,7 +78,7 @@ class ProviderRedmine extends Provider
      * Set apiKey
      *
      * @param string $apiKey
-     * @return Redmine
+     * @return ProviderRedmine
      */
     public function setApiKey($apiKey)
     {
@@ -101,7 +101,7 @@ class ProviderRedmine extends Provider
      * Set url
      *
      * @param string $url
-     * @return Redmine
+     * @return ProviderRedmine
      */
     public function setUrl($url)
     {
@@ -124,7 +124,7 @@ class ProviderRedmine extends Provider
      * Set login
      *
      * @param string $login
-     * @return Redmine
+     * @return ProviderRedmine
      */
     public function setLogin($login)
     {
@@ -147,7 +147,7 @@ class ProviderRedmine extends Provider
      * Set password
      *
      * @param string $password
-     * @return Redmine
+     * @return ProviderRedmine
      */
     public function setPassword($password)
     {
