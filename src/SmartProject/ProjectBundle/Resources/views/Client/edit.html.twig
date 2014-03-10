@@ -4,17 +4,48 @@
     Client edit
 {% endblock %}
 
-
 {% block content_content -%}
+    {{ form_start(edit_form) }}
 
-    {{ form(edit_form) }}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ form_rest(edit_form) }}
+        </div>
+    </div>
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('client') }}">
-                Back to the list
-            </a>
-        </li>
-        <li>{{ form(delete_form) }}</li>
-    </ul>
+    <div>
+        <button type="submit" class="btn btn-block btn-primary">
+            Update
+        </button>
+    </div>
+
+    {{ form_end(edit_form) }}
+{% endblock %}
+
+{% block content_sidebar %}
+
+    {% set view_mode = 'edit' %}
+    {% include 'SmartProjectProjectBundle:Client:sidebar.html.twig' %}
+
+{% endblock %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-client-delete').first().click(function () {
+                var form = $(this).closest('form');
+
+                bootbox.confirm(
+                        'Do you confirm client deletion?',
+                        function (result) {
+                            if (result) {
+                                form.submit();
+                            }
+                        }
+                );
+            });
+        });
+    </script>
 {% endblock %}

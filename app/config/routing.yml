@@ -1,11 +1,12 @@
 smart_project_calendar:
-    resource: "@SmartProjectCalendarBundle/Resources/config/routing.yml"
+    resource: "@SmartProjectCalendarBundle/Controller"
+    type:     annotation
     prefix:   /
 
-#smart_project_sync:
-#    resource: "@SmartProjectSyncBundle/Resources/config/routing.yml"
-#    type:     annotation
-#    prefix:   /sync
+smart_project_sync:
+    resource: "@SmartProjectSyncBundle/Controller"
+    type:     annotation
+    prefix:   /
 
 smart_project_timesheet:
     resource: "@SmartProjectTimesheetBundle/Controller"

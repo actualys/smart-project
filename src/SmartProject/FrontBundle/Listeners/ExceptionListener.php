@@ -3,6 +3,7 @@
 namespace SmartProject\FrontBundle\Listeners;
 
 use Doctrine\ORM\NoResultException;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,17 +17,26 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *
  * @package SmartProject\FrontBundle\Listeners
  */
-class ExceptionListener extends ContainerAware
+class ExceptionListener
 {
+    /**
+     * @var EngineInterface
+     */
+    protected $templating;
+
     /**
      * @var boolean
      */
     protected $debug;
 
-    public function __construct($container, $debug)
+    /**
+     * @param EngineInterface $templating
+     * @param boolean         $debug
+     */
+    public function __construct(EngineInterface $templating, $debug)
     {
-        $this->setContainer($container);
-        $this->debug = $debug ? true : false;
+        $this->templating = $templating;
+        $this->debug      = $debug ? true : false;
     }
 
     /**
@@ -60,7 +70,7 @@ class ExceptionListener extends ContainerAware
 
         if ($exception instanceof NotFoundHttpException || $exception instanceof NoResultException) {
             $params['title'] = '404 Not Found';
-            $message         = $this->container->get('twig')->render(
+            $message         = $this->templating->render(
                 'SmartProjectFrontBundle:Error:error-404.html.twig',
                 $params
             );
@@ -68,21 +78,28 @@ class ExceptionListener extends ContainerAware
             $response->setSharedMaxAge(0);
             $event->setResponse($response);
         } elseif ($exception instanceof AccessDeniedHttpException) {
-            $response = new RedirectResponse($this->container->get('router')->generate('security_accessDenied'), 302);
+            $response = new RedirectResponse(
+                $this->container->get('router')->generate('fos_user_security_login'),
+                302
+            );
             $response->setSharedMaxAge(0);
             $event->setResponse($response);
         } else {
             $params['title'] = '500 Internal Error';
-            $message  = $this->container->get('twig')->render(
+
+            if ($this->debug) {
+                echo '<h3>' . get_class($exception) . '</h3>';
+                echo '<pre>' . $exception->getMessage() . '</pre>';
+
+                throw $exception;
+            }
+
+            $message = $this->templating->render(
                 'SmartProjectFrontBundle:Error:error-500.html.twig',
                 $params
             );
             $response = new Response($message, 500);
             $response->setSharedMaxAge(0);
-
-            if ($this->debug) {
-                throw $exception;
-            }
 
             $event->setResponse($response);
         }

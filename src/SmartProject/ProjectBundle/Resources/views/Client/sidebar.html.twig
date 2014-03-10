@@ -1,0 +1,55 @@
+<div class="buttons btn-group btn-group-justified">
+    <a href="{{ path('client_edit', { 'slug': client.slug }) }}" class="btn btn-primary btn-block"><span
+                class="glyphicon glyphicon-pencil"></span> Edit client</a>
+    <a href="{{ path('project_new', { 'slug': client.slug }) }}" class="btn btn-success btn-block"><span
+                class="glyphicon glyphicon-plus-sign"></span> Add project</a>
+</div>
+
+<br/>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Summary</h3>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>Name</th>
+            <td>{{ client.name }}</td>
+        </tr>
+        <tr>
+            <th>Created at</th>
+            <td>{{ client.createdAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Updated at</th>
+            <td>{{ client.updatedAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+    </table>
+</div>
+
+{% if client.tags or client.description %}
+    <div class="panel panel-default">
+        {% if client.tags %}
+            <div class="panel-heading">
+                <div class="tags">
+                    {% set tags = client.tags|split(',') %}
+                    {% for tag in tags %}
+                        <span class="label label-primary" style="margin-right: 3px">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        {% if client.description %}
+            <div class="panel-body">
+                {{ client.description }}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if delete_form is defined %}
+    {{ form_start(delete_form) }}
+    <a class="btn btn-block btn-danger btn-client-delete">Delete client</a>
+    {{ form_end(delete_form) }}
+{% endif %}

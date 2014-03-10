@@ -8,12 +8,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Provider
  *
+ * @Gedmo\Loggable
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\Table(name="provider")
  * @ORM\Entity(repositoryClass="SmartProject\SyncBundle\Entity\ProviderRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({"redmine" = "\SmartProject\SyncBundle\Entity\Provider\Redmine"})
+ * @ORM\DiscriminatorMap({"redmine" = "\SmartProject\SyncBundle\Entity\Provider\ProviderRedmine"})
  */
 abstract class Provider
 {

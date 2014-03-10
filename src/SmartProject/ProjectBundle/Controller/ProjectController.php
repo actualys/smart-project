@@ -2,6 +2,7 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
+use SmartProject\FrontBundle\SmartProjectFrontBundle;
 use SmartProject\ProjectBundle\Entity\Client;
 use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
@@ -14,7 +15,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartProject\ProjectBundle\Entity\Project;
 use SmartProject\ProjectBundle\Form\ProjectType;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Project controller.
@@ -40,11 +40,11 @@ class ProjectController extends Controller
     }
 
     /**
-     * @Route("/{id}/create-client", name="project_create_client")
+     * @Route("/{slug}/create-client", name="project_create_client")
      * @Method("GET")
-     * @ParamConverter("project", class="SmartProjectProjectBundle:Project", options={"id" = "project"})
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      */
-    public function createClient(Request $request, Project $project)
+    public function createClient(Project $project)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -61,6 +61,7 @@ class ProjectController extends Controller
         }
 
         $em->persist($client);
+        $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
         $em->flush();
 
         $url = $this->generateUrl('project');
@@ -115,23 +116,18 @@ class ProjectController extends Controller
 
         /** @var ClientRepository $repoClient */
         $repoClient = $em->getRepository('SmartProjectProjectBundle:Client');
-
-        $builder = $repoClient->createQueryBuilder('c')
+        $builder    = $repoClient->createQueryBuilder('c')
           ->select('c, p')
           ->join('c.projects', 'p')
           ->orderBy('c.name', 'asc')
           ->addOrderBy('p.lft', 'asc');
-        $query   = $builder->getQuery();
+        $query      = $builder->getQuery();
+        $clients    = $query->execute();
 
-        $clients = $query->execute();
-
-//        $entities = $repo->findBy(array(), array('root' => 'asc', 'lft' => 'asc'));
-
-        /** @var ProjectRepository $repo */
+        /** @var ProjectRepository $repoProject */
         $repoProject = $em->getRepository('SmartProjectProjectBundle:Project');
         $projects    = $repoProject->findBy(array('client' => null), array('root' => 'asc', 'lft' => 'asc'));
-
-        $redmine = $this->container->getParameter('redmine');
+        $redmine     = $this->container->getParameter('redmine');
 
         return array(
             'clients'               => $clients,
@@ -149,45 +145,48 @@ class ProjectController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new Project();
-        $form   = $this->createCreateForm($entity);
+        $project = new Project();
+        $form   = $this->createCreateForm($project);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
+            $em->persist($project);
+            $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Project created');
 
-            return $this->redirect($this->generateUrl('project_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('project_show', array('slug' => $project->getSlug())));
+        } else {
+            var_dump($form->getErrorsAsString());
         }
 
         return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
+            'client'  => $project->getClient(),
+            'project' => $project,
+            'form'    => $form->createView(),
         );
     }
 
     /**
      * Creates a form to create a Project entity.
      *
-     * @param Project $entity The entity
+     * @param Project $project The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Project $entity)
+    private function createCreateForm(Project $project)
     {
         $form = $this->createForm(
             new ProjectType(),
-            $entity,
+            $project,
             array(
-                'action' => $this->generateUrl('project_create'),
-                'method' => 'POST',
+                'action'  => $this->generateUrl('project_create'),
+                'method'  => 'POST',
+                'project' => $project,
             )
         );
-
-        $form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -195,44 +194,58 @@ class ProjectController extends Controller
     /**
      * Displays a form to create a new Project entity.
      *
-     * @Route("/new", name="project_new")
+     * @Route("/new", name="project_new_empty")
      * @Method("GET")
-     * @Template()
+     * @Template("SmartProjectProjectBundle:Project:new.html.twig")
      */
-    public function newAction()
+    public function newEmptyAction()
     {
-        $entity = new Project();
-        $form   = $this->createCreateForm($entity);
+        $project = new Project();
+        $form    = $this->createCreateForm($project);
 
         return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
+            'client'  => null,
+            'project' => $project,
+            'form'    => $form->createView(),
+        );
+    }
+
+    /**
+     * Displays a form to create a new Project entity.
+     *
+     * @Route("/{slug}/new", name="project_new")
+     * @Method("GET")
+     * @ParamConverter("client", class="SmartProjectProjectBundle:Client")
+     * @Template()
+     */
+    public function newAction(Client $client)
+    {
+        $project = new Project();
+        $project->setClient($client);
+        $form = $this->createCreateForm($project);
+
+        return array(
+            'client'  => $client,
+            'project' => $project,
+            'form'    => $form->createView(),
         );
     }
 
     /**
      * Finds and displays a Project entity.
      *
-     * @Route("/{id}", name="project_show")
+     * @Route("/{slug}", name="project_show")
      * @Method("GET")
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction(Project $project)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('SmartProjectProjectBundle:Project')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        $redmine = $this->container->getParameter('redmine');
+        $deleteForm = $this->createDeleteForm($project);
+        $redmine    = $this->container->getParameter('redmine');
 
         return array(
-            'entity'      => $entity,
+            'project'     => $project,
             'redmine'     => $redmine,
             'delete_form' => $deleteForm->createView(),
         );
@@ -241,26 +254,20 @@ class ProjectController extends Controller
     /**
      * Displays a form to edit an existing Project entity.
      *
-     * @Route("/{id}/edit", name="project_edit")
+     * @Route("/{slug}/edit", name="project_edit")
      * @Method("GET")
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction(Project $project)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var Project $entity */
-        $entity = $em->getRepository('SmartProjectProjectBundle:Project')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-
-        $editForm   = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        $editForm   = $this->createEditForm($project);
+        $deleteForm = $this->createDeleteForm($project);
+        $redmine    = $this->container->getParameter('redmine');
 
         return array(
-            'entity'      => $entity,
+            'project'     => $project,
+            'redmine'     => $redmine,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -269,22 +276,21 @@ class ProjectController extends Controller
     /**
      * Creates a form to edit a Project entity.
      *
-     * @param Project $entity The entity
+     * @param Project $project The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createEditForm(Project $entity)
+    private function createEditForm(Project $project)
     {
         $form = $this->createForm(
             new ProjectType(),
-            $entity,
+            $project,
             array(
-                'action' => $this->generateUrl('project_update', array('id' => $entity->getId())),
-                'method' => 'PUT',
+                'action'  => $this->generateUrl('project_update', array('slug' => $project->getSlug())),
+                'method'  => 'PUT',
+                'project' => $project,
             )
         );
-
-        $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
@@ -292,23 +298,16 @@ class ProjectController extends Controller
     /**
      * Edits an existing Project entity.
      *
-     * @Route("/{id}", name="project_update")
+     * @Route("/{slug}", name="project_update")
      * @Method("PUT")
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      * @Template("SmartProjectProjectBundle:Project:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Project $project)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var Project $entity */
-        $entity = $em->getRepository('SmartProjectProjectBundle:Project')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm   = $this->createEditForm($entity);
+        $em         = $this->getDoctrine()->getManager();
+        $deleteForm = $this->createDeleteForm($project);
+        $editForm   = $this->createEditForm($project);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -316,21 +315,22 @@ class ProjectController extends Controller
 
             /** @var ProjectRepository $repository */
             $repository = $em->getRepository('SmartProjectProjectBundle:Project');
-            $children   = $repository->getChildren($entity);
+            $children   = $repository->getChildren($project);
             /** @var Project $project */
             foreach ($children as $project) {
-                $project->setClient($entity->getClient());
+                $project->setClient($project->getClient());
             }
 
+            $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Project updated');
 
-            return $this->redirect($this->generateUrl('project_show', array('id' => $id)));
+            return $this->redirect($this->generateUrl('project_show', array('slug' => $project->getSlug())));
         }
 
         return array(
-            'entity'      => $entity,
+            'project'     => $project,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -339,23 +339,18 @@ class ProjectController extends Controller
     /**
      * Deletes a Project entity.
      *
-     * @Route("/{id}", name="project_delete")
+     * @Route("/{slug}", name="project_delete")
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, Project $project)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($project);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em     = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('SmartProjectProjectBundle:Project')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Project entity.');
-            }
-
-            $em->remove($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($project);
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Project deleted');
@@ -367,16 +362,20 @@ class ProjectController extends Controller
     /**
      * Creates a form to delete a Project entity by id.
      *
-     * @param mixed $id The entity id
+     * @param Project $project The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    private function createDeleteForm(Project $project)
     {
-        return $this->createFormBuilder()
-          ->setAction($this->generateUrl('project_delete', array('id' => $id)))
+        $options = array(
+            'render_fieldset' => false,
+            'show_legend'     => false,
+        );
+
+        return $this->createFormBuilder(null, $options)
+          ->setAction($this->generateUrl('project_delete', array('slug' => $project->getSlug())))
           ->setMethod('DELETE')
-          ->add('submit', 'submit', array('label' => 'Delete'))
           ->getForm();
     }
 }

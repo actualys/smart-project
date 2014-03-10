@@ -28,7 +28,7 @@
                 <th>Client</th>
                 <td>
                     {% if entity.project.client %}
-                        <a href="{{ path('client_show', {id: entity.project.client.id}) }}">{{ entity.project.client.name }}</a>
+                        <a href="{{ path('client_show', {slug: entity.project.client.slug}) }}">{{ entity.project.client.name }}</a>
                     {% else %}
                         N/A
                     {% endif %}
@@ -38,7 +38,7 @@
                 <th>Project</th>
                 <td>
                     {% if entity.project %}
-                        <a href="{{ path('project_show', {id: entity.project.id}) }}">{{ entity.project.name }}</a>
+                        <a href="{{ path('project_show', {slug: entity.project.slug}) }}">{{ entity.project.name }}</a>
                     {% else %}
                         N/A
                     {% endif %}

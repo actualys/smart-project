@@ -2,6 +2,7 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
+use SmartProject\FrontBundle\SmartProjectFrontBundle;
 use SmartProject\ProjectBundle\Entity\Project;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,24 +20,6 @@ use SmartProject\ProjectBundle\Form\ContractType;
  */
 class ContractController extends Controller
 {
-    /**
-     * Lists all Contract entities.
-     *
-     * @Route("/", name="contract")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('SmartProjectProjectBundle:Contract')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
-    }
-
     /**
      * Creates a new Contract entity.
      *
@@ -60,6 +43,7 @@ class ContractController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
+            $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
             return $this->redirect($this->generateUrl('contract_show', array('id' => $entity->getId())));
@@ -97,7 +81,6 @@ class ContractController extends Controller
     /**
      * Displays a form to create a new Contract entity.
      *
-     * @Route("/new", name="contract_new")
      * @Route("/new/{project}", name="contract_new_project")
      * @Method("GET")
      * @ParamConverter("project", class="SmartProjectProjectBundle:Project", options={"id" = "project"})
@@ -105,16 +88,16 @@ class ContractController extends Controller
      */
     public function newAction(Project $project)
     {
-        $entity = new Contract();
+        $contract = new Contract();
+        $contract->setProject($project);
 
-        if ($project) {
-            $entity->setProject($project);
-        }
-
-        $form = $this->createCreateForm($entity);
+        $form    = $this->createCreateForm($contract);
+        $redmine = $this->container->getParameter('redmine');
 
         return array(
-            'entity'      => $entity,
+            'contract'    => $contract,
+            'project'     => $project,
+            'redmine'     => $redmine,
             'form'        => $form->createView(),
             'form_action' => $this->generateUrl('contract_create_project', array('project' => $project->getId())),
         );
@@ -219,6 +202,7 @@ class ContractController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
             return $this->redirect($this->generateUrl('contract_edit', array('id' => $id)));

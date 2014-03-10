@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block headline_sub %}
-    {% if entity.project.client %}<a href="{{ path('client_show', {id: entity.project.client.id}) }}">{{ entity.project.client.name }}</a> > {% endif %}
-    <a href="{{ path('project_show', {id: entity.project.id}) }}">{{ entity.project.name }}</a>
+    {% if contract.project.client %}<a href="{{ path('client_show', {slug: contract.project.client.slug}) }}">{{ contract.project.client.name }}</a> > {% endif %}
+    <a href="{{ path('project_show', {slug: contract.project.slug}) }}">{{ contract.project.name }}</a>
 {% endblock %}
 
 {% block content_content %}
@@ -14,9 +14,15 @@
 
     <ul class="record_actions">
         <li>
-            <a href="{{ path('contract') }}">
+            <a href="{{ path('project_show', {slug: contract.project.slug}) }}">
                 Back to the list
             </a>
         </li>
     </ul>
+{% endblock %}
+
+{% block content_sidebar %}
+
+    {% include 'SmartProjectProjectBundle:Project:sidebar.html.twig' %}
+
 {% endblock %}

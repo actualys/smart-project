@@ -9,6 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * TaskProject
  *
+ * @Gedmo\Loggable
  * @ORM\Table(name="timesheet_task_project")
  * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\Task\TaskProjectRepository")
  */

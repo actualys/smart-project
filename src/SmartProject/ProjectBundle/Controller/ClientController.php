@@ -2,11 +2,13 @@
 
 namespace SmartProject\ProjectBundle\Controller;
 
+use SmartProject\FrontBundle\SmartProjectFrontBundle;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartProject\ProjectBundle\Entity\Client;
 use SmartProject\ProjectBundle\Form\ClientType;
 
@@ -18,23 +20,6 @@ use SmartProject\ProjectBundle\Form\ClientType;
 class ClientController extends Controller
 {
     /**
-     * Lists all Client entities.
-     *
-     * @Route("/", name="client")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('SmartProjectProjectBundle:Client')->findBy(array(), array('name' => 'asc'));
-
-        return array(
-            'entities' => $entities,
-        );
-    }
-    /**
      * Creates a new Client entity.
      *
      * @Route("/", name="client_create")
@@ -43,39 +28,43 @@ class ClientController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new Client();
-        $form = $this->createCreateForm($entity);
+        $client = new Client();
+        $form   = $this->createCreateForm($client);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
+            $em->persist($client);
+
+            $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('client_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('client_show', array('slug' => $client->getSlug())));
         }
 
         return array(
-            'entity' => $entity,
+            'client' => $client,
             'form'   => $form->createView(),
         );
     }
 
     /**
-    * Creates a form to create a Client entity.
-    *
-    * @param Client $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createCreateForm(Client $entity)
+     * Creates a form to create a Client entity.
+     *
+     * @param Client $client The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createCreateForm(Client $client)
     {
-        $form = $this->createForm(new ClientType(), $entity, array(
-            'action' => $this->generateUrl('client_create'),
-            'method' => 'POST',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form = $this->createForm(
+            new ClientType(),
+            $client,
+            array(
+                'action' => $this->generateUrl('client_create'),
+                'method' => 'POST',
+            )
+        );
 
         return $form;
     }
@@ -89,11 +78,11 @@ class ClientController extends Controller
      */
     public function newAction()
     {
-        $entity = new Client();
-        $form   = $this->createCreateForm($entity);
+        $client = new Client();
+        $form   = $this->createCreateForm($client);
 
         return array(
-            'entity' => $entity,
+            'client' => $client,
             'form'   => $form->createView(),
         );
     }
@@ -101,28 +90,18 @@ class ClientController extends Controller
     /**
      * Finds and displays a Client entity.
      *
-     * @Route("/{id}", name="client_show")
+     * @Route("/{slug}", name="client_show")
      * @Method("GET")
+     * @ParamConverter("client", class="SmartProjectProjectBundle:Client")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction(Client $client)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Client entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        $timesheet = array(
-
-        );
+        $deleteForm = $this->createDeleteForm($client);
+        $timesheet  = array();
 
         return array(
-            'entity'      => $entity,
+            'client'      => $client,
             'timesheet'   => $timesheet,
             'delete_form' => $deleteForm->createView(),
         );
@@ -131,123 +110,114 @@ class ClientController extends Controller
     /**
      * Displays a form to edit an existing Client entity.
      *
-     * @Route("/{id}/edit", name="client_edit")
+     * @Route("/{slug}/edit", name="client_edit")
      * @Method("GET")
+     * @ParamConverter("client", class="SmartProjectProjectBundle:Client")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction(Client $client)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var Client $entity */
-        $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Client entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        $editForm   = $this->createEditForm($client);
+        $deleteForm = $this->createDeleteForm($client);
 
         return array(
-            'entity'      => $entity,
+            'client'      => $client,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Client entity.
-    *
-    * @param Client $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Client $entity)
+     * Creates a form to edit a Client entity.
+     *
+     * @param Client $client The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createEditForm(Client $client)
     {
-        $form = $this->createForm(new ClientType(), $entity, array(
-            'action' => $this->generateUrl('client_update', array('id' => $entity->getId())),
-            'method' => 'PUT',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form = $this->createForm(
+            new ClientType(),
+            $client,
+            array(
+                'action' => $this->generateUrl('client_update', array('slug' => $client->getSlug())),
+                'method' => 'PUT',
+            )
+        );
 
         return $form;
     }
+
     /**
      * Edits an existing Client entity.
      *
-     * @Route("/{id}", name="client_update")
+     * @Route("/{slug}", name="client_update")
      * @Method("PUT")
+     * @ParamConverter("client", class="SmartProjectProjectBundle:Client")
      * @Template("SmartProjectProjectBundle:Client:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Client $client)
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Client $entity */
-        $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Client entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($client);
+        $editForm   = $this->createEditForm($client);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('client_show', array('id' => $id)));
+            return $this->redirect($this->generateUrl('client_show', array('slug' => $client->getSlug())));
         }
 
         return array(
-            'entity'      => $entity,
+            'client'      => $client,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a Client entity.
      *
-     * @Route("/{id}", name="client_delete")
+     * @Route("/{slug}", name="client_delete")
+     * @ParamConverter("client", class="SmartProjectProjectBundle:Client")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, Client $client)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($client);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('SmartProjectProjectBundle:Client')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Client entity.');
-            }
-
-            $em->remove($entity);
+            $em->remove($client);
             $em->flush();
+
+            $this->get('session')->getFlashBag()->add('success', 'Client deleted');
         }
 
-        return $this->redirect($this->generateUrl('client'));
+        return $this->redirect($this->generateUrl('project'));
     }
 
     /**
      * Creates a form to delete a Client entity by id.
      *
-     * @param mixed $id The entity id
+     * @param Client $client The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    private function createDeleteForm(Client $client)
     {
-        return $this->createFormBuilder()
-            ->setAction($this->generateUrl('client_delete', array('id' => $id)))
-            ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+        $options = array(
+            'render_fieldset' => false,
+            'show_legend'     => false,
+        );
+
+        return $this->createFormBuilder(null, $options)
+          ->setAction($this->generateUrl('client_delete', array('slug' => $client->getSlug())))
+          ->setMethod('DELETE')
+          ->getForm();
     }
 }

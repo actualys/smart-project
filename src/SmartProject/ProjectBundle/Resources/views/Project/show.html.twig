@@ -1,18 +1,18 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
 {% block headline %}
-    Project : {{ entity.name }}
+    Project <small>{{ project.name }}</small>
 {% endblock %}
 
 {% block headline_sub %}
-    {% if entity.website %}
-        <em><a href="{{ entity.website }}" target="_blank">{{ entity.website }}</a></em>
+    {% if project.website %}
+        <em><a href="{{ project.website }}" target="_blank">{{ project.website }}</a></em>
     {% endif %}
 {% endblock %}
 
 {% block content_content %}
     <div class="panel-group" id="accordion">
-        {% for contract_id in 1..5 %}
+        {% for contract_id in project.contracts %}
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -98,78 +98,27 @@
 {% endblock %}
 
 {% block content_sidebar %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Summary</h3>
-        </div>
+    {% set view_mode = 'show' %}
+    {% include 'SmartProjectProjectBundle:Project:sidebar.html.twig' %}
+{% endblock %}
 
-        <table class="table table-striped table-hover">
-            <tr>
-                <th>Client</th>
-                <td>
-                    {% if entity.client %}
-                        <a href="{{ path('client_show', {id: entity.client.id}) }}">{{ entity.client.name }}</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Manager</th>
-                <td>
-                    {% if entity.manager is defined %}
-                        <a href="{{ path('user_show', {id: entity.manager.id}) }}">{{ entity.manager.name }}</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Redmine</th>
-                <td>
-                    {% if entity.redmineId %}
-                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"
-                           target="_blank">Synchronized</a>
-                    {% else %}
-                        <em>Not linked</em>
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Created at</th>
-                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Updated at</th>
-                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-        </table>
-    </div>
+{% block foot_script %}
+    {{ parent() }}
 
-    <div class="buttons">
-        <a href="{{ path('project_edit', { 'id': entity.id }) }}" class="btn btn-primary btn-block">Edit project</a>
-        <a href="{{ path('contract_new_project', { 'project': entity.id }) }}" class="btn btn-success btn-block">Add
-            contract</a>
-    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-project-delete').first().click(function () {
+                var form = $(this).closest('form');
 
-    <br/>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="tags">
-                {% set tags = entity.tags|split(',') %}
-                {% for tag in tags %}
-                    <span class="label label-primary" style="margin-right: 3px">{{ tag }}</span>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="panel-body">
-            {{ entity.description }}
-        </div>
-    </div>
-
-    {{ form_start(delete_form) }}
-    {{ form_widget(delete_form.submit, {'attr': {'class': 'btn-block btn-danger' }}) }}
-    {{ form_end(delete_form) }}
-
+                bootbox.confirm(
+                        'Do you confirm project deletion?',
+                        function (result) {
+                            if (result) {
+                                form.submit();
+                            }
+                        }
+                );
+            });
+        });
+    </script>
 {% endblock %}

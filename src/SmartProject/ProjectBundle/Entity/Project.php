@@ -208,6 +208,18 @@ class Project implements ProjectInterface
     }
 
     /**
+     * @return string
+     */
+    public function getParentedName()
+    {
+        if ($parent = $this->getParent()) {
+            return $parent->getParentedName() . ' > ' . $this->name;
+        } else {
+            return $this->name;
+        }
+    }
+
+    /**
      * Set slug
      *
      * @param string $slug

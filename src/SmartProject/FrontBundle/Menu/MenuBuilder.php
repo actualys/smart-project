@@ -24,6 +24,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class MenuBuilder
 {
+    /**
+     * @var \Knp\Menu\FactoryInterface
+     */
     protected $factory;
 
     /**
@@ -65,15 +68,18 @@ class MenuBuilder
                 'caret' => true,
             ));
 
-        $projects->addChild('Clients list', array(
-                'route' => 'client',
-            ));
-        $projects->addChild('Projects list', array(
+        $projects->addChild('Project listing', array(
                 'route' => 'project',
+                'icon' => 'glyphicon glyphicon-list-alt',
+            ));
+        $projects->addChild('Create client', array(
+                'route' => 'client_new',
+                'icon' => 'glyphicon glyphicon-plus-sign',
             ));
         $projects->addChild('divider_1', array('divider' => true));
         $projects->addChild('Synchronize Redmine', array(
                 'route' => 'project_synchronize',
+                'icon' => 'glyphicon glyphicon-refresh',
             ));
 
         $todo = $menu->addChild('Todo List', array(
@@ -84,13 +90,16 @@ class MenuBuilder
             ));
         $todo->addChild('Listing', array(
                 'uri' => '#',
+                'icon' => 'glyphicon glyphicon-list-alt',
             ));
         $todo->addChild('Add task', array(
                 'uri' => '#',
+                'icon' => 'glyphicon glyphicon-plus-sign',
             ));
         $todo->addChild('divider_3', array('divider' => true));
         $todo->addChild('Archives', array(
                 'uri' => '#',
+                'icon' => 'glyphicon glyphicon-folder-close',
             ));
 
         $timesheet = $menu->addChild('Timesheet', array(
@@ -101,13 +110,16 @@ class MenuBuilder
             ));
         $timesheet->addChild('Timeline', array(
                 'route' => 'timeline',
+                'icon' => 'glyphicon glyphicon-time',
             ));
         $timesheet->addChild('Matrix', array(
                 'uri' => '#',
+                'icon' => 'glyphicon glyphicon-th',
             ));
         $timesheet->addChild('divider_2', array('divider' => true));
         $timesheet->addChild('Consolidation', array(
                 'uri' => '#',
+                'icon' => 'glyphicon glyphicon-edit',
             ));
 
         return $menu;

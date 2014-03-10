@@ -5,14 +5,22 @@
 {% endblock %}
 
 {% block content_content %}
+    {{ form_start(form) }}
 
-    {{ form(form) }}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ form_row(form.name) }}
+            {{ form_row(form.slug) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.tags) }}
+        </div>
+    </div>
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('client') }}">
-                Back to the list
-            </a>
-        </li>
-    </ul>
+    <div>
+        <button type="submit" class="btn btn-block btn-primary">
+            Create
+        </button>
+    </div>
+
+    {{ form_end(form) }}
 {% endblock %}

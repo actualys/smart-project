@@ -1,19 +1,54 @@
 {% extends 'SmartProjectFrontBundle::layout.html.twig' %}
 
 {% block headline %}
-    Project edit
+    Project <small>{{ project.name }}</small>
 {% endblock %}
 
-
 {% block content_content -%}
-    {{ form(edit_form) }}
+    {{ form_start(edit_form) }}
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('project') }}">
-                Back to the list
-            </a>
-        </li>
-        <li>{{ form(delete_form) }}</li>
-    </ul>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ form_rest(edit_form) }}
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-block btn-primary">
+            Update
+        </button>
+    </div>
+
+    {{ form_end(edit_form) }}
+{% endblock %}
+
+{% block content_sidebar %}
+
+    {% set view_mode = 'edit' %}
+    {% include 'SmartProjectProjectBundle:Project:sidebar.html.twig' %}
+
+    {{ form_start(delete_form) }}
+    {{ form_end(delete_form) }}
+
+{% endblock %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-project-delete').first().click(function () {
+                var form = $(this).closest('form');
+
+                bootbox.confirm(
+                        'Do you confirm project deletion?',
+                        function (result) {
+                            if (result) {
+                                form.submit();
+                            }
+                        }
+                );
+            });
+        });
+    </script>
 {% endblock %}

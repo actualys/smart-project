@@ -2,17 +2,53 @@
 
 {% block headline %}
     Project creation
+    {% if client %}
+        <small>Client <a href="{{ path('client_show', {slug: client.slug}) }}">{{ client.name }}</a></small>
+    {% endif %}
 {% endblock %}
 
 {% block content_content %}
+    {{ form_start(form) }}
 
-    {{ form(form) }}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ form_rest(form) }}
+        </div>
+    </div>
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('project') }}">
-                Back to the list
-            </a>
-        </li>
-    </ul>
+    <div>
+        <button type="submit" class="btn btn-block btn-primary">
+            Create
+        </button>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block content_sidebar %}
+    {% if client %}
+        {% set view_mode = 'new' %}
+        {% include 'SmartProjectProjectBundle:Client:sidebar.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-project-delete').first().click(function () {
+                var form = $(this).closest('form');
+
+                bootbox.confirm(
+                        'Do you confirm project deletion?',
+                        function (result) {
+                            if (result) {
+                                form.submit();
+                            }
+                        }
+                );
+            });
+        });
+    </script>
 {% endblock %}

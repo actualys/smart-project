@@ -45,13 +45,13 @@
                         <tr>
                             <td style="width: 40%">
                                 {% if tracking.task.client %}
-                                    <a href="{{ path('client_show', {id: tracking.task.client.id}) }}">{{ tracking.task.client.name }}</a>
+                                    <a href="{{ path('client_show', {slug: tracking.task.client.slug}) }}">{{ tracking.task.client.name }}</a>
                                     {% if tracking.task.project %}
                                         &gt;&nbsp;<a
-                                            href="{{ path('project_show', {id: tracking.task.project.id}) }}">{{ tracking.task.project.name }}</a>
+                                            href="{{ path('project_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
                                         {% if tracking.task.contract %}
                                             &gt;&nbsp;<a
-                                                href="{{ path('contract_show', {id: tracking.task.contract.id}) }}">{{ tracking.task.contract.name }}</a>
+                                                href="{{ path('contract_show', {slug: tracking.task.contract.slug}) }}">{{ tracking.task.contract.name }}</a>
                                         {% endif %}
                                     {% endif %}
                                 {% else %}

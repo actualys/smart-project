@@ -6,7 +6,7 @@ parameters:
 services:
     smart_project_front.exception.listener:
         class: %smart_project_front.exception.listener.class%
-        arguments: [@service_container, %kernel.debug%]
+        arguments: [@templating, %kernel.debug%]
         tags:
             - {name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 

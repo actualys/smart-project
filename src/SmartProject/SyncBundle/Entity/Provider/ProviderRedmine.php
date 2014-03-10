@@ -4,14 +4,16 @@ namespace SmartProject\SyncBundle\Entity\Provider;
 
 use Doctrine\ORM\Mapping as ORM;
 use SmartProject\SyncBundle\Entity\Provider;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Redmine Provider
  *
+ * @Gedmo\Loggable
  * @ORM\Table(name="provider_redmine")
- * @ORM\Entity(repositoryClass="SmartProject\SyncBundle\Entity\Provider\RedmineRepository")
+ * @ORM\Entity(repositoryClass="SmartProject\SyncBundle\Entity\Provider\ProviderRedmineRepository")
  */
-class Redmine extends Provider
+class ProviderRedmine extends Provider
 {
     /**
      * @var string
