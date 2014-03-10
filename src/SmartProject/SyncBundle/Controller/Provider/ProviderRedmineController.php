@@ -249,11 +249,11 @@ class ProviderRedmineController extends Controller
     private function createDeleteForm($id)
     {
         /** @var FormBuilder $formBuilder */
-        $formBuilder = $this->createFormBuilder()
-          ->setAction($this->generateUrl('provider_redmine_delete', array('id' => $id)))
-          ->setMethod('DELETE')
-          ->add('submit', 'submit', array('label' => 'Delete'));
+        $formBuilder = $this->createFormBuilder();
 
-        return $formBuilder->getForm();
+        return $formBuilder->setAction($this->generateUrl('provider_redmine_delete', array('id' => $id)))
+          ->setMethod('DELETE')
+          ->add('submit', 'submit', array('label' => 'Delete'))
+          ->getForm();
     }
 }
