@@ -4,6 +4,7 @@ namespace SmartProject\ProjectBundle\Controller;
 
 use SmartProject\FrontBundle\SmartProjectFrontBundle;
 use SmartProject\ProjectBundle\Entity\Project;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -46,7 +47,7 @@ class ContractController extends Controller
 
         return array(
             'contract' => $contract,
-            'form'   => $form->createView(),
+            'form'     => $form->createView(),
         );
     }
 
@@ -127,7 +128,7 @@ class ContractController extends Controller
         $deleteForm = $this->createDeleteForm($contract);
 
         return array(
-            'contract'      => $contract,
+            'contract'    => $contract,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -214,9 +215,16 @@ class ContractController extends Controller
      */
     private function createDeleteForm(Contract $contract)
     {
-        return $this->createFormBuilder()
+        $options = array(
+            'render_fieldset' => false,
+            'show_legend'     => false,
+        );
+
+        /** @var FormBuilder $formBuilder */
+        $formBuilder = $this->createFormBuilder(null, $options)
           ->setAction($this->generateUrl('contract_delete', array('slug' => $contract->getSlug())))
-          ->setMethod('DELETE')
-          ->getForm();
+          ->setMethod('DELETE');
+
+        return $formBuilder->getForm();
     }
 }

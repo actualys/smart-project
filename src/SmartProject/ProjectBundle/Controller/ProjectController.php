@@ -6,6 +6,7 @@ use SmartProject\FrontBundle\SmartProjectFrontBundle;
 use SmartProject\ProjectBundle\Entity\Client;
 use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
+use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -373,9 +374,11 @@ class ProjectController extends Controller
             'show_legend'     => false,
         );
 
-        return $this->createFormBuilder(null, $options)
+        /** @var FormBuilder $formBuilder */
+        $formBuilder = $this->createFormBuilder(null, $options)
           ->setAction($this->generateUrl('project_delete', array('slug' => $project->getSlug())))
-          ->setMethod('DELETE')
-          ->getForm();
+          ->setMethod('DELETE');
+
+        return $formBuilder->getForm();
     }
 }
