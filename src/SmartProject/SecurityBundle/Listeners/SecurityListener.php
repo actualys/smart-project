@@ -2,11 +2,8 @@
 
 namespace SmartProject\SecurityBundle\Listeners;
 
-use FOS\UserBundle\Event\UserEvent;
-use FOS\UserBundle\FOSUserEvents;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**

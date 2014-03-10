@@ -3,7 +3,6 @@
 namespace SmartProject\FrontBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class MenuBuilder
