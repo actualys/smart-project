@@ -48,7 +48,7 @@ class TaskProject extends Task
      * @param \SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
      * @return Task
      */
-    public function setClient(ClientInterface $client = null)
+    public function setClient($client = null)
     {
         $this->client = $client;
 
@@ -71,7 +71,7 @@ class TaskProject extends Task
      * @param \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface $project
      * @return Task
      */
-    public function setProject(ProjectInterface $project = null)
+    public function setProject($project = null)
     {
         $this->project = $project;
 
@@ -94,7 +94,7 @@ class TaskProject extends Task
      * @param \SmartProject\TimesheetBundle\Entity\Task\ContractInterface $contract
      * @return Task
      */
-    public function setContract(ContractInterface $contract = null)
+    public function setContract($contract = null)
     {
         $this->contract = $contract;
 
