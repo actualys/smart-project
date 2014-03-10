@@ -1,0 +1,61 @@
+<div class="btn-group btn-group-justified buttons">
+    <a href="{{ path('contract_edit', { 'slug': contract.slug }) }}" class="btn btn-primary btn-block"><span
+                class="glyphicon glyphicon-pencil"></span> Edit contract</a>
+    <a href="{{ path('contract_new', { 'slug': contract.slug }) }}" class="btn btn-success btn-block"><span
+                class="glyphicon glyphicon-plus-sign"></span> Add contract</a>
+</div>
+
+<br/>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Summary</h3>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>Client</th>
+            <td>
+                {% if contract.project.client %}
+                    <a href="{{ path('client_show', {slug: contract.project.client.slug}) }}">{{ contract.project.client.name }}</a>
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Project</th>
+            <td>
+                {% if contract.project %}
+                    <a href="{{ path('project_show', {slug: contract.project.slug}) }}">{{ contract.project.name }}</a>
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Manager</th>
+            <td>
+                {% if contract.manager is defined %}
+                    <a href="{{ path('user_show', {id: contract.manager.id}) }}">{{ contract.manager.name }}</a>
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Created at</th>
+            <td>{{ contract.createdAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Updated at</th>
+            <td>{{ contract.updatedAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+    </table>
+</div>
+
+{% if delete_form is defined %}
+    {{ form_start(delete_form) }}
+    <a class="btn btn-block btn-danger btn-contract-delete">Delete contract</a>
+    {{ form_end(delete_form) }}
+{% endif %}

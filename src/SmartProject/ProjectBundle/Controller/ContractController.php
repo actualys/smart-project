@@ -23,34 +23,29 @@ class ContractController extends Controller
     /**
      * Creates a new Contract entity.
      *
-     * @Route("/", name="contract_create")
-     * @Route("/{project}", name="contract_create_project")
+     * @Route("/new/project/{slug}", name="contract_create")
      * @Method("POST")
-     * @ParamConverter("project", class="SmartProjectProjectBundle:Project", options={"id" = "project"})
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      * @Template("SmartProjectProjectBundle:Contract:new.html.twig")
      */
     public function createAction(Request $request, Project $project)
     {
-        $entity = new Contract();
-
-        if ($project) {
-            $entity->setProject($project);
-        }
-
-        $form = $this->createCreateForm($entity);
+        $contract = new Contract();
+        $contract->setProject($project);
+        $form = $this->createCreateForm($contract);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
+            $em->persist($contract);
             $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('contract_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('contract_show', array('slug' => $contract->getSlug())));
         }
 
         return array(
-            'entity' => $entity,
+            'contract' => $contract,
             'form'   => $form->createView(),
         );
     }
@@ -58,22 +53,20 @@ class ContractController extends Controller
     /**
      * Creates a form to create a Contract entity.
      *
-     * @param Contract $entity The entity
+     * @param Contract $contract The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Contract $entity)
+    private function createCreateForm(Contract $contract)
     {
         $form = $this->createForm(
             new ContractType(),
-            $entity,
+            $contract,
             array(
-                'action' => $this->generateUrl('contract_create'),
+                'action' => $this->generateUrl('contract_create', array('slug' => $contract->getProject()->getSlug())),
                 'method' => 'POST',
             )
         );
-
-        $form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
     }
@@ -81,16 +74,15 @@ class ContractController extends Controller
     /**
      * Displays a form to create a new Contract entity.
      *
-     * @Route("/new/{project}", name="contract_new_project")
+     * @Route("/new/project/{slug}", name="contract_new")
      * @Method("GET")
-     * @ParamConverter("project", class="SmartProjectProjectBundle:Project", options={"id" = "project"})
+     * @ParamConverter("project", class="SmartProjectProjectBundle:Project")
      * @Template()
      */
     public function newAction(Project $project)
     {
         $contract = new Contract();
         $contract->setProject($project);
-
         $form    = $this->createCreateForm($contract);
         $redmine = $this->container->getParameter('redmine');
 
@@ -99,31 +91,24 @@ class ContractController extends Controller
             'project'     => $project,
             'redmine'     => $redmine,
             'form'        => $form->createView(),
-            'form_action' => $this->generateUrl('contract_create_project', array('project' => $project->getId())),
+            'form_action' => $this->generateUrl('contract_create', array('slug' => $project->getId())),
         );
     }
 
     /**
      * Finds and displays a Contract entity.
      *
-     * @Route("/{id}", name="contract_show")
+     * @Route("/{slug}", name="contract_show")
      * @Method("GET")
+     * @ParamConverter("contract", class="SmartProjectProjectBundle:Contract")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction(Contract $contract)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('SmartProjectProjectBundle:Contract')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Contract entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($contract);
 
         return array(
-            'entity'      => $entity,
+            'contract'    => $contract,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -131,26 +116,18 @@ class ContractController extends Controller
     /**
      * Displays a form to edit an existing Contract entity.
      *
-     * @Route("/{id}/edit", name="contract_edit")
+     * @Route("/{slug}/edit", name="contract_edit")
      * @Method("GET")
      * @Template()
+     * @ParamConverter("contract", class="SmartProjectProjectBundle:Contract")
      */
-    public function editAction($id)
+    public function editAction(Contract $contract)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var Contract $entity */
-        $entity = $em->getRepository('SmartProjectProjectBundle:Contract')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Contract entity.');
-        }
-
-        $editForm   = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
+        $editForm   = $this->createEditForm($contract);
+        $deleteForm = $this->createDeleteForm($contract);
 
         return array(
-            'entity'      => $entity,
+            'contract'      => $contract,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -159,22 +136,20 @@ class ContractController extends Controller
     /**
      * Creates a form to edit a Contract entity.
      *
-     * @param Contract $entity The entity
+     * @param Contract $contract The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createEditForm(Contract $entity)
+    private function createEditForm(Contract $contract)
     {
         $form = $this->createForm(
             new ContractType(),
-            $entity,
+            $contract,
             array(
-                'action' => $this->generateUrl('contract_update', array('id' => $entity->getId())),
+                'action' => $this->generateUrl('contract_update', array('slug' => $contract->getSlug())),
                 'method' => 'PUT',
             )
         );
-
-        $form->add('submit', 'submit', array('label' => 'Update'));
 
         return $form;
     }
@@ -182,34 +157,28 @@ class ContractController extends Controller
     /**
      * Edits an existing Contract entity.
      *
-     * @Route("/{id}", name="contract_update")
+     * @Route("/{slug}", name="contract_update")
      * @Method("PUT")
      * @Template("SmartProjectProjectBundle:Contract:edit.html.twig")
+     * @ParamConverter("contract", class="SmartProjectProjectBundle:Contract")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, Contract $contract)
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Contract $entity */
-        $entity = $em->getRepository('SmartProjectProjectBundle:Contract')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Contract entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-        $editForm   = $this->createEditForm($entity);
+        $deleteForm = $this->createDeleteForm($contract);
+        $editForm   = $this->createEditForm($contract);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('contract_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('contract_edit', array('slug' => $contract->getSlug())));
         }
 
         return array(
-            'entity'      => $entity,
+            'contract'    => $contract,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -218,23 +187,18 @@ class ContractController extends Controller
     /**
      * Deletes a Contract entity.
      *
-     * @Route("/{id}", name="contract_delete")
+     * @Route("/{slug}", name="contract_delete")
      * @Method("DELETE")
+     * @ParamConverter("contract", class="SmartProjectProjectBundle:Contract")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, Contract $contract)
     {
-        $form = $this->createDeleteForm($id);
+        $form = $this->createDeleteForm($contract);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em     = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('SmartProjectProjectBundle:Contract')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Contract entity.');
-            }
-
-            $em->remove($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($contract);
             $em->flush();
         }
 
@@ -244,16 +208,15 @@ class ContractController extends Controller
     /**
      * Creates a form to delete a Contract entity by id.
      *
-     * @param mixed $id The entity id
+     * @param Contract $contract The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    private function createDeleteForm(Contract $contract)
     {
         return $this->createFormBuilder()
-          ->setAction($this->generateUrl('contract_delete', array('id' => $id)))
+          ->setAction($this->generateUrl('contract_delete', array('slug' => $contract->getSlug())))
           ->setMethod('DELETE')
-          ->add('submit', 'submit', array('label' => 'Delete'))
           ->getForm();
     }
 }

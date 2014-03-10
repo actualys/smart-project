@@ -23,13 +23,8 @@
 {% endblock %}
 
 {% block content_sidebar %}
-
     {% set view_mode = 'edit' %}
     {% include 'SmartProjectProjectBundle:Project:sidebar.html.twig' %}
-
-    {{ form_start(delete_form) }}
-    {{ form_end(delete_form) }}
-
 {% endblock %}
 
 {% block foot_script %}

@@ -10,15 +10,21 @@
 {% endblock %}
 
 {% block content_content %}
-    {{ form(form, {action: form_action}) }}
+    {{ form_start(form) }}
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('project_show', {slug: contract.project.slug}) }}">
-                Back to the list
-            </a>
-        </li>
-    </ul>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ form_rest(form) }}
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-block btn-primary">
+            Create
+        </button>
+    </div>
+
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block content_sidebar %}

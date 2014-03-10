@@ -10,54 +10,66 @@
         <tbody>
         <tr>
             <th>Id</th>
-            <td>{{ entity.id }}</td>
+            <td>{{ contract.id }}</td>
         </tr>
         <tr>
             <th>Name</th>
-            <td>{{ entity.name }}</td>
+            <td>{{ contract.name }}</td>
         </tr>
         <tr>
             <th>Slug</th>
-            <td>{{ entity.slug }}</td>
+            <td>{{ contract.slug }}</td>
         </tr>
         <tr>
             <th>Description</th>
-            <td>{{ entity.description }}</td>
+            <td>{{ contract.description }}</td>
         </tr>
         <tr>
             <th>Status</th>
-            <td>{{ entity.status }}</td>
+            <td>{{ contract.status }}</td>
         </tr>
         <tr>
             <th>Default</th>
-            <td>{{ entity.default }}</td>
+            <td>{{ contract.default }}</td>
         </tr>
         <tr>
             <th>Created at</th>
-            <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
+            <td>{{ contract.createdAt|date('Y-m-d H:i:s') }}</td>
         </tr>
         <tr>
             <th>Updated at</th>
-            <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
+            <td>{{ contract.updatedAt|date('Y-m-d H:i:s') }}</td>
         </tr>
         <tr>
             <th>Deleted at</th>
-            <td>{% if entity.deletedAt %}{{ entity.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            <td>{% if contract.deletedAt %}{{ contract.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
         </tr>
         </tbody>
     </table>
+{% endblock %}
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('contract') }}">
-                Back to the list
-            </a>
-        </li>
-        <li>
-            <a href="{{ path('contract_edit', { 'id': entity.id }) }}">
-                Edit
-            </a>
-        </li>
-        <li>{{ form(delete_form) }}</li>
-    </ul>
+{% block content_sidebar %}
+    {% set view_mode = 'show' %}
+    {% include 'SmartProjectProjectBundle:Contract:sidebar.html.twig' %}
+{% endblock %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-contract-delete').first().click(function () {
+                var form = $(this).closest('form');
+
+                bootbox.confirm(
+                        'Do you confirm contract deletion?',
+                        function (result) {
+                            if (result) {
+                                form.submit();
+                            }
+                        }
+                );
+            });
+        });
+    </script>
 {% endblock %}

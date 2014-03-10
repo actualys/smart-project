@@ -35,7 +35,7 @@ class Client implements ClientInterface
     /**
      * @var string
      *
-     * @Gedmo\Slug(fields={"name"})
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
      * @ORM\Column(name="slug", length=128, unique=true)
      */
     private $slug;

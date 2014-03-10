@@ -5,63 +5,45 @@
 {% endblock %}
 
 {% block content_content -%}
-    {{ form(edit_form) }}
+    {{ form_start(edit_form) }}
 
-    <ul class="record_actions">
-        <li>
-            <a href="{{ path('contract') }}">
-                Back to the list
-            </a>
-        </li>
-        <li>{{ form(delete_form) }}</li>
-    </ul>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ form_rest(edit_form) }}
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-block btn-primary">
+            Update
+        </button>
+    </div>
+
+    {{ form_end(edit_form) }}
 {% endblock %}
 
 {% block content_sidebar %}
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">Summary</h3>
-        </div>
+    {% set view_mode = 'edit' %}
+    {% include 'SmartProjectProjectBundle:Contract:sidebar.html.twig' %}
+{% endblock %}
 
-        <table class="table table-striped table-hover">
-            <tr>
-                <th>Client</th>
-                <td>
-                    {% if entity.project.client %}
-                        <a href="{{ path('client_show', {slug: entity.project.client.slug}) }}">{{ entity.project.client.name }}</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Project</th>
-                <td>
-                    {% if entity.project %}
-                        <a href="{{ path('project_show', {slug: entity.project.slug}) }}">{{ entity.project.name }}</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Manager</th>
-                <td>
-                    {% if entity.manager is defined %}
-                        <a href="{{ path('user_show', {id: entity.manager.id}) }}">{{ entity.manager.name }}</a>
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <th>Created at</th>
-                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Updated at</th>
-                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-        </table>
-    </div>
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.btn-contract-delete').first().click(function () {
+                var form = $(this).closest('form');
+
+                bootbox.confirm(
+                        'Do you confirm contract deletion?',
+                        function (result) {
+                            if (result) {
+                                form.submit();
+                            }
+                        }
+                );
+            });
+        });
+    </script>
 {% endblock %}

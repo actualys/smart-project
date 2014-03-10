@@ -1,7 +1,7 @@
 <div class="btn-group btn-group-justified buttons">
     <a href="{{ path('project_edit', { 'slug': project.slug }) }}" class="btn btn-primary btn-block"><span
                 class="glyphicon glyphicon-pencil"></span> Edit project</a>
-    <a href="{{ path('contract_new_project', { 'project': project.slug }) }}" class="btn btn-success btn-block"><span
+    <a href="{{ path('contract_new', { 'slug': project.slug }) }}" class="btn btn-success btn-block"><span
                 class="glyphicon glyphicon-plus-sign"></span> Add contract</a>
 </div>
 
@@ -75,6 +75,8 @@
     </div>
 {% endif %}
 
-{{ form_start(delete_form) }}
-    <a class="btn btn-block btn-danger btn-project-delete">Delete project</a>
-{{ form_end(delete_form) }}
+{% if delete_form is defined %}
+    {{ form_start(delete_form) }}
+        <a class="btn btn-block btn-danger btn-project-delete">Delete project</a>
+    {{ form_end(delete_form) }}
+{% endif %}

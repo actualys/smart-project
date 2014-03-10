@@ -23,10 +23,8 @@
 {% endblock %}
 
 {% block content_sidebar %}
-
     {% set view_mode = 'edit' %}
-    {% include 'SmartProjectProjectBundle:Client:sidebar.html.twig' %}
-
+    {% include 'SmartProjectProjectBundle:Project:sidebar.html.twig' %}
 {% endblock %}
 
 {% block foot_script %}
@@ -34,11 +32,11 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('.btn-client-delete').first().click(function () {
+            $('.btn-project-delete').first().click(function () {
                 var form = $(this).closest('form');
 
                 bootbox.confirm(
-                        'Do you confirm client deletion?',
+                        'Do you confirm project deletion?',
                         function (result) {
                             if (result) {
                                 form.submit();
