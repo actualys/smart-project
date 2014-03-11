@@ -24,6 +24,7 @@ body {
 
 #footer {
     /*position: absolute;*/
+    margin-top: 25px;
     bottom: 0;
     width: 100%;
     /* Set the fixed height of the footer here */
@@ -104,4 +105,23 @@ body {
 
 .datepicker {
     z-index: 11000;
+}
+
+.table-timesheet th,
+.table-timesheet .field-duration,
+.table-timesheet .duration {
+    text-align: center;
+}
+
+.table-timesheet > tbody > tr > td > div {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.table-timesheet tfoot tr {
+    border-top: 2px solid #DDDDDD;
+}
+
+.table-timesheet tfoot {
+    font-weight: bold;
 }

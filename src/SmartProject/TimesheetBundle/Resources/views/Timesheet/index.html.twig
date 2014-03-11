@@ -1,0 +1,277 @@
+{% extends 'SmartProjectFrontBundle::layout-without-sidebar.html.twig' %}
+
+{# --------------------------------------------------------------------------------- #}
+{% form_theme form _self %}
+{# --------------------------------------------------------------------------------- #}
+
+{% block widget_form_group_start %}
+    {% if widget_form_group|default(false) or form.parent == null %}
+        {% if 'collection'in form.parent.vars.block_prefixes %} {# i am a collection child #}
+            {% if not omit_collection_item %}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({class: widget_form_group_attr.class ~ ' collection-item'}) %}
+            {% endif %}
+        {% endif %}
+        {% if prototype is defined %}
+            {% set data_prototype_name = form.vars.form.vars.prototype.vars.name|default('__name__') %}
+            {% set widget_form_group_attr = widget_form_group_attr|merge({'data-prototype': form_row(prototype), 'data-prototype-name': data_prototype_name})|merge(attr) %}
+        {% endif %}
+        {# collection item adds class to form-group #}
+        {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class ~ ' ' ~ id ~ '_form_group'}) %}
+        {% if errors|length > 0 %}
+            {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' has-error'}) %}
+        {% endif %}
+        {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
+            {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('row') ~ ' ' ~ attr.class}) %}
+        {% endif %}
+        <tr{% if help_widget_popover.title is not sameas(null) %}{{ block('help_widget_popover') }}{% endif %} {% for attrname,attrvalue in widget_form_group_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        {# a form item containing the field in block_prefixes is a near subform or a field directly #}
+        {% if (form|length > 0 and form.parent != null)
+        and 'field' not in form.vars.block_prefixes %}
+            {% if show_child_legend %}
+                {{ block('form_legend') }}
+            {% elseif label_render %}
+                {{ form_label(form, label|default(null)) }}
+            {% endif %}
+        {% else %}
+            {% if label_render %}
+                {{ form_label(form, label|default(null)) }}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if label_render %}
+            {{ form_label(form, label|default(null)) }}
+        {% endif %}
+    {% endif %}
+{% endblock widget_form_group_start %}
+
+{% block widget_form_group_end %}
+    {% spaceless %}
+        {% if widget_form_group|default(false) or form.parent == null %}
+            </tr>
+        {% endif %}
+    {% endspaceless %}
+{% endblock widget_form_group_end %}
+
+{% block collection_widget %}
+    {% spaceless %}
+        {{ block('form_widget') }}
+    {% endspaceless %}
+{% endblock collection_widget %}
+
+{% block form_widget_add_btn %}
+    {% spaceless %}
+        {% if widget_add_btn|default(null) %}
+            {% set button_type = 'add' %}
+            {% set button_values = widget_add_btn %}
+            {{ block('collection_button') }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_widget_add_btn %}
+
+{# --------------------------------------------------------------------------------- #}
+
+{% block headline %}
+    Timesheet of {{ date|date('Y-m-d') }}
+{% endblock %}
+
+{% block headline_sub %}
+{% endblock %}
+
+{% block content_content %}
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-md-12">
+            <a href="#" class="pull-right btn btn-default btn-primary btn-add-task">
+                <span class="glyphicon glyphicon-plus-sign"></span> Add task
+            </a>
+        </div>
+    </div>
+
+    <table class="table table-condensed table-striped table-hover table-timesheet">
+        <thead>
+        <tr>
+            <th colspan="2"></th>
+            <th style="width: 40px">Mo</th>
+            <th style="width: 40px">Tu</th>
+            <th style="width: 40px">We</th>
+            <th style="width: 40px">Th</th>
+            <th style="width: 40px">Fr</th>
+            <th style="width: 40px">Sa</th>
+            <th style="width: 40px">Su</th>
+            <th style="width: 60px"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{ form_row(form.tasks) }}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="2"></td>
+            <td class="duration duration-day1">-</td>
+            <td class="duration duration-day2">-</td>
+            <td class="duration duration-day3">-</td>
+            <td class="duration duration-day4">-</td>
+            <td class="duration duration-day5">-</td>
+            <td class="duration duration-day6">-</td>
+            <td class="duration duration-day7">-</td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-block btn-success">Validate</button>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block foot_script %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.table-timesheet tr').each(function () {
+                initTableLine($(this));
+            });
+
+            $('.btn-add-task').click(function (e) {
+                e.preventDefault();
+
+                var tbody = $('.table-timesheet tbody');
+                var new_line = createNewLine(tbody);
+                tbody.append(new_line);
+
+                initTableLine(new_line);
+
+                updateTotal(tbody.closest('table'));
+            });
+
+            function initTableLine(line) {
+                $('[data-collection-add-btn]', line).click(function () {
+                    var target = $(this).attr('data-collection-add-btn');
+                    var tbody = $(this).closest('tbody');
+
+                    var new_line = createNewLine(tbody);
+                    $(new_line).insertAfter(line);
+//                    new_line.prepend($(line));
+                    initTableLine(new_line);
+
+                    $('.form-field-client', new_line).select2('val', $('.form-field-client', line).select2('val'));
+                    $('.field-description', new_line).val($('.field-description', line).val());
+
+                    for (i = 1; i <= 7; i++) {
+                        $('.field-duration-day' + i, new_line).val($('.field-duration-day' + i, line).val());
+                    }
+
+                    updateTotal(tbody.closest('table'));
+                });
+
+                $('[data-collection-remove-btn]', line).click(function () {
+                    var target = $(this).attr('data-collection-remove-btn');
+                    var table = $(this).closest('table');
+
+                    $(target).hide(300, function () {
+                        $(this).remove();
+
+                        updateTotal(table);
+                    });
+                });
+
+                $('input.field-duration', line).change(function () {
+                    var table = $(this).closest('table');
+                    updateTotal(table);
+                });
+
+                $('select.form-field-select').select2({
+                    allowClear: true,
+                    width: '100%'
+                });
+            }
+
+            function updateTotal(table) {
+                var form_data = table.closest('form').serializeObject();
+                var total = {
+                    day1: 0,
+                    day2: 0,
+                    day3: 0,
+                    day4: 0,
+                    day5: 0,
+                    day6: 0,
+                    day7: 0
+                };
+                var tasks = form_data.smartproject_timesheetbundle_timesheet.tasks || {};
+                $.each(tasks, function (key, task) {
+                    if (task == undefined) {
+                        return;
+                    }
+
+                    if (task.duration_day1) {
+                        total.day1 += parseFloat(task.duration_day1);
+                    }
+                    if (task.duration_day2) {
+                        total.day2 += parseFloat(task.duration_day2);
+                    }
+                    if (task.duration_day3) {
+                        total.day3 += parseFloat(task.duration_day3);
+                    }
+                    if (task.duration_day4) {
+                        total.day4 += parseFloat(task.duration_day4);
+                    }
+                    if (task.duration_day5) {
+                        total.day5 += parseFloat(task.duration_day5);
+                    }
+                    if (task.duration_day6) {
+                        total.day6 += parseFloat(task.duration_day6);
+                    }
+                    if (task.duration_day7) {
+                        total.day7 += parseFloat(task.duration_day7);
+                    }
+                });
+
+                $.each(total, function (key, value) {
+                    var field = $('tfoot .duration-' + key, table);
+                    field.removeClass('bg-success bg-warning bg-danger');
+
+                    if (!value) {
+                        field.text('-');
+//                        field.addClass('bg-danger');
+                    } else {
+                        if (value < 7) {
+                            field.addClass('bg-warning');
+                        } else if (value > 7) {
+                            field.addClass('bg-danger');
+                        } else {
+                            field.addClass('bg-success');
+                        }
+                        field.text(value);
+                    }
+                })
+            }
+
+            function createNewLine(tbody) {
+                var collection = $('[data-prototype]', tbody);
+                var prototype = collection.attr('data-prototype');
+                var prototype_name = collection.attr('data-prototype-name');
+
+                var form_data = tbody.closest('form').serializeObject();
+                var count = 1;
+                var tasks = form_data.smartproject_timesheetbundle_timesheet.tasks || {};
+                $.each(tasks, function (key, value) {
+                    if (key >= count) {
+                        count = key + 1;
+                    }
+                });
+                var new_line = $(prototype.replace(/__name__/g, count));
+
+                return new_line;
+            }
+
+            var table = $('table.table-timesheet');
+            updateTotal(table);
+        });
+    </script>
+{% endblock foot_script %}
