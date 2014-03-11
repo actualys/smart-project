@@ -32,6 +32,7 @@ twig:
             - 'SmartProjectBootstrapBundle:Form:field_tag.html.twig'
             - 'SmartProjectBootstrapBundle:Form:field_datepicker.html.twig'
             - 'SmartProjectBootstrapBundle:Form:field_chosen.html.twig'
+            - 'SmartProjectTimesheetBundle:Form:week_task.html.twig'
 
 # Assetic Configuration
 assetic:
@@ -86,3 +87,10 @@ swiftmailer:
 
 mopa_bootstrap:
     menu: ~
+    form:
+        collection:
+            widget_remove_btn:
+                icon: trash
+                icon_color: white
+            widget_add_btn:
+                icon: plus-sign

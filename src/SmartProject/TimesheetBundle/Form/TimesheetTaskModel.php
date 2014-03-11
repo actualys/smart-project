@@ -52,43 +52,57 @@ class TimesheetTaskModel
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day1;
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day2;
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day3;
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day4;
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day5;
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day6;
 
     /**
      * @var double
-     * @Assert\Range(min=0, max=100, minMessage="Duration can't be lower than 0.1", maxMessage="Duration can't be greater than 100")
+     * @Assert\Length(max=4, maxMessage="Can't contain more than 4 chars")
+     * @Assert\GreaterThan(value=0.1, message="Duration can't be lower than 0.1")
+     * @Assert\LessThan(value=24, message="Duration can't be greater than 24")
      */
     private $duration_day7;
 

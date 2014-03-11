@@ -71,7 +71,7 @@
 {# --------------------------------------------------------------------------------- #}
 
 {% block headline %}
-    Timesheet of {{ date|date('Y-m-d') }}
+    Timesheet <small>{{ date|date('Y-m-d') }} to {{ '+7 days'|date('Y-m-d') }}</small>
 {% endblock %}
 
 {% block headline_sub %}
@@ -97,8 +97,8 @@
             <th style="width: 40px">We</th>
             <th style="width: 40px">Th</th>
             <th style="width: 40px">Fr</th>
-            <th style="width: 40px">Sa</th>
-            <th style="width: 40px">Su</th>
+            <th style="width: 40px" class="text-muted">Sa</th>
+            <th style="width: 40px" class="text-muted">Su</th>
             <th style="width: 60px"></th>
         </tr>
         </thead>
@@ -113,8 +113,8 @@
             <td class="duration duration-day3">-</td>
             <td class="duration duration-day4">-</td>
             <td class="duration duration-day5">-</td>
-            <td class="duration duration-day6">-</td>
-            <td class="duration duration-day7">-</td>
+            <td class="duration duration-day6 text-muted">-</td>
+            <td class="duration duration-day7 text-muted">-</td>
             <td></td>
         </tr>
         </tfoot>
@@ -181,7 +181,17 @@
                     });
                 });
 
-                $('input.field-duration', line).change(function () {
+                $('input.field-duration', line).change(function (e) {
+                    var currentValue  = $(this).val().trim();
+
+                    if ((!$.isNumeric(currentValue) || parseFloat(currentValue) < 0) && currentValue != '') {
+                        var previousValue = $(this).attr('data-previous-value') || $(this).attr('value') || '';
+                        currentValue = previousValue;
+                    }
+
+                    $(this).val(currentValue);
+                    $(this).attr('data-previous-value', currentValue);
+
                     var table = $(this).closest('table');
                     updateTotal(table);
                 });
