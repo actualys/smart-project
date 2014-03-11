@@ -32,19 +32,7 @@
                      class="panel-collapse collapse{% if contract.id == 1 %} in{% endif %}">
                     <div class="panel-body">
                         <div class="col-md-4">
-                            <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                                richardson
-                                ad
-                                squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food
-                                truck
-                                quinoa
-                                beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
-                                butcher
-                                vice
-                                lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth
-                                nesciunt
-                                you
-                                probably haven't heard of them accusamus labore sustainable VHS.</p>
+                            {{ contract.description }}
                             <a href="{{ path('contract_show', {slug: contract.slug}) }}" class="btn btn-primary btn-xs pull-right">View
                                 contract</a>
                         </div>

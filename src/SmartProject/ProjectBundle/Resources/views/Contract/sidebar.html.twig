@@ -54,6 +54,16 @@
     </table>
 </div>
 
+{% if contract.description|trim %}
+    <div class="panel panel-default">
+        {% if contract.description|trim %}
+            <div class="panel-body">
+                {{ contract.description }}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}
+
 {% if delete_form is defined %}
     {{ form_start(delete_form) }}
     <a class="btn btn-block btn-danger btn-contract-delete">Delete contract</a>

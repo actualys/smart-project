@@ -175,7 +175,7 @@ class ContractController extends Controller
             $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('contract_edit', array('slug' => $contract->getSlug())));
+            return $this->redirect($this->generateUrl('contract_show', array('slug' => $contract->getSlug())));
         }
 
         return array(

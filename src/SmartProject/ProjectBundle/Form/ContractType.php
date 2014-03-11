@@ -63,17 +63,18 @@ class ContractType extends AbstractType
                   'required'                       => false,
               )
           )
-          ->add('status', null, array(
-                  'label'                          => 'Status',
-                  'horizontal_input_wrapper_class' => 'col-lg-9',
-                  'required'                       => false,
-              )
-          )
-          ->add('default', null, array(
-                  'horizontal_input_wrapper_class' => 'col-lg-9',
-                  'required'                       => false,
-              )
-          );
+//          ->add('status', null, array(
+//                  'label'                          => 'Status',
+//                  'horizontal_input_wrapper_class' => 'col-lg-9',
+//                  'required'                       => false,
+//              )
+//          )
+//          ->add('default', null, array(
+//                  'horizontal_input_wrapper_class' => 'col-lg-9',
+//                  'required'                       => false,
+//              )
+//          )
+        ;
     }
 
     /**
