@@ -9,5 +9,8 @@ namespace SmartProject\TimesheetBundle\Entity\Task;
  */
 interface ContractInterface
 {
-
+    /**
+     * @return ProjectInterface
+     */
+    public function getProject();
 } 

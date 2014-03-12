@@ -3,10 +3,12 @@
 namespace SmartProject\TimesheetBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
+use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
+use SmartProject\TimesheetBundle\Entity\Tracking;
+use SmartProject\TimesheetBundle\Entity\UserInterface;
 use SmartProject\TimesheetBundle\Form\TimesheetModel;
 use SmartProject\TimesheetBundle\Form\TimesheetTaskModel;
 use SmartProject\TimesheetBundle\Form\TimesheetType;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,46 +18,80 @@ use SmartProject\TimesheetBundle\Entity\Task;
 /**
  * Timesheet controller.
  *
- * @Route("/full")
+ * @Route("/timesheet")
  */
 class TimesheetController extends Controller
 {
     /**
      * Lists all Task entities.
      *
-     * @Route("/", name="timesheet")
-     * @Route("/{date}", name="timesheet_today")
+     * @Route("/", name="timesheet_today")
+     * @Route("/{date}", name="timesheet")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request, $date = null)
+    public function indexAction($date = null)
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
         if (null !== $date) {
             $date = new \DateTime($date);
         } else {
             $date = new \DateTime('now');
         }
 
-        $formModel = new TimesheetModel();
-        $taskModel = new TimesheetTaskModel();
-        $taskModel->setDescription('description de la tache n°1');
-        $taskModel->setDurationDay1(.5);
-        $taskModel->setDurationDay2(1.5);
-        $formModel->addTask($taskModel);
-        $taskModel = new TimesheetTaskModel();
-        $taskModel->setDescription('description de la tache n°2');
-        $taskModel->setDurationDay1(1);
-        $taskModel->setDurationDay7(2.5);
-        $formModel->addTask($taskModel);
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
-        $form      = $this->createForm(
+        /** @var UserInterface $user */
+        $user = $this->getUser();
+        /** @var TimesheetRepository $timesheetRepository */
+        $timesheetRepository = $em->getRepository('SmartProjectTimesheetBundle:Timesheet');
+        $timesheet           = $timesheetRepository->findByUser($user, $date, true);
+
+        $formModel = new TimesheetModel();
+        $formModel->setId($timesheet->getId());
+        //$formModel->setTimesheet($timesheet);
+
+        $tasks = array();
+
+        /** @var Task $task */
+        foreach ($timesheet->getTasks() as $task) {
+            $taskModel = new TimesheetTaskModel();
+            $taskModel->setId($task->getId());
+            $taskModel->setDescription($task->getDescription());
+
+            if ($task instanceof Task\TaskProject) {
+                /** @var Task\TaskProject $task */
+                $taskModel->setClient($task->getClient());
+                $taskModel->setProject($task->getProject());
+                $taskModel->setContract($task->getContract());
+            }
+
+            /** @var Tracking $tracking */
+            foreach ($task->getTrackings() as $tracking) {
+                $taskModel->setDuration(
+                    $tracking->getDate()->format('N'),
+                    $tracking->getDuration()
+                );
+            }
+
+            $tasks[] = $taskModel;
+        }
+
+        usort($tasks, function (TimesheetTaskModel $a, TimesheetTaskModel $b) {
+                if ($a->getClient() && $b->getClient()) {
+                    return strnatcasecmp($a->getClient()->getName(), $b->getClient()->getName());
+                }
+            });
+
+        foreach ($tasks as $task) {
+            $formModel->addTask($task);
+        }
+
+        $form = $this->createForm(
             new TimesheetType(),
             $formModel,
             array(
-                'action' => $this->generateUrl('timesheet_today', array('date' => $date->format('Y-m-d'))),
+                'action' => $this->generateUrl('timesheet', array('date' => $date->format('Y-m-d'))),
                 'method' => 'POST',
             )
         );

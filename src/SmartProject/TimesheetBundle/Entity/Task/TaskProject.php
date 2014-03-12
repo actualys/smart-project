@@ -12,6 +12,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\Loggable
  * @ORM\Table(name="timesheet_task_project")
  * @ORM\Entity(repositoryClass="SmartProject\TimesheetBundle\Entity\Task\TaskProjectRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class TaskProject extends Task
 {
@@ -41,6 +42,32 @@ class TaskProject extends Task
      * @Gedmo\Versioned
      */
     private $contract;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist()
+    {
+//        if ($this->contract) {
+//            $this->client = null;
+//            $this->project = null;
+//        } elseif ($this->project) {
+//            $this->client = null;
+//        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function onPostPersist()
+    {
+//        if ($this->contract) {
+//            $this->project = $this->contract->getProject();
+//            $this->client = $this->project->getClient();
+//        } elseif ($this->project) {
+//            $this->client = $this->project->getClient();
+//        }
+    }
 
     /**
      * Set client

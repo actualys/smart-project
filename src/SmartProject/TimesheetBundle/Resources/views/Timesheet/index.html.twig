@@ -68,6 +68,44 @@
     {% endspaceless %}
 {% endblock form_widget_add_btn %}
 
+{% block smartproject_collection_task_widget %}
+    <td width="30%">
+        {{ form_widget(form.client) }}
+    </td>
+    <td width="30%">
+        {{ form_widget(form.description) }}
+    </td>
+    <td class="duration duration-day1">
+        {{ form_widget(form.duration_day1) }}
+    </td>
+    <td class="duration duration-day2">
+        {{ form_widget(form.duration_day2) }}
+    </td>
+    <td class="duration duration-day3">
+        {{ form_widget(form.duration_day3) }}
+    </td>
+    <td class="duration duration-day4">
+        {{ form_widget(form.duration_day4) }}
+    </td>
+    <td class="duration duration-day5">
+        {{ form_widget(form.duration_day5) }}
+    </td>
+    <td class="duration duration-day6">
+        {{ form_widget(form.duration_day6) }}
+    </td>
+    <td class="duration duration-day7">
+        {{ form_widget(form.duration_day7) }}
+    </td>
+    <td>
+        <div class="btn-group">
+            {% set widget_add_btn = {attr: {class: 'btn btn-default btn-primary', style: 'padding-left: 4px; padding-right: 4px'}, icon: 'plus-sign', icon_color: null, placement: 'top', label: ''} %}
+            {% set widget_remove_btn = {attr: {class: 'btn btn-default btn-danger', style: 'padding-left: 4px; padding-right: 4px'}, icon: 'trash', icon_color: null, label: ''} %}
+            {{ block('form_widget_add_btn') }}
+            {{ block('form_widget_remove_btn') }}
+        </div>
+    </td>
+{% endblock smartproject_collection_task_widget %}
+
 {# --------------------------------------------------------------------------------- #}
 
 {% block headline %}

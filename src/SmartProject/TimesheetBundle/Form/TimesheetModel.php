@@ -17,6 +17,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TimesheetModel
 {
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var \DateTime
      */
     private $date;
@@ -37,6 +42,22 @@ class TimesheetModel
     public function __construct()
     {
         $this->tasks = new ArrayCollection();
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

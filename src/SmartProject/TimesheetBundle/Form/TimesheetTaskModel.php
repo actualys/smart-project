@@ -15,6 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TimesheetTaskModel
 {
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var TimesheetModel
      */
     private $timesheet;
@@ -114,6 +119,22 @@ class TimesheetTaskModel
     }
 
     /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @param null|\SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
      */
     public function setClient($client)
@@ -175,6 +196,25 @@ class TimesheetTaskModel
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param int $day
+     * @param double $duration
+     */
+    public function setDuration($day, $duration)
+    {
+        $this->{'duration_day' . $day} = $duration;
+    }
+
+    /**
+     * @param int $day
+     *
+     * @return double
+     */
+    public function getDuration($day)
+    {
+        return $this->{'duration_day' . $day};
     }
 
     /**

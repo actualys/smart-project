@@ -194,6 +194,11 @@ class ClientController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($client);
+
+            foreach ($client->getProjects() as $project) {
+                $em->remove($project);
+            }
+
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'Client deleted');

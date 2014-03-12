@@ -11,7 +11,7 @@ smart_project_sync:
 smart_project_timesheet:
     resource: "@SmartProjectTimesheetBundle/Controller"
     type:     annotation
-    prefix:   /timesheet
+    prefix:   /
 
 smart_project_front:
     resource: "@SmartProjectFrontBundle/Controller"

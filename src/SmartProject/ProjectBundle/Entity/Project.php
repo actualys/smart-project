@@ -29,7 +29,7 @@ class Project implements ProjectInterface
     /**
      * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="Client", inversedBy="projects")
+     * @ORM\ManyToOne(targetEntity="Client", inversedBy="projects", cascade={"persist"})
      * @ORM\JoinColumn(name="client_id", referencedColumnName="id")
      */
     private $client;
@@ -75,13 +75,13 @@ class Project implements ProjectInterface
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="Project", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="Project", inversedBy="children", cascade={"persist"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="Project", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Project", mappedBy="parent", cascade={"persist"})
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private $children;
@@ -124,7 +124,7 @@ class Project implements ProjectInterface
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Contract", mappedBy="project")
+     * @ORM\OneToMany(targetEntity="Contract", mappedBy="project", cascade={"persist"})
      */
     private $contracts;
 
@@ -527,7 +527,7 @@ class Project implements ProjectInterface
     public function setClient(Client $client = null)
     {
         $this->client = $client;
-    
+
         return $this;
     }
 
@@ -550,7 +550,7 @@ class Project implements ProjectInterface
     public function setParent(Project $parent = null)
     {
         $this->parent = $parent;
-    
+
         return $this;
     }
 
@@ -585,6 +585,8 @@ class Project implements ProjectInterface
     public function removeChildren(Project $children)
     {
         $this->children->removeElement($children);
+
+        $children->setParent(null);
     }
 
     /**
@@ -606,6 +608,8 @@ class Project implements ProjectInterface
     public function addContract(Contract $contracts)
     {
         $this->contracts[] = $contracts;
+
+        $contracts->setProject($this);
     
         return $this;
     }
@@ -618,6 +622,8 @@ class Project implements ProjectInterface
     public function removeContract(Contract $contracts)
     {
         $this->contracts->removeElement($contracts);
+
+        $contracts->setProject(null);
     }
 
     /**

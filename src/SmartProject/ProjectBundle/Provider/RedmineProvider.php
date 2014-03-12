@@ -2,7 +2,9 @@
 
 namespace SmartProject\ProjectBundle\Provider;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Redmine\Client;
+use SmartProject\ProjectBundle\Entity\Contract;
 use SmartProject\ProjectBundle\Entity\Project;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
 
@@ -13,6 +15,9 @@ use SmartProject\ProjectBundle\Entity\ProjectRepository;
  */
 class RedmineProvider
 {
+    /**
+     * @var \Doctrine\Bundle\DoctrineBundle\Registry
+     */
     protected $doctrine;
 
     /**
@@ -24,7 +29,7 @@ class RedmineProvider
      * @param $doctrine
      * @param $redmine
      */
-    public function __construct($doctrine, $redmine)
+    public function __construct(Registry $doctrine, $redmine)
     {
         $this->doctrine = $doctrine;
         $this->client   = new Client($redmine['hostname'], $redmine['apikey']);
@@ -73,6 +78,12 @@ class RedmineProvider
                 $entity->setRedmineIdentifier($project['identifier']);
                 $entity->setParent(null);
 
+                if ($entity->getContracts()->isEmpty()) {
+                    $contract = new Contract();
+                    $contract->setName('default');
+                    $entity->addContract($contract);
+                }
+
                 $entities[$project['id']] = $entity;
 
                 if (isset($project['parent']['id'])) {
@@ -84,7 +95,7 @@ class RedmineProvider
 
         uasort(
             $entities,
-            function ($a, $b) {
+            function (Project $a, Project $b) {
                 return strcasecmp($a->getName(), $b->getName());
             }
         );

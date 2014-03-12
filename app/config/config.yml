@@ -32,7 +32,6 @@ twig:
             - 'SmartProjectBootstrapBundle:Form:field_tag.html.twig'
             - 'SmartProjectBootstrapBundle:Form:field_datepicker.html.twig'
             - 'SmartProjectBootstrapBundle:Form:field_chosen.html.twig'
-            - 'SmartProjectTimesheetBundle:Form:week_task.html.twig'
 
 # Assetic Configuration
 assetic:

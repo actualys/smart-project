@@ -10,4 +10,4 @@ namespace SmartProject\TimesheetBundle\Entity\Task;
 interface ClientInterface
 {
 
-} 
+}

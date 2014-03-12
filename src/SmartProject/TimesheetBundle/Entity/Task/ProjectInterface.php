@@ -9,5 +9,8 @@ namespace SmartProject\TimesheetBundle\Entity\Task;
  */
 interface ProjectInterface
 {
-
+    /**
+     * @return ClientInterface
+     */
+    public function getClient();
 }

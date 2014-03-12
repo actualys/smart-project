@@ -27,7 +27,7 @@ class Contract implements ContractInterface
     /**
      * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="Project", inversedBy="contracts")
+     * @ORM\ManyToOne(targetEntity="Project", inversedBy="contracts", cascade={"persist"})
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
     private $project;
@@ -141,11 +141,7 @@ class Contract implements ContractInterface
      */
     public function getProjectIdName()
     {
-        if ($this->project) {
-            return $this->project->getId() . ':' . $this->name;
-        } else {
-            return '0:' . $this->name;
-        }
+        return $this->project->getId() . ':' . $this->name;
     }
 
     /**

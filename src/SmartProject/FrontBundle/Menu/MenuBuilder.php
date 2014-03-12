@@ -110,7 +110,7 @@ class MenuBuilder
                 'icon' => 'glyphicon glyphicon-time',
             ));
         $timesheet->addChild('Matrix', array(
-                'uri' => '#',
+                'route' => 'timesheet',
                 'icon' => 'glyphicon glyphicon-th',
             ));
         $timesheet->addChild('divider_2', array('divider' => true));

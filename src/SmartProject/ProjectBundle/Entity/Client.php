@@ -57,7 +57,7 @@ class Client implements ClientInterface
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Project", mappedBy="client")
+     * @ORM\OneToMany(targetEntity="Project", mappedBy="client", cascade={"persist"})
      */
     private $projects;
 
@@ -272,6 +272,8 @@ class Client implements ClientInterface
     public function addProject(Project $projects)
     {
         $this->projects[] = $projects;
+
+        $projects->setClient($this);
     
         return $this;
     }
@@ -284,6 +286,8 @@ class Client implements ClientInterface
     public function removeProject(Project $projects)
     {
         $this->projects->removeElement($projects);
+
+        $projects->setClient(null);
     }
 
     /**

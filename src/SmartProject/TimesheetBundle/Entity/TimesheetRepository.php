@@ -21,12 +21,16 @@ class TimesheetRepository extends EntityRepository
      */
     public function findByUser(UserInterface $user, \DateTime $date, $create = false)
     {
-        $entities = $this->createQueryBuilder('t')
-          ->where('t.user = :user')
-          ->andWhere('t.dateStart <= :date')
-          ->andWhere('t.dateEnd >= :date')
+        $entities = $this->createQueryBuilder('ti')
+          ->select('ti, ts, tr')
+          ->leftJoin('ti.tasks', 'ts')
+          ->leftJoin('ts.trackings', 'tr')
+          ->where('ti.user = :user')
+          ->andWhere('ti.dateStart <= :date')
+          ->andWhere('ti.dateEnd >= :date')
           ->setParameter(':user', $user)
           ->setParameter(':date', $date->format('Y-m-d'))
+          ->orderBy('ts.id')
           ->getQuery()
           ->execute();
 
