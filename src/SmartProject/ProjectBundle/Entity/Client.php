@@ -12,14 +12,22 @@ use SmartProject\TimesheetBundle\Entity\Task\ClientInterface;
  *
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ClientRepository")
  */
-class Client extends BaseProject implements ClientInterface
+class Client extends BaseProject
 {
     /**
      * @return string
      */
     public function getType()
     {
-        return 'client';
+        return self::TYPE_CLIENT;
+    }
+
+    /**
+     * @return null|\SmartProject\TimesheetBundle\Entity\Task\BaseProjectInterface
+     */
+    public function getClient()
+    {
+        return null;
     }
 
     /**

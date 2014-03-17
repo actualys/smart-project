@@ -3,14 +3,14 @@
 namespace SmartProject\TimesheetBundle\Entity\Task;
 
 /**
- * Interface ProjectInterface
+ * Interface BaseProjectInterface
  *
  * @package SmartProject\TimesheetBundle\Entity\Task
  */
-interface ProjectInterface
+interface BaseProjectInterface
 {
     /**
-     * @return ClientInterface
+     * @return BaseProjectInterface
      */
     public function getClient();
 }

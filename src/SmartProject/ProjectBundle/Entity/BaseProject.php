@@ -5,6 +5,7 @@ namespace SmartProject\ProjectBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use SmartProject\TimesheetBundle\Entity\Task\BaseProjectInterface;
 
 /**
  * BaseProject
@@ -21,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  *              "contract" = "\SmartProject\ProjectBundle\Entity\Contract"
  *          })
  */
-abstract class BaseProject
+abstract class BaseProject implements BaseProjectInterface
 {
     const TYPE_CLIENT   = 'client';
     const TYPE_PROJECT  = 'project';
@@ -170,6 +171,11 @@ abstract class BaseProject
     }
 
     /**
+     * @return string
+     */
+    abstract public function getType();
+
+    /**
      * Get id
      *
      * @return integer
@@ -223,10 +229,22 @@ abstract class BaseProject
      */
     public function getParentedName()
     {
+        switch ($this->getType()) {
+            case self::TYPE_CONTRACT:
+                $prefix = 2;
+                break;
+            case self::TYPE_CLIENT:
+                $prefix = 0;
+                break;
+            default:
+                $prefix = 1;
+        }
+
+
         if ($parent = $this->getParent()) {
-            return $parent->getParentedName() . ' > ' . $this->name;
+            return $parent->getParentedName() . ' > ' . $prefix . ':' . $this->name;
         } else {
-            return $this->name;
+            return $prefix . ':' . $this->name;
         }
     }
 

@@ -11,14 +11,14 @@ use SmartProject\TimesheetBundle\Entity\Task\ContractInterface;
  *
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ContractRepository")
  */
-class Contract extends BaseProject implements ContractInterface
+class Contract extends BaseProject
 {
     /**
      * @return string
      */
     public function getType()
     {
-        return 'contract';
+        return self::TYPE_CONTRACT;
     }
 
     /**

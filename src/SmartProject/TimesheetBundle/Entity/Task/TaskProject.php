@@ -17,31 +17,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class TaskProject extends Task
 {
     /**
-     * @var ClientInterface
-     *
-     * @ORM\ManyToOne(targetEntity="ClientInterface")
-     * @ORM\JoinColumn(name="client_id", referencedColumnName="id", nullable=true)
-     * @Gedmo\Versioned
-     */
-    private $client;
-
-    /**
-     * @var ProjectInterface
+     * @var BaseProjectInterface
      *
      * @ORM\ManyToOne(targetEntity="ProjectInterface")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
      * @Gedmo\Versioned
      */
     private $project;
-
-    /**
-     * @var ContractInterface
-     *
-     * @ORM\ManyToOne(targetEntity="ContractInterface")
-     * @ORM\JoinColumn(name="contract_id", referencedColumnName="id", nullable=true)
-     * @Gedmo\Versioned
-     */
-    private $contract;
 
     /**
      * @ORM\PrePersist
@@ -70,32 +52,9 @@ class TaskProject extends Task
     }
 
     /**
-     * Set client
-     *
-     * @param \SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
-     * @return Task
-     */
-    public function setClient($client = null)
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    /**
-     * Get client
-     *
-     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ClientInterface
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
      * Set project
      *
-     * @param \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface $project
+     * @param BaseProjectInterface $project
      * @return Task
      */
     public function setProject($project = null)
@@ -108,33 +67,10 @@ class TaskProject extends Task
     /**
      * Get project
      *
-     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ProjectInterface
+     * @return null|BaseProjectInterface
      */
     public function getProject()
     {
         return $this->project;
-    }
-
-    /**
-     * Set contract
-     *
-     * @param \SmartProject\TimesheetBundle\Entity\Task\ContractInterface $contract
-     * @return Task
-     */
-    public function setContract($contract = null)
-    {
-        $this->contract = $contract;
-
-        return $this;
-    }
-
-    /**
-     * Get contract
-     *
-     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ContractInterface
-     */
-    public function getContract()
-    {
-        return $this->contract;
     }
 }

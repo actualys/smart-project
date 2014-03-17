@@ -11,33 +11,33 @@
 
     <script type="text/javascript">
     function initProjectSelection(client, project, contract, tag) {
-        client.each(function () {
-            $(this).select2({
-                allowClear: true,
-                width: '100%'
-            });
+        /*client.each(function () {
+         $(this).select2({
+         allowClear: true,
+         width: '100%'
+         });
 
-            $(this).change(function () {
-                var project_group = project.closest('.form-group');
-                project.select2('val', '');
+         $(this).change(function () {
+         var project_group = project.closest('.form-group');
+         project.select2('val', '');
 
-                if ($(this).val()) {
-                    project_group.removeClass('hidden');
-                    project_group.show();
-                } else {
-                    project_group.hide();
-                }
+         if ($(this).val()) {
+         project_group.removeClass('hidden');
+         project_group.show();
+         } else {
+         project_group.hide();
+         }
 
-                var contract_group = contract.closest('.form-group');
-                contract_group.hide();
-                contract.select2('val', '');
-            });
+         var contract_group = contract.closest('.form-group');
+         contract_group.hide();
+         contract.select2('val', '');
+         });
 
-            if (client.val()) {
-                var project_group = project.closest('.form-group');
-                project_group.removeClass('hidden');
-            }
-        });
+         if (client.val()) {
+         var project_group = project.closest('.form-group');
+         project_group.removeClass('hidden');
+         }
+         });*/
 
         project.each(function () {
             $(this).select2({
@@ -46,22 +46,48 @@
                     var id = client.val();
                     var label = option[0].textContent;
 
-                    if (label.indexOf(id + ':') !== 0) {
-                        return false;
-                    }
-
                     return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
                 },
                 formatResult: function (item) {
-                    var originalOption = item.element;
-                    return item.text.replace(/^\s*([0-9]+:)/, '');
+                    var parts = item.text.split(/ > /);
+                    var text  = parts[parts.length - 1];
+                    var type  = 1;
+
+                    if (text.match(/^[0-2]:/)) {
+                        type = parseInt(text);
+                        text = text.replace(/^\s*([0-2]:)/, '');
+                    }
+
+                    text = '&nbsp;&nbsp;'.repeat(parts.length - 1) + text;
+
+                    if (type == 0) {
+                        text = '<strong>' + text + '</strong>';
+                    } else if (type == 2) {
+                        text = '<div style="font-style: italic">' + text + '</div>';
+                    }
+
+                    return text;
                 },
                 formatSelection: function (item) {
-                    var originalOption = item.element;
-                    return item.text.replace(/^\s*([0-9]+:)/, '');
+                    var text = item.text.replace(/ > [0-2]:/g, ' / ').replace(/^[0-2]:/, '');
+
+                    return text;
                 },
                 allowClear: true,
+                dropdownAutoWidth: true,
                 width: '100%'
+            });
+
+            // Add support for auto-expand width
+            $(this).on('select2-open', function(e) {
+                var dropdown = $('#select2-drop');
+                var width    = dropdown.css('width');
+
+                var container = $(e.currentTarget).parent().find('.select2-container');
+                container.css('width', width);
+            }).on('select2-close', function(e) {
+                var container = $(e.currentTarget).parent().find('.select2-container');
+                container.css('width', '100%');
             });
 
             $(this).change(function () {
@@ -82,31 +108,31 @@
             }
         });
 
-        contract.each(function () {
-            $(this).select2({
-                matcher: function (term, text, option) {
-                    // Check client
-                    var id = project.val();
-                    var label = option[0].textContent;
+        /*contract.each(function () {
+         $(this).select2({
+         matcher: function (term, text, option) {
+         // Check client
+         var id = project.val();
+         var label = option[0].textContent;
 
-                    if (label.indexOf(id + ':') !== 0) {
-                        return false;
-                    }
+         if (label.indexOf(id + ':') !== 0) {
+         return false;
+         }
 
-                    return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-                },
-                formatResult: function (item) {
-                    var originalOption = item.element;
-                    return item.text.replace(/^\s*([0-9]+:)/, '');
-                },
-                formatSelection: function (item) {
-                    var originalOption = item.element;
-                    return item.text.replace(/^\s*([0-9]+:)/, '');
-                },
-                allowClear: true,
-                width: '100%'
-            });
-        });
+         return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+         },
+         formatResult: function (item) {
+         var originalOption = item.element;
+         return item.text.replace(/^\s*([0-9]+:)/, '');
+         },
+         formatSelection: function (item) {
+         var originalOption = item.element;
+         return item.text.replace(/^\s*([0-9]+:)/, '');
+         },
+         allowClear: true,
+         width: '100%'
+         });
+         });*/
 
         tag.each(function () {
             var select = $(this);

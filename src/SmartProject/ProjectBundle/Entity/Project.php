@@ -12,14 +12,14 @@ use SmartProject\TimesheetBundle\Entity\Task\ProjectInterface;
  *
  * @ORM\Entity(repositoryClass="SmartProject\ProjectBundle\Entity\ProjectRepository")
  */
-class Project extends BaseProject implements ProjectInterface
+class Project extends BaseProject
 {
     /**
      * @return string
      */
     public function getType()
     {
-        return 'project';
+        return self::TYPE_PROJECT;
     }
 
     /**

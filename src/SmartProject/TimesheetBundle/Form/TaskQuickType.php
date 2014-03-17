@@ -51,36 +51,13 @@ class TaskQuickType extends AbstractType
               )
           )
           ->add(
-              'client',
-              'entity',
-              array(
-                  'label'                          => false,
-                  'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_addon_append'            => array(
-                      'icon' => 'th-large',
-                  ),
-                  'attr'                           => array(
-                      'placeholder'  => 'Client',
-                      'autocomplete' => 'off',
-                      'class'        => 'form-field-select form-field-client',
-                  ),
-                  'required'                       => false,
-                  'class'                          => 'SmartProject\ProjectBundle\Entity\Client',
-                  'property'                       => 'name',
-                  'query_builder'                  => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                          ->orderBy('c.name', 'ASC');
-                    },
-              )
-          )
-          ->add(
               'project',
               'entity',
               array(
                   'label'                          => false,
                   'horizontal_input_wrapper_class' => 'col-sm-12',
                   'widget_form_group_attr'         => array(
-                      'class' => 'form-group hidden',
+                      'class' => 'form-group',
                   ),
                   'widget_addon_append'            => array(
                       'icon' => 'th-large',
@@ -91,38 +68,12 @@ class TaskQuickType extends AbstractType
                       'class'        => 'form-field-select form-field-project',
                   ),
                   'required'                       => false,
-                  'class'                          => 'SmartProject\ProjectBundle\Entity\Project',
-                  'property'                       => 'clientIdName',
+                  'class'                          => 'SmartProject\ProjectBundle\Entity\BaseProject',
+                  'property'                       => 'parentedName',
                   'query_builder'                  => function (EntityRepository $er) {
                         return $er->createQueryBuilder('p')
                           ->orderBy('p.root', 'ASC')
                           ->addOrderBy('p.lft', 'ASC');
-                    },
-              )
-          )
-          ->add(
-              'contract',
-              'entity',
-              array(
-                  'label'                          => false,
-                  'horizontal_input_wrapper_class' => 'col-sm-12',
-                  'widget_form_group_attr'         => array(
-                      'class' => 'form-group hidden',
-                  ),
-                  'widget_addon_append'            => array(
-                      'icon' => 'th-large',
-                  ),
-                  'attr'                           => array(
-                      'placeholder'  => 'Contract',
-                      'autocomplete' => 'off',
-                      'class'        => 'form-field-select form-field-contract',
-                  ),
-                  'required'                       => false,
-                  'class'                          => 'SmartProject\ProjectBundle\Entity\Contract',
-                  'property'                       => 'projectIdName',
-                  'query_builder'                  => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                          ->orderBy('c.name', 'ASC');
                     },
               )
           )

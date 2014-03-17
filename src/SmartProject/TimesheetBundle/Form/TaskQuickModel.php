@@ -2,9 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Form;
 
-use SmartProject\TimesheetBundle\Entity\Task\ClientInterface;
-use SmartProject\TimesheetBundle\Entity\Task\ContractInterface;
-use SmartProject\TimesheetBundle\Entity\Task\ProjectInterface;
+use SmartProject\TimesheetBundle\Entity\Task\BaseProjectInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -31,19 +29,9 @@ class TaskQuickModel
     private $date;
 
     /**
-     * @var ClientInterface|null
-     */
-    private $client;
-
-    /**
-     * @var ProjectInterface|null
+     * @var BaseProjectInterface|null
      */
     private $project;
-
-    /**
-     * @var ContractInterface|null
-     */
-    private $contract;
 
     /**
      * @var string
@@ -173,39 +161,7 @@ class TaskQuickModel
     }
 
     /**
-     * @param \SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
-     */
-    public function setClient($client = null)
-    {
-        $this->client = $client;
-    }
-
-    /**
-     * @return \SmartProject\TimesheetBundle\Entity\Task\ClientInterface
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * @param \SmartProject\TimesheetBundle\Entity\Task\ContractInterface $contract
-     */
-    public function setContract($contract = null)
-    {
-        $this->contract = $contract;
-    }
-
-    /**
-     * @return \SmartProject\TimesheetBundle\Entity\Task\ContractInterface
-     */
-    public function getContract()
-    {
-        return $this->contract;
-    }
-
-    /**
-     * @param \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface $project
+     * @param BaseProjectInterface $project
      */
     public function setProject($project = null)
     {
@@ -213,7 +169,7 @@ class TaskQuickModel
     }
 
     /**
-     * @return \SmartProject\TimesheetBundle\Entity\Task\ProjectInterface
+     * @return BaseProjectInterface
      */
     public function getProject()
     {
