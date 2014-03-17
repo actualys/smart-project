@@ -44,16 +44,18 @@
                     {% for tracking in day.trackings %}
                         <tr>
                             <td style="width: 40%">
-                                {% if tracking.task.client %}
-                                    <a href="{{ path('client_show', {slug: tracking.task.client.slug}) }}">{{ tracking.task.client.name }}</a>
-                                    {% if tracking.task.project %}
-                                        &gt;&nbsp;<a
-                                            href="{{ path('project_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
-                                        {% if tracking.task.contract %}
-                                            &gt;&nbsp;<a
-                                                href="{{ path('contract_show', {slug: tracking.task.contract.slug}) }}">{{ tracking.task.contract.name }}</a>
-                                        {% endif %}
-                                    {% endif %}
+                                {% if tracking.task.project.type == 'contract' %}
+                                    <a href="{{ path('client_show', {slug: tracking.task.project.client.slug}) }}">{{ tracking.task.project.client.name }}</a>
+                                    &gt;
+                                    <a href="{{ path('project_show', {slug: tracking.task.project.parent.slug}) }}">{{ tracking.task.project.parent.name }}</a>
+                                    &gt;
+                                    <a href="{{ path('contract_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
+                                {% elseif tracking.task.project.type == 'project' %}
+                                    <a href="{{ path('client_show', {slug: tracking.task.project.client.slug}) }}">{{ tracking.task.project.client.name }}</a>
+                                    &gt;
+                                    <a href="{{ path('project_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
+                                {% elseif tracking.task.project.type == 'client' %}
+                                    <a href="{{ path('client_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
                                 {% else %}
                                     N/A
                                 {% endif %}
@@ -219,9 +221,7 @@
                 }
 
                 initProjectSelection(
-                        $('.bootbox.modal select.form-field-client'),
                         $('.bootbox.modal select.form-field-project'),
-                        $('.bootbox.modal select.form-field-contract'),
                         $('.bootbox.modal .form-field-tag')
                 );
             }

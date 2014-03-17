@@ -114,6 +114,7 @@ class TimelineController extends Controller
             'date'         => $date,
             'day_duration' => 7,
         );
+
         $content    = $this->renderView('SmartProjectTimesheetBundle:Timeline:index.html.twig', $parameters);
         $response   = new Response($content);
         $cookie     = new Cookie(self::COOKIE_MODE, $mode, 0, $request->getBaseUrl());

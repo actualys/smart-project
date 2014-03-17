@@ -40,24 +40,6 @@
                     </td>
                 </tr>
             {% endif %}
-            {#{% for project in client.getchildren %}#}
-            {#<tr>#}
-            {#<td style="width: 20px"></td>#}
-            {#<td>#}
-            {#{% if project.lvl %}#}
-            {#<span style="display: inline-block; width: {{ project.lvl * 15 }}px; text-align: right; padding-right: 10px">\</span>#}
-            {#{% endif %}#}
-            {#<a href="{{ path('project_show', { 'slug': project.slug }) }}">{{ project.name }}</a></td>#}
-            {#<td>#}
-            {#{% if project.syncId %}#}
-            {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"#}
-            {#target="_blank" title="Redmine"><img#}
-            {#src="https://wappalyzer.com/sites/default/files/icons/Redmine.png" alt="Redmine"#}
-            {#height="16" width="16"/></a>#}
-            {#{% endif %}#}
-            {#</td>#}
-            {#</tr>#}
-            {#{% endfor %}#}
         {% endfor %}
         </tbody>
     </table>

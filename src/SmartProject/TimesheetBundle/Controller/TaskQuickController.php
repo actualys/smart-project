@@ -192,9 +192,7 @@ class TaskQuickController extends Controller
         $entity->setDuration($tracking->getDuration());
         $entity->setDescription($task->getDescription());
         $entity->setTags($task->getTags());
-        $entity->setClient($task->getClient());
         $entity->setProject($task->getProject());
-        $entity->setContract($task->getContract());
 
         $form = $this->createForm(
             new TaskQuickType(TaskQuickType::MODE_EDIT),

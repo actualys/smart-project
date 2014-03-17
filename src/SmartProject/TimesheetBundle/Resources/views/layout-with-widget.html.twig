@@ -10,40 +10,10 @@
     {{ parent() }}
 
     <script type="text/javascript">
-    function initProjectSelection(client, project, contract, tag) {
-        /*client.each(function () {
-         $(this).select2({
-         allowClear: true,
-         width: '100%'
-         });
-
-         $(this).change(function () {
-         var project_group = project.closest('.form-group');
-         project.select2('val', '');
-
-         if ($(this).val()) {
-         project_group.removeClass('hidden');
-         project_group.show();
-         } else {
-         project_group.hide();
-         }
-
-         var contract_group = contract.closest('.form-group');
-         contract_group.hide();
-         contract.select2('val', '');
-         });
-
-         if (client.val()) {
-         var project_group = project.closest('.form-group');
-         project_group.removeClass('hidden');
-         }
-         });*/
-
+    function initProjectSelection(project, tag) {
         project.each(function () {
             $(this).select2({
                 matcher: function (term, text, option) {
-                    // Check client
-                    var id = client.val();
                     var label = option[0].textContent;
 
                     return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
@@ -89,50 +59,7 @@
                 var container = $(e.currentTarget).parent().find('.select2-container');
                 container.css('width', '100%');
             });
-
-            $(this).change(function () {
-                var contract_group = contract.closest('.form-group');
-                contract.select2('val', '');
-
-                if ($(this).val()) {
-                    contract_group.removeClass('hidden');
-                    contract_group.show();
-                } else {
-                    contract_group.hide();
-                }
-            });
-
-            if (project.val()) {
-                var contract_group = contract.closest('.form-group');
-                contract_group.removeClass('hidden');
-            }
         });
-
-        /*contract.each(function () {
-         $(this).select2({
-         matcher: function (term, text, option) {
-         // Check client
-         var id = project.val();
-         var label = option[0].textContent;
-
-         if (label.indexOf(id + ':') !== 0) {
-         return false;
-         }
-
-         return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
-         },
-         formatResult: function (item) {
-         var originalOption = item.element;
-         return item.text.replace(/^\s*([0-9]+:)/, '');
-         },
-         formatSelection: function (item) {
-         var originalOption = item.element;
-         return item.text.replace(/^\s*([0-9]+:)/, '');
-         },
-         allowClear: true,
-         width: '100%'
-         });
-         });*/
 
         tag.each(function () {
             var select = $(this);
@@ -217,9 +144,7 @@
         }
 
         initProjectSelection(
-                $('select.form-field-client', container),
                 $('select.form-field-project', container),
-                $('select.form-field-contract', container),
                 $('.form-field-tag', container)
         );
     }
@@ -230,9 +155,7 @@
         });
 
         initProjectSelection(
-                $('.timesheet-quick-task select.form-field-client'),
                 $('.timesheet-quick-task select.form-field-project'),
-                $('.timesheet-quick-task select.form-field-contract'),
                 $('.timesheet-quick-task .form-field-tag')
         );
     });

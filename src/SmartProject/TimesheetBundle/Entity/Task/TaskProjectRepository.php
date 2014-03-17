@@ -35,9 +35,7 @@ class TaskProjectRepository extends EntityRepository
         $task->setTimesheet($timesheet);
         $task->setDescription($form->getDescription());
         $task->setTags($form->getTags());
-        $task->setClient($form->getClient());
         $task->setProject($form->getProject());
-        $task->setContract($form->getContract());
 
         $tracking = new Tracking();
         $tracking->setTask($task);
@@ -75,9 +73,7 @@ class TaskProjectRepository extends EntityRepository
             $task->setTimesheet($timesheet);
             $task->setDescription($form->getDescription());
             $task->setTags($form->getTags());
-            $task->setClient($form->getClient());
             $task->setProject($form->getProject());
-            $task->setContract($form->getContract());
 
             $tracking->setDate($form->getDate());
             $tracking->setDuration($form->getDuration());
