@@ -50,7 +50,7 @@ class Timesheet
     /**
      * @var UserInterface
      *
-     * @ORM\ManyToOne(targetEntity="UserInterface")
+     * @ORM\ManyToOne(targetEntity="UserInterface", cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
@@ -58,7 +58,7 @@ class Timesheet
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Task", mappedBy="timesheet")
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="timesheet", cascade={"persist"})
      */
     private $tasks;
 

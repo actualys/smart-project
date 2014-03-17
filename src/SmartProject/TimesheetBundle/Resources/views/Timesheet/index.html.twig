@@ -70,6 +70,7 @@
 
 {% block smartproject_collection_task_widget %}
     <td width="30%" style="max-width: 330px">
+        {{ form_widget(form.id) }}
         {{ form_widget(form.project) }}
     </td>
     <td width="30%">
@@ -198,7 +199,7 @@
 //                    new_line.prepend($(line));
                     initTableLine(new_line);
 
-                    $('.form-field-client', new_line).select2('val', $('.form-field-client', line).select2('val'));
+                    $('.form-field-project', new_line).select2('val', $('.form-field-project', line).select2('val'));
                     $('.field-description', new_line).val($('.field-description', line).val());
 
                     for (i = 1; i <= 7; i++) {

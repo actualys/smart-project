@@ -52,7 +52,7 @@ abstract class Task
     /**
      * @var Timesheet
      *
-     * @ORM\ManyToOne(targetEntity="Timesheet", inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity="Timesheet", inversedBy="tasks", cascade={"persist"})
      * @ORM\JoinColumn(name="timesheet_id", referencedColumnName="id")
      */
     private $timesheet;
@@ -60,7 +60,7 @@ abstract class Task
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Tracking", mappedBy="task")
+     * @ORM\OneToMany(targetEntity="Tracking", mappedBy="task", cascade={"persist"})
      */
     private $trackings;
 

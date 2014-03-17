@@ -18,11 +18,6 @@ class TimesheetTaskModel
     private $id;
 
     /**
-     * @var TimesheetModel
-     */
-    private $timesheet;
-
-    /**
      * @var \DateTime
      */
     private $date;
@@ -315,21 +310,5 @@ class TimesheetTaskModel
     public function getTags()
     {
         return $this->tags;
-    }
-
-    /**
-     * @param \SmartProject\TimesheetBundle\Form\TimesheetModel $timesheet
-     */
-    public function setTimesheet($timesheet)
-    {
-        $this->timesheet = $timesheet;
-    }
-
-    /**
-     * @return \SmartProject\TimesheetBundle\Form\TimesheetModel
-     */
-    public function getTimesheet()
-    {
-        return $this->timesheet;
     }
 }

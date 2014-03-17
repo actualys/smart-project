@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Tracking
 {
-    const STATUS_NEW = 0;
+    const STATUS_NEW = 1;
 
     /**
      * @var integer
@@ -53,7 +53,7 @@ class Tracking
     /**
      * @var Task
      *
-     * @ORM\ManyToOne(targetEntity="Task", inversedBy="trackings")
+     * @ORM\ManyToOne(targetEntity="Task", inversedBy="trackings", cascade={"persist"})
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id")
      */
     private $task;
@@ -81,6 +81,13 @@ class Tracking
      */
     private $deletedAt;
 
+    /**
+     *
+     */
+    public function __construct()
+    {
+        $this->status = self::STATUS_NEW;
+    }
 
     /**
      * Get id
