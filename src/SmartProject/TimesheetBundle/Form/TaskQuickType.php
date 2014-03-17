@@ -72,7 +72,9 @@ class TaskQuickType extends AbstractType
                   'property'                       => 'parentedName',
                   'query_builder'                  => function (EntityRepository $er) {
                         return $er->createQueryBuilder('p')
-                          ->orderBy('p.root', 'ASC')
+                          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
+                          ->where('root.id = p.root')
+                          ->orderBy('root.name', 'ASC')
                           ->addOrderBy('p.lft', 'ASC');
                     },
               )

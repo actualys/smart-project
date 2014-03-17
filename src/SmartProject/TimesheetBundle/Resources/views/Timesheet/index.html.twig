@@ -69,8 +69,8 @@
 {% endblock form_widget_add_btn %}
 
 {% block smartproject_collection_task_widget %}
-    <td width="30%">
-        {{ form_widget(form.client) }}
+    <td width="30%" style="max-width: 330px">
+        {{ form_widget(form.project) }}
     </td>
     <td width="30%">
         {{ form_widget(form.description) }}
@@ -235,7 +235,38 @@
                 });
 
                 $('select.form-field-select').select2({
+                    matcher: function (term, text, option) {
+                        var label = option[0].textContent;
+
+                        return text.toUpperCase().indexOf(term.toUpperCase()) >= 0;
+                    },
+                    formatResult: function (item) {
+                        var parts = item.text.split(/ > /);
+                        var text  = parts[parts.length - 1];
+                        var type  = 1;
+
+                        if (text.match(/^[0-2]:/)) {
+                            type = parseInt(text);
+                            text = text.replace(/^\s*([0-2]:)/, '');
+                        }
+
+                        text = '&nbsp;&nbsp;'.repeat(parts.length - 1) + text;
+
+                        if (type == 0) {
+                            text = '<strong>' + text + '</strong>';
+                        } else if (type == 2) {
+                            text = '<div style="font-style: italic">' + text + '</div>';
+                        }
+
+                        return text;
+                    },
+                    formatSelection: function (item) {
+                        var text = item.text.replace(/ > [0-2]:/g, ' / ').replace(/^[0-2]:/, '');
+
+                        return text;
+                    },
                     allowClear: true,
+                    dropdownAutoWidth: true,
                     width: '100%'
                 });
             }

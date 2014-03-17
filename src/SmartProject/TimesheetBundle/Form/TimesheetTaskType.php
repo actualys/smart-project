@@ -16,82 +16,34 @@ class TimesheetTaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'client',
+            'project',
             'entity',
             array(
                 'label'                          => false,
                 'horizontal_input_wrapper_class' => 'col-sm-12',
+                'widget_form_group_attr'         => array(
+                    'class' => 'form-group',
+                ),
                 'widget_addon_append'            => array(
                     'icon' => 'th-large',
                 ),
                 'attr'                           => array(
-                    'placeholder'  => 'Client',
+                    'placeholder'  => 'Project',
                     'autocomplete' => 'off',
-                    'class'        => 'form-field-select form-field-client',
+                    'class'        => 'form-field-select form-field-project',
                 ),
                 'required'                       => false,
                 'class'                          => 'SmartProject\ProjectBundle\Entity\BaseProject',
                 'property'                       => 'parentedName',
                 'query_builder'                  => function (EntityRepository $er) {
-                      return $er->createQueryBuilder('c')
-                        ->orderBy('c.root', 'ASC')
-                      ->addOrderBy('c.lft', 'ASC');
+                      return $er->createQueryBuilder('p')
+                        ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
+                        ->where('root.id = p.root')
+                        ->orderBy('root.name', 'ASC')
+                        ->addOrderBy('p.lft', 'ASC');
                   },
             )
         );
-//        $builder->add(
-//            'project',
-//            'entity',
-//            array(
-//                'label'                          => false,
-//                'horizontal_input_wrapper_class' => 'col-sm-1',
-//                'widget_form_group_attr'         => array(
-//                    'class' => 'form-group',
-//                ),
-//                'widget_addon_append'            => array(
-//                    'icon' => 'th-large',
-//                ),
-//                'attr'                           => array(
-//                    'placeholder'  => 'Project',
-//                    'autocomplete' => 'off',
-//                    'class'        => 'form-field-select form-field-project',
-//                ),
-//                'required'                       => false,
-//                'class'                          => 'SmartProject\ProjectBundle\Entity\Project',
-//                'property'                       => 'clientIdName',
-//                'query_builder'                  => function (EntityRepository $er) {
-//                      return $er->createQueryBuilder('p')
-//                        ->orderBy('p.root', 'ASC')
-//                        ->addOrderBy('p.lft', 'ASC');
-//                  },
-//            )
-//        );
-//        $builder->add(
-//            'contract',
-//            'entity',
-//            array(
-//                'label'                          => false,
-//                'horizontal_input_wrapper_class' => 'col-sm-1',
-//                'widget_form_group_attr'         => array(
-//                    'class' => 'form-group',
-//                ),
-//                'widget_addon_append'            => array(
-//                    'icon' => 'th-large',
-//                ),
-//                'attr'                           => array(
-//                    'placeholder'  => 'Contract',
-//                    'autocomplete' => 'off',
-//                    'class'        => 'form-field-select form-field-contract',
-//                ),
-//                'required'                       => false,
-//                'class'                          => 'SmartProject\ProjectBundle\Entity\Contract',
-//                'property'                       => 'projectIdName',
-//                'query_builder'                  => function (EntityRepository $er) {
-//                      return $er->createQueryBuilder('c')
-//                        ->orderBy('c.name', 'ASC');
-//                  },
-//            )
-//        );
         $builder->add(
             'description',
             null,

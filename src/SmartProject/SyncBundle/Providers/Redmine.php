@@ -139,15 +139,17 @@ class Redmine extends ContainerAware implements ProviderInterface
             $entityManager->flush();
         }
 
-        foreach ($parents as $parentId => $projects) {
-            if (isset($entities[$parentId])) {
-                /** @var BaseProject $parent */
-                $parent = $entities[$parentId];
-                if (null === $parent->getParent()) {
-                    $repository->reorder($parent, 'name', 'asc', false);
-                }
-            }
-        }
+        $repository->reorderAll('name', 'asc');
+
+//        foreach ($parents as $parentId => $projects) {
+//            if (isset($entities[$parentId])) {
+//                /** @var BaseProject $parent */
+//                $parent = $entities[$parentId];
+//                if (null === $parent->getParent()) {
+//                    $repository->reorder($parent, 'name', 'asc', false);
+//                }
+//            }
+//        }
 
         $repository->verify();
 

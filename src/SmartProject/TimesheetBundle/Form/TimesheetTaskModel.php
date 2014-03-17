@@ -2,9 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Form;
 
-use SmartProject\TimesheetBundle\Entity\Task\ClientInterface;
-use SmartProject\TimesheetBundle\Entity\Task\ContractInterface;
-use SmartProject\TimesheetBundle\Entity\Task\ProjectInterface;
+use SmartProject\TimesheetBundle\Entity\Task\BaseProjectInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -30,19 +28,9 @@ class TimesheetTaskModel
     private $date;
 
     /**
-     * @var ClientInterface|null
-     */
-    private $client;
-
-    /**
-     * @var ProjectInterface|null
+     * @var BaseProjectInterface|null
      */
     private $project;
-
-    /**
-     * @var ContractInterface|null
-     */
-    private $contract;
 
     /**
      * @var string
@@ -132,38 +120,6 @@ class TimesheetTaskModel
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param null|\SmartProject\TimesheetBundle\Entity\Task\ClientInterface $client
-     */
-    public function setClient($client)
-    {
-        $this->client = $client;
-    }
-
-    /**
-     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ClientInterface
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * @param null|\SmartProject\TimesheetBundle\Entity\Task\ContractInterface $contract
-     */
-    public function setContract($contract)
-    {
-        $this->contract = $contract;
-    }
-
-    /**
-     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ContractInterface
-     */
-    public function getContract()
-    {
-        return $this->contract;
     }
 
     /**
@@ -330,15 +286,15 @@ class TimesheetTaskModel
     }
 
     /**
-     * @param null|\SmartProject\TimesheetBundle\Entity\Task\ProjectInterface $project
+     * @param null|BaseProjectInterface $project
      */
-    public function setProject($project)
+    public function setProject($project = null)
     {
         $this->project = $project;
     }
 
     /**
-     * @return null|\SmartProject\TimesheetBundle\Entity\Task\ProjectInterface
+     * @return null|BaseProjectInterface
      */
     public function getProject()
     {

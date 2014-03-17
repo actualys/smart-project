@@ -61,9 +61,7 @@ class TimesheetController extends Controller
 
             if ($task instanceof Task\TaskProject) {
                 /** @var Task\TaskProject $task */
-                $taskModel->setClient($task->getClient());
                 $taskModel->setProject($task->getProject());
-                $taskModel->setContract($task->getContract());
             }
 
             /** @var Tracking $tracking */
@@ -78,9 +76,9 @@ class TimesheetController extends Controller
         }
 
         usort($tasks, function (TimesheetTaskModel $a, TimesheetTaskModel $b) {
-                if ($a->getClient() && $b->getClient()) {
-                    return strnatcasecmp($a->getClient()->getName(), $b->getClient()->getName());
-                }
+//                if ($a->getParentedName() && $b->getParentedName()) {
+//                    return strnatcasecmp($a->getClient()->getName(), $b->getClient()->getName());
+//                }
             });
 
         foreach ($tasks as $task) {
