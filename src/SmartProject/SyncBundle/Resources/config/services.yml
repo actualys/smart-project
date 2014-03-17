@@ -1,7 +1,10 @@
 parameters:
-#    smart_project_sync.example.class: SmartProject\SyncBundle\Example
+    smart_project_sync.providers.factory.class: SmartProject\SyncBundle\Providers\Factory
 
 services:
-#    smart_project_sync.example:
-#        class: %smart_project_sync.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    smart_project_sync.providers.factory:
+        class: %smart_project_sync.providers.factory.class%
+        arguments: [%smart_project_sync.providers%, %smart_project_sync.clients%]
+        calls:
+            - [ setContainer, [@service_container] ]
+

@@ -19,7 +19,7 @@
                 {% if project.client %}
                     <a href="{{ path('client_show', {slug: project.client.slug}) }}">{{ project.client.name }}</a>
                 {% else %}
-                    N/A
+                    <em>N/A</em>
                 {% endif %}
             </td>
         </tr>
@@ -29,18 +29,22 @@
                 {% if project.manager is defined %}
                     <a href="{{ path('user_show', {id: project.manager.id}) }}">{{ project.manager.name }}</a>
                 {% else %}
-                    N/A
+                    <em>N/A</em>
                 {% endif %}
             </td>
         </tr>
         <tr>
-            <th>Redmine</th>
+            <th>Synced</th>
             <td>
-                {% if project.redmineId %}
-                    <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.redmineIdentifier }}"
-                       target="_blank">Synchronized</a>
+                {% if project.syncProvider %}
+                    {% if project.syncProvider == 'redmine' %}
+                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"
+                           target="_blank"><img src="" alt="Redmine"/></a>
+                    {% else %}
+                        {{ project.syncProvider ~ ':' ~ project.syncIdentifier }}
+                    {% endif %}
                 {% else %}
-                    <em>Not linked</em>
+                    <em>N/A</em>
                 {% endif %}
             </td>
         </tr>
@@ -77,6 +81,6 @@
 
 {% if delete_form is defined %}
     {{ form_start(delete_form) }}
-        <a class="btn btn-block btn-danger btn-project-delete">Delete project</a>
+    <a class="btn btn-block btn-danger btn-project-delete">Delete project</a>
     {{ form_end(delete_form) }}
 {% endif %}

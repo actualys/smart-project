@@ -1,48 +1,62 @@
 <?php
 
-namespace SmartProject\ProjectBundle\Provider;
+namespace SmartProject\SyncBundle\Providers;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Redmine\Client;
-use SmartProject\ProjectBundle\Entity\AbstractEntity;
+use SmartProject\ProjectBundle\Entity\BaseProject;
 use SmartProject\ProjectBundle\Entity\Contract;
 use SmartProject\ProjectBundle\Entity\Project;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
- * Class RedmineProvider
+ * Class Redmine
  *
- * @package SmartProject\ProjectBundle\Provider
+ * @package SmartProject\SyncBundle\Providers
  */
-class RedmineProvider
+class Redmine extends ContainerAware implements ProviderInterface
 {
     /**
-     * @var \Doctrine\Bundle\DoctrineBundle\Registry
+     * @var array
      */
-    protected $doctrine;
+    protected $settings;
 
     /**
-     * @var \Redmine\Client
+     * @var Client
      */
     protected $client;
 
     /**
-     * @param $doctrine
-     * @param $redmine
+     * @param array $settings
      */
-    public function __construct(Registry $doctrine, $redmine)
+    public function __construct($settings)
     {
-        $this->doctrine = $doctrine;
-        $this->client   = new Client($redmine['hostname'], $redmine['apikey']);
+        $this->settings = $settings;
+        $this->client = new Client($settings['config']['hostname'], $settings['config']['apikey']);
     }
 
     /**
-     *
+     * @return string
      */
-    public function synchronize()
+    public function getName()
     {
+        return $this->settings['label'];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function execute()
+    {
+        if (!$this->settings['enabled']) {
+            return false;
+        }
+
+        // TODO : move code into ProductBundle when available
+        //$productManager = $this->container->get('');
+
         /** @var \Doctrine\ORM\EntityManager $entityManager */
-        $entityManager = $this->doctrine->getManager();
+        $entityManager = $this->container->get('doctrine')->getManager();
         $entities      = array();
         $parents       = array();
         $offset        = 0;
@@ -104,18 +118,18 @@ class RedmineProvider
             }
         );
 
-        foreach ($parents as $parentId => $projects) {
-            if (isset($entities[$parentId])) {
-                /** @var Project $parent */
-                $parent = $entities[$parentId];
-
-                // Set new positions
-                /** @var Project $project */
-                foreach ($projects as $project) {
-                    $parent->addSubProject($project);
-                }
-            }
-        }
+//        foreach ($parents as $parentId => $projects) {
+//            if (isset($entities[$parentId])) {
+//                /** @var Project $parent */
+//                $parent = $entities[$parentId];
+//
+//                // Set new positions
+//                /** @var Project $project */
+//                foreach ($projects as $project) {
+//                    $parent->addSubProject($project);
+//                }
+//            }
+//        }
 
         if (count($entities)) {
             foreach ($entities as $entity) {
@@ -127,7 +141,7 @@ class RedmineProvider
 
         foreach ($parents as $parentId => $projects) {
             if (isset($entities[$parentId])) {
-                /** @var AbstractEntity $parent */
+                /** @var BaseProject $parent */
                 $parent = $entities[$parentId];
                 if (null === $parent->getParent()) {
                     $repository->reorder($parent, 'name', 'asc', false);
@@ -136,5 +150,7 @@ class RedmineProvider
         }
 
         $repository->verify();
+
+        return true;
     }
 }

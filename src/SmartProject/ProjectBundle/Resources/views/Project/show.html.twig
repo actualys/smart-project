@@ -19,8 +19,8 @@
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse_{{ contract.id }}">
                             {{ contract.slug }}
                         </a>
-                        {% set rate = (7 - contract.id) * 20 %}
-                        <span class="label {% if rate > 100 %}label-danger{% else %}label-success{% endif %} pull-right"
+                        {% set rate = 20 %}
+                        <span class="label {% if rate > 0 %}label-danger{% else %}label-success{% endif %} pull-right"
                               data-container="body"
                               data-toggle="popover" data-trigger="hover" data-placement="top"
                               data-content="+3 days">
@@ -29,7 +29,7 @@
                     </h4>
                 </div>
                 <div id="collapse_{{ contract.id }}"
-                     class="panel-collapse collapse{% if contract.id == 1 %} in{% endif %}">
+                     class="panel-collapse collapse{% if loop.index == 1 %} in{% endif %}">
                     <div class="panel-body">
                         <div class="col-md-4">
                             {{ contract.description }}

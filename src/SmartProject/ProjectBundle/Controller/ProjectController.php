@@ -3,6 +3,7 @@
 namespace SmartProject\ProjectBundle\Controller;
 
 use SmartProject\FrontBundle\SmartProjectFrontBundle;
+use SmartProject\ProjectBundle\Entity\AbstractEntity;
 use SmartProject\ProjectBundle\Entity\Client;
 use SmartProject\ProjectBundle\Entity\ClientRepository;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
@@ -52,14 +53,6 @@ class ProjectController extends Controller
         $client = new Client();
         $client->setName($project->getName());
         $project->setClient($client);
-
-        /** @var ProjectRepository $repository */
-        $repository = $em->getRepository('SmartProjectProjectBundle:Project');
-        $children   = $repository->getChildren($project);
-        /** @var Project $project */
-        foreach ($children as $project) {
-            $project->setClient($client);
-        }
 
         $em->persist($client);
         $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
@@ -117,22 +110,26 @@ class ProjectController extends Controller
 
         /** @var ClientRepository $repoClient */
         $repoClient = $em->getRepository('SmartProjectProjectBundle:Client');
-        $builder    = $repoClient->createQueryBuilder('c')
-          ->select('c, p')
-          ->join('c.projects', 'p')
-          ->orderBy('c.name', 'asc')
-          ->addOrderBy('p.lft', 'asc');
-        $query      = $builder->getQuery();
-        $clients    = $query->execute();
+        $projects   = $repoClient->childrenQueryBuilder()
+          ->select('node, project')
+          ->from('SmartProject\ProjectBundle\Entity\Project', 'project')
+          ->andWhere('node.id = project.root')
+          ->orderBy('project.root', 'asc')
+          ->addOrderBy('project.lft', 'asc')
+          ->getQuery()
+          ->execute();
 
         /** @var ProjectRepository $repoProject */
-        $repoProject = $em->getRepository('SmartProjectProjectBundle:Project');
-        $projects    = $repoProject->findBy(array('client' => null), array('root' => 'asc', 'lft' => 'asc'));
-        $redmine     = $this->container->getParameter('redmine');
+        $repoProject           = $em->getRepository('SmartProjectProjectBundle:Project');
+        $projects_not_affected = $repoProject->childrenQueryBuilder()
+          ->getQuery()
+          ->execute();
+
+        $redmine = $this->container->getParameter('redmine');
 
         return array(
-            'clients'               => $clients,
-            'projects_not_affected' => $projects,
+            'projects'              => $projects,
+            'projects_not_affected' => $projects_not_affected,
             'redmine'               => $redmine,
         );
     }
@@ -147,7 +144,7 @@ class ProjectController extends Controller
     public function createAction(Request $request)
     {
         $project = new Project();
-        $form   = $this->createCreateForm($project);
+        $form    = $this->createCreateForm($project);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -306,22 +303,11 @@ class ProjectController extends Controller
      */
     public function updateAction(Request $request, Project $project)
     {
-        $em         = $this->getDoctrine()->getManager();
-        $deleteForm = $this->createDeleteForm($project);
-        $editForm   = $this->createEditForm($project);
+        $editForm = $this->createEditForm($project);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            // Additional updates
-
-            /** @var ProjectRepository $repository */
-            $repository = $em->getRepository('SmartProjectProjectBundle:Project');
-            $children   = $repository->getChildren($project);
-            /** @var Project $project */
-            foreach ($children as $project) {
-                $project->setClient($project->getClient());
-            }
-
+            $em = $this->getDoctrine()->getManager();
             $em->getFilters()->disable(SmartProjectFrontBundle::FILTER_SOFTDELETE);
             $em->flush();
 
@@ -329,6 +315,8 @@ class ProjectController extends Controller
 
             return $this->redirect($this->generateUrl('project_show', array('slug' => $project->getSlug())));
         }
+
+        $deleteForm = $this->createDeleteForm($project);
 
         return array(
             'project'     => $project,

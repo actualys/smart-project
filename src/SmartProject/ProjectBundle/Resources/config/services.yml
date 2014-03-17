@@ -1,7 +1,7 @@
 parameters:
-    smart_project_project.redmine.class: SmartProject\ProjectBundle\Provider\RedmineProvider
+    smart_project_project.synchronize.class: SmartProject\ProjectBundle\Services\Synchronize
 
 services:
-    smart_project_project.redmine:
-        class: %smart_project_project.redmine.class%
-        arguments: [@doctrine, %redmine%]
+    smart_project_project.synchronize:
+        class: %smart_project_project.synchronize.class%
+        arguments: [@doctrine.orm.entity_manager]

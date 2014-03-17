@@ -120,30 +120,31 @@ class ProjectType extends AbstractType
                   'required'                       => false,
               )
           )
-          ->add(
-              'redmineId',
-              'text',
-              array(
-                  'label'                          => 'Redmine ID',
-                  'horizontal_input_wrapper_class' => 'col-lg-9',
-                  'attr'                           => array(
-                      'placeholder' => 'Redmine ID',
-                  ),
-                  'required'                       => false,
-              )
-          )
-          ->add(
-              'redmineIdentifier',
-              'text',
-              array(
-                  'label'                          => 'Redmine identifier',
-                  'horizontal_input_wrapper_class' => 'col-lg-9',
-                  'attr'                           => array(
-                      'placeholder' => 'Redmine identifier',
-                  ),
-                  'required'                       => false,
-              )
-          );
+//          ->add(
+//              'redmineId',
+//              'text',
+//              array(
+//                  'label'                          => 'Redmine ID',
+//                  'horizontal_input_wrapper_class' => 'col-lg-9',
+//                  'attr'                           => array(
+//                      'placeholder' => 'Redmine ID',
+//                  ),
+//                  'required'                       => false,
+//              )
+//          )
+//          ->add(
+//              'redmineIdentifier',
+//              'text',
+//              array(
+//                  'label'                          => 'Redmine identifier',
+//                  'horizontal_input_wrapper_class' => 'col-lg-9',
+//                  'attr'                           => array(
+//                      'placeholder' => 'Redmine identifier',
+//                  ),
+//                  'required'                       => false,
+//              )
+//          )
+        ;
     }
 
     /**

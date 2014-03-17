@@ -14,17 +14,15 @@
         </tr>
         </thead>
         <tbody>
-        {% for client in clients %}
-            <tr>
-                <td colspan="2"><a href="{{ path('client_show', {slug: client.slug}) }}"><strong>{{ client.name }}</strong></a></td>
-                <td>
-                    {#<a href="{{ path('client_show', { 'id': client.id }) }}"#}
-                       {#class="btn btn-default btn-xs">show</a>#}
-                    {#<a href="{{ path('client_edit', { 'id': client.id }) }}"#}
-                       {#class="btn btn-default btn-xs">edit</a>#}
-                </td>
-            </tr>
-            {% for project in client.projects %}
+        {% for project in projects %}
+            {% if project.type == 'client' %}
+                <tr>
+                    <td colspan="2">
+                        <a href="{{ path('client_show', {slug: project.slug}) }}"><strong>{{ project.name }}</strong></a>
+                    </td>
+                    <td></td>
+                </tr>
+            {% elseif project.type == 'project' %}
                 <tr>
                     <td style="width: 20px"></td>
                     <td>
@@ -33,19 +31,33 @@
                         {% endif %}
                         <a href="{{ path('project_show', { 'slug': project.slug }) }}">{{ project.name }}</a></td>
                     <td>
-                        {% if project.redmineId %}
-                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.redmineIdentifier }}"
-                               target="_blank" title="Redmine"><img src="https://wappalyzer.com/sites/default/files/icons/Redmine.png" alt="Redmine" height="16" width="16" /></a>
+                        {% if project.syncProvider %}
+                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"
+                               target="_blank" title="Redmine"><img
+                                        src="https://wappalyzer.com/sites/default/files/icons/Redmine.png" alt="Redmine"
+                                        height="16" width="16"/></a>
                         {% endif %}
                     </td>
-                    {#<td>#}
-                        {#<a href="{{ path('project_show', { 'id': project.id }) }}"#}
-                           {#class="btn btn-default btn-xs">show</a>#}
-                        {#<a href="{{ path('project_edit', { 'id': project.id }) }}"#}
-                           {#class="btn btn-default btn-xs">edit</a>#}
-                    {#</td>#}
                 </tr>
-            {% endfor %}
+            {% endif %}
+            {#{% for project in client.getchildren %}#}
+            {#<tr>#}
+            {#<td style="width: 20px"></td>#}
+            {#<td>#}
+            {#{% if project.lvl %}#}
+            {#<span style="display: inline-block; width: {{ project.lvl * 15 }}px; text-align: right; padding-right: 10px">\</span>#}
+            {#{% endif %}#}
+            {#<a href="{{ path('project_show', { 'slug': project.slug }) }}">{{ project.name }}</a></td>#}
+            {#<td>#}
+            {#{% if project.syncId %}#}
+            {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"#}
+            {#target="_blank" title="Redmine"><img#}
+            {#src="https://wappalyzer.com/sites/default/files/icons/Redmine.png" alt="Redmine"#}
+            {#height="16" width="16"/></a>#}
+            {#{% endif %}#}
+            {#</td>#}
+            {#</tr>#}
+            {#{% endfor %}#}
         {% endfor %}
         </tbody>
     </table>
@@ -58,7 +70,6 @@
         <table class="table table-condensed table-striped table-hover">
             <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 {#<th>Redmine</th>#}
                 <th>Created</th>
@@ -69,17 +80,18 @@
             <tbody>
             {% for entity in projects_not_affected %}
                 <tr>
-                    <td><a href="{{ path('project_show', { 'slug': entity.slug }) }}">{{ entity.id }}</a></td>
                     <td>
-                        {% for i in range(0, entity.lvl) if entity.lvl > 0 %}
-                            <span style="display: inline-block; width: 15px"></span>
-                        {% endfor %}
+                        {% if entity.lvl %}
+                            {% for i in range(1, entity.lvl) %}
+                                <span style="display: inline-block; width: 15px"></span>
+                            {% endfor %}
+                        {% endif %}
                         <a href="{{ path('project_show', { 'slug': entity.slug }) }}">{{ entity.name }}</a>
                     </td>
                     {#<td>#}
-                    {#{% if entity.redmineIdentifier %}#}
-                    {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.redmineIdentifier }}"#}
-                    {#target="_blank">{{ entity.redmineIdentifier }}</a>#}
+                    {#{% if entity.syncIdentifier %}#}
+                    {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.syncIdentifier }}"#}
+                    {#target="_blank">{{ entity.syncIdentifier }}</a>#}
                     {#<img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"#}
                     {#alt="External link"/>#}
                     {#{% endif %}#}

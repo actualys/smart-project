@@ -30,11 +30,12 @@ class TimesheetTaskType extends AbstractType
                     'class'        => 'form-field-select form-field-client',
                 ),
                 'required'                       => false,
-                'class'                          => 'SmartProject\ProjectBundle\Entity\Client',
-                'property'                       => 'name',
+                'class'                          => 'SmartProject\ProjectBundle\Entity\BaseProject',
+                'property'                       => 'parentedName',
                 'query_builder'                  => function (EntityRepository $er) {
                       return $er->createQueryBuilder('c')
-                        ->orderBy('c.name', 'ASC');
+                        ->orderBy('c.root', 'ASC')
+                      ->addOrderBy('c.lft', 'ASC');
                   },
             )
         );
