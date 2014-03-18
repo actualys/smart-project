@@ -37,12 +37,9 @@
             <th>Synced</th>
             <td>
                 {% if project.syncProvider %}
-                    {% if project.syncProvider == 'redmine' %}
-                        <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"
-                           target="_blank"><img src="" alt="Redmine"/></a>
-                    {% else %}
-                        {{ project.syncProvider ~ ':' ~ project.syncIdentifier }}
-                    {% endif %}
+                    <a href="{{ sync_url(project) }}" target="_blank" title="{{ project.syncProvider }}">
+                        <img src="{{ asset('bundles/smartprojectsync/images/' ~ project.syncProvider ~ '.png') }}" height="16" width="16" alt="{{ project.syncProvider }}"/>
+                    </a>
                 {% else %}
                     <em>N/A</em>
                 {% endif %}

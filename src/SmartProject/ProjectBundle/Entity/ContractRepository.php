@@ -13,8 +13,13 @@ class ContractRepository extends BaseProjectRepository
     /**
      * @see getChildrenQueryBuilder
      */
-    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
-    {
+    public function childrenQueryBuilder(
+        $node = null,
+        $direct = false,
+        $sortByField = null,
+        $direction = 'ASC',
+        $includeNode = false
+    ) {
         $queryBuilder = parent::childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
 
         $queryBuilder->andWhere('node INSTANCE OF SmartProject\ProjectBundle\Entity\Contract')

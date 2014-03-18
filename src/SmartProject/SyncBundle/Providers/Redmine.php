@@ -169,4 +169,14 @@ class Redmine extends ContainerAware implements ProviderInterface
 
         return true;
     }
+
+    /**
+     * @param BaseProject $project
+     *
+     * @return mixed
+     */
+    public function getUrlForProject(BaseProject $project)
+    {
+        return trim($this->settings['config']['hostname'], '/ ') . '/projects/' . $project->getSyncIdentifier();
+    }
 }

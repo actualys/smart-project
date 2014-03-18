@@ -110,28 +110,11 @@ class ProjectController extends Controller
 
         /** @var ClientRepository $repoClient */
         $repoClient = $em->getRepository('SmartProjectProjectBundle:Client');
-        $projects   = $repoClient->childrenQueryBuilder()
-          ->select('node, project')
-          ->from('SmartProject\ProjectBundle\Entity\Project', 'project')
-          ->andWhere('node.id = project.root')
-          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
-          ->andWhere('root.id = node.root')
-          ->andWhere('root INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
-          ->orderBy('root.name', 'asc')
-          ->addOrderBy('node.lft', 'asc')
-          ->getQuery()
-          ->execute();
+        $projects   = $repoClient->getClientsWithProjects();
 
         /** @var ProjectRepository $repoProject */
         $repoProject           = $em->getRepository('SmartProjectProjectBundle:Project');
-        $projects_not_affected = $repoProject->childrenQueryBuilder()
-          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
-          ->andWhere('root.id = node.root')
-          ->andWhere('root NOT INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
-          ->orderBy('root.name', 'asc')
-          ->addOrderBy('node.lft', 'asc')
-          ->getQuery()
-          ->execute();
+        $projects_not_affected = $repoProject->getProjectsWithoutClient();
 
         $providers = $this->container->getParameter('smart_project_sync.clients');
 
@@ -246,11 +229,9 @@ class ProjectController extends Controller
     public function showAction(Project $project)
     {
         $deleteForm = $this->createDeleteForm($project);
-        $redmine    = $this->container->getParameter('redmine');
 
         return array(
             'project'     => $project,
-            'redmine'     => $redmine,
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -267,11 +248,9 @@ class ProjectController extends Controller
     {
         $editForm   = $this->createEditForm($project);
         $deleteForm = $this->createDeleteForm($project);
-        $redmine    = $this->container->getParameter('redmine');
 
         return array(
             'project'     => $project,
-            'redmine'     => $redmine,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );

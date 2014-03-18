@@ -85,12 +85,10 @@ class ContractController extends Controller
         $contract = new Contract();
         $contract->setProject($project);
         $form    = $this->createCreateForm($contract);
-        $redmine = $this->container->getParameter('redmine');
 
         return array(
             'contract'    => $contract,
             'project'     => $project,
-            'redmine'     => $redmine,
             'form'        => $form->createView(),
             'form_action' => $this->generateUrl('contract_create', array('slug' => $project->getId())),
         );

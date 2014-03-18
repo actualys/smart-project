@@ -1,6 +1,8 @@
 parameters:
     smart_project_sync.providers.factory.class: SmartProject\SyncBundle\Providers\Factory
 
+    smart_project_sync.twig.sync.class: SmartProject\SyncBundle\Twig\SyncExtension
+
 services:
     smart_project_sync.providers.factory:
         class: %smart_project_sync.providers.factory.class%
@@ -8,3 +10,8 @@ services:
         calls:
             - [ setContainer, [@service_container] ]
 
+    smart_project_sync.twig.sync:
+        class: %smart_project_sync.twig.sync.class%
+        arguments: [@smart_project_sync.providers.factory]
+        tags:
+            - {name: twig.extension }

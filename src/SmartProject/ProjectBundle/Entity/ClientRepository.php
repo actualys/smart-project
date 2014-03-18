@@ -17,6 +17,7 @@ class ClientRepository extends BaseProjectRepository
      * @param array|null $orderBy
      * @param int|null $limit
      * @param int|null $offset
+     *
      * @return array The objects.
      */
     public function findWithProjectsBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
@@ -28,8 +29,13 @@ class ClientRepository extends BaseProjectRepository
     /**
      * @see getChildrenQueryBuilder
      */
-    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
-    {
+    public function childrenQueryBuilder(
+        $node = null,
+        $direct = false,
+        $sortByField = null,
+        $direction = 'ASC',
+        $includeNode = false
+    ) {
         $queryBuilder = parent::childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
 
         $queryBuilder->andWhere('node INSTANCE OF SmartProject\ProjectBundle\Entity\Client')
@@ -37,5 +43,29 @@ class ClientRepository extends BaseProjectRepository
           ->addOrderBy('node.lft', 'asc');
 
         return $queryBuilder;
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getClientsWithProjectsQueryBuilder()
+    {
+        return $this->childrenQueryBuilder()
+          ->select('node, project')
+          ->from('SmartProject\ProjectBundle\Entity\Project', 'project')
+          ->andWhere('node.id = project.root')
+          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
+          ->andWhere('root.id = node.root')
+          ->andWhere('root INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
+          ->orderBy('root.name', 'asc')
+          ->addOrderBy('node.lft', 'asc');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClientsWithProjects()
+    {
+        return $this->getClientsWithProjectsQueryBuilder()->getQuery()->execute();
     }
 }

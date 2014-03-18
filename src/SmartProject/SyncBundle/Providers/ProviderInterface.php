@@ -2,6 +2,8 @@
 
 namespace SmartProject\SyncBundle\Providers;
 
+use SmartProject\ProjectBundle\Entity\BaseProject;
+
 /**
  * Interface ProviderInterface
  *
@@ -18,4 +20,11 @@ interface ProviderInterface
      * @return boolean
      */
     public function execute();
+
+    /**
+     * @param BaseProject $project
+     *
+     * @return mixed
+     */
+    public function getUrlForProject(BaseProject $project);
 } 

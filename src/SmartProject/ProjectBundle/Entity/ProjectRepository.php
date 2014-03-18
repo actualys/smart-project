@@ -13,8 +13,13 @@ class ProjectRepository extends BaseProjectRepository
     /**
      * @see getChildrenQueryBuilder
      */
-    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
-    {
+    public function childrenQueryBuilder(
+        $node = null,
+        $direct = false,
+        $sortByField = null,
+        $direction = 'ASC',
+        $includeNode = false
+    ) {
         $queryBuilder = parent::childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
 
         $queryBuilder
@@ -37,5 +42,26 @@ class ProjectRepository extends BaseProjectRepository
         $abstractRepository = $this->_em->getRepository('SmartProjectProjectBundle:BaseProject');
 
         return $abstractRepository->reorder($node, $sortByField, $direction, $verify);
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getProjectsWithoutClientQueryBuilder()
+    {
+        return $this->childrenQueryBuilder()
+          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
+          ->andWhere('root.id = node.root')
+          ->andWhere('root NOT INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
+          ->orderBy('root.name', 'asc')
+          ->addOrderBy('node.lft', 'asc');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProjectsWithoutClient()
+    {
+        return $this->getProjectsWithoutClientQueryBuilder()->getQuery()->execute();
     }
 }

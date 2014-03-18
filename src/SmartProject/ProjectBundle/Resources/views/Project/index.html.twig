@@ -32,10 +32,9 @@
                         <a href="{{ path('project_show', { 'slug': project.slug }) }}">{{ project.name }}</a></td>
                     <td>
                         {% if project.syncProvider %}
-                            <a href="{{ providers|key(project.syncProvider)|key('config')|key('hostname')|default('')|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"
-                               target="_blank" title="Redmine"><img
-                                        src="https://wappalyzer.com/sites/default/files/icons/Redmine.png" alt="Redmine"
-                                        height="16" width="16"/></a>
+                            <a href="{{ sync_url(project) }}" target="_blank" title="{{ project.syncProvider }}">
+                                <img src="{{ asset('bundles/smartprojectsync/images/' ~ project.syncProvider ~ '.png') }}" height="16" width="16" alt="{{ project.syncProvider }}"/>
+                            </a>
                         {% endif %}
                     </td>
                 </tr>
@@ -53,7 +52,6 @@
             <thead>
             <tr>
                 <th>Name</th>
-                {#<th>Redmine</th>#}
                 <th>Created</th>
                 <th>Updated</th>
                 <th>Actions</th>
@@ -70,14 +68,6 @@
                         {% endif %}
                         <a href="{{ path('project_show', { 'slug': entity.slug }) }}">{{ entity.name }}</a>
                     </td>
-                    {#<td>#}
-                    {#{% if entity.syncIdentifier %}#}
-                    {#<a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ entity.syncIdentifier }}"#}
-                    {#target="_blank">{{ entity.syncIdentifier }}</a>#}
-                    {#<img src="{{ asset('bundles/smartprojectproject/images/external_link_icon.gif') }}"#}
-                    {#alt="External link"/>#}
-                    {#{% endif %}#}
-                    {#</td>#}
                     <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d') }}{% endif %}</td>
                     <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d') }}{% endif %}</td>
                     <td>
