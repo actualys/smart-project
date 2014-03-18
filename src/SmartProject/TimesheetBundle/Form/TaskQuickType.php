@@ -3,6 +3,7 @@
 namespace SmartProject\TimesheetBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
+use SmartProject\ProjectBundle\Entity\BaseProject;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -74,6 +75,7 @@ class TaskQuickType extends AbstractType
                         return $er->createQueryBuilder('p')
                           ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
                           ->where('root.id = p.root')
+                          ->andWhere('root INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
                           ->orderBy('root.name', 'ASC')
                           ->addOrderBy('p.lft', 'ASC');
                     },

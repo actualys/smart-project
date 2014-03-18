@@ -61,97 +61,103 @@ class Redmine extends ContainerAware implements ProviderInterface
         $parents       = array();
         $offset        = 0;
 
-        /** @var ProjectRepository $repository */
-        $repository = $entityManager->getRepository('SmartProjectProjectBundle:Project');
+        try {
+            $entityManager->beginTransaction();
 
-        do {
-            $response = $this->client->api('project')->all(
-                array(
-                    'limit'  => 25,
-                    'offset' => $offset,
-                )
+            /** @var ProjectRepository $repository */
+            $repository = $entityManager->getRepository('SmartProjectProjectBundle:Project');
+
+            do {
+                $response = $this->client->api('project')->all(
+                    array(
+                        'limit'  => 25,
+                        'offset' => $offset,
+                    )
+                );
+
+                $projects = $response['projects'];
+                $offset += count($projects);
+
+                foreach ($projects as $project) {
+                    /** @var array $entity */
+                    $entity = $repository->findBy(array('syncId' => 'redmine:' . $project['id']));
+
+                    if (!$entity) {
+                        /** @var Project $entity */
+                        $entity = new Project();
+                        $entity->setDescription($project['description']);
+                    } else {
+                        $entity = reset($entity);
+                        /** @var Project $entity */
+                    }
+
+                    $entity->setName(trim($project['name']));
+                    $entity->setSyncId('redmine:' . $project['id']);
+                    $entity->setSyncIdentifier($project['identifier']);
+
+                    if (!$entity->getParent() instanceof Client) {
+                        $entity->setParent(null);
+                    }
+
+                    if ($entity->getContracts()->isEmpty()) {
+                        $contract = new Contract();
+                        $contract->setName('default contract');
+                        $entity->addContract($contract);
+                    }
+
+                    $entities[$project['id']] = $entity;
+
+                    if (isset($project['parent']['id'])) {
+                        $parents[$project['parent']['id']][] = $entity;
+                    }
+                }
+
+            } while ($offset < $response['total_count'] && count($projects));
+
+            uasort(
+                $entities,
+                function (Project $a, Project $b) {
+                    return strcasecmp($a->getName(), $b->getName());
+                }
             );
 
-            $projects = $response['projects'];
-            $offset += count($projects);
+            foreach ($parents as $parentId => $projects) {
+                if (isset($entities[$parentId])) {
+                    /** @var Project $parent */
+                    $parent = $entities[$parentId];
 
-            foreach ($projects as $project) {
-                /** @var array $entity */
-                $entity = $repository->findBy(array('syncId' => 'redmine:' . $project['id']));
-
-                if (!$entity) {
-                    /** @var Project $entity */
-                    $entity = new Project();
-                    $entity->setDescription($project['description']);
-                } else {
-                    $entity = reset($entity);
-                    /** @var Project $entity */
-                }
-
-                $entity->setName(trim($project['name']));
-                $entity->setSyncId('redmine:' . $project['id']);
-                $entity->setSyncIdentifier($project['identifier']);
-
-                if (!$entity->getParent() instanceof Client) {
-                    $entity->setParent(null);
-                }
-
-                if ($entity->getContracts()->isEmpty()) {
-                    $contract = new Contract();
-                    $contract->setName('default');
-                    $entity->addContract($contract);
-                }
-
-                $entities[$project['id']] = $entity;
-
-                if (isset($project['parent']['id'])) {
-                    $parents[$project['parent']['id']][] = $entity;
+                    // Set new positions
+                    /** @var Project $project */
+                    foreach ($projects as $project) {
+                        $parent->addSubProject($project);
+                    }
                 }
             }
 
-        } while ($offset < $response['total_count'] && count($projects));
+            if (count($entities)) {
+                foreach ($entities as $entity) {
+                    $entityManager->persist($entity);
+                }
 
-        uasort(
-            $entities,
-            function (Project $a, Project $b) {
-                return strcasecmp($a->getName(), $b->getName());
-            }
-        );
-
-//        foreach ($parents as $parentId => $projects) {
-//            if (isset($entities[$parentId])) {
-//                /** @var Project $parent */
-//                $parent = $entities[$parentId];
-//
-//                // Set new positions
-//                /** @var Project $project */
-//                foreach ($projects as $project) {
-//                    $parent->addSubProject($project);
-//                }
-//            }
-//        }
-
-        if (count($entities)) {
-            foreach ($entities as $entity) {
-                $entityManager->persist($entity);
+                $entityManager->flush();
             }
 
-            $entityManager->flush();
+            foreach ($parents as $parentId => $projects) {
+                if (isset($entities[$parentId])) {
+                    /** @var BaseProject $parent */
+                    $parent = $entities[$parentId];
+                    if (null === $parent->getParent()) {
+                        $repository->reorder($parent, 'name', 'asc', false);
+                    }
+                }
+            }
+
+            $repository->verify();
+            $entityManager->commit();
+
+        } catch (\Exception $e) {
+            $entityManager->rollback();
         }
-
-        $repository->reorderAll('name', 'asc');
-
-//        foreach ($parents as $parentId => $projects) {
-//            if (isset($entities[$parentId])) {
-//                /** @var BaseProject $parent */
-//                $parent = $entities[$parentId];
-//                if (null === $parent->getParent()) {
-//                    $repository->reorder($parent, 'name', 'asc', false);
-//                }
-//            }
-//        }
-
-        $repository->verify();
 
         return true;
     }

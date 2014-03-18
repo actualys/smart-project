@@ -42,6 +42,7 @@ class TimesheetTaskType extends AbstractType
                       return $er->createQueryBuilder('p')
                         ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
                         ->where('root.id = p.root')
+                        ->andWhere('root INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
                         ->orderBy('root.name', 'ASC')
                         ->addOrderBy('p.lft', 'ASC');
                   },

@@ -114,14 +114,22 @@ class ProjectController extends Controller
           ->select('node, project')
           ->from('SmartProject\ProjectBundle\Entity\Project', 'project')
           ->andWhere('node.id = project.root')
-          ->orderBy('project.root', 'asc')
-          ->addOrderBy('project.lft', 'asc')
+          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
+          ->andWhere('root.id = node.root')
+          ->andWhere('root INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
+          ->orderBy('root.name', 'asc')
+          ->addOrderBy('node.lft', 'asc')
           ->getQuery()
           ->execute();
 
         /** @var ProjectRepository $repoProject */
         $repoProject           = $em->getRepository('SmartProjectProjectBundle:Project');
         $projects_not_affected = $repoProject->childrenQueryBuilder()
+          ->from('SmartProject\ProjectBundle\Entity\BaseProject', 'root')
+          ->andWhere('root.id = node.root')
+          ->andWhere('root NOT INSTANCE OF \SmartProject\ProjectBundle\Entity\Client')
+          ->orderBy('root.name', 'asc')
+          ->addOrderBy('node.lft', 'asc')
           ->getQuery()
           ->execute();
 
