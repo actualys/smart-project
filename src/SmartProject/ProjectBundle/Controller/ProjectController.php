@@ -133,12 +133,12 @@ class ProjectController extends Controller
           ->getQuery()
           ->execute();
 
-        $redmine = $this->container->getParameter('redmine');
+        $providers = $this->container->getParameter('smart_project_sync.clients');
 
         return array(
             'projects'              => $projects,
             'projects_not_affected' => $projects_not_affected,
-            'redmine'               => $redmine,
+            'providers'             => $providers,
         );
     }
 
@@ -164,8 +164,6 @@ class ProjectController extends Controller
             $this->get('session')->getFlashBag()->add('success', 'Project created');
 
             return $this->redirect($this->generateUrl('project_show', array('slug' => $project->getSlug())));
-        } else {
-            var_dump($form->getErrorsAsString());
         }
 
         return array(

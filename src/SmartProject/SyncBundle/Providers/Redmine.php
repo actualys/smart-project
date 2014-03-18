@@ -16,6 +16,8 @@ use Symfony\Component\DependencyInjection\ContainerAware;
  */
 class Redmine extends ContainerAware implements ProviderInterface
 {
+    const PROVIDER_NAME = 'redmine';
+
     /**
      * @var array
      */
@@ -80,7 +82,12 @@ class Redmine extends ContainerAware implements ProviderInterface
 
                 foreach ($projects as $project) {
                     /** @var array $entity */
-                    $entity = $repository->findBy(array('syncId' => 'redmine:' . $project['id']));
+                    $entity = $repository->findBy(
+                        array(
+                            'syncProvider' => self::PROVIDER_NAME,
+                            'syncId' => $project['id']
+                        )
+                    );
 
                     if (!$entity) {
                         /** @var Project $entity */
@@ -92,7 +99,8 @@ class Redmine extends ContainerAware implements ProviderInterface
                     }
 
                     $entity->setName(trim($project['name']));
-                    $entity->setSyncId('redmine:' . $project['id']);
+                    $entity->setSyncProvider(self::PROVIDER_NAME);
+                    $entity->setSyncId($project['id']);
                     $entity->setSyncIdentifier($project['identifier']);
 
                     if (!$entity->getParent() instanceof Client) {

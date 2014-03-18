@@ -32,7 +32,7 @@
                         <a href="{{ path('project_show', { 'slug': project.slug }) }}">{{ project.name }}</a></td>
                     <td>
                         {% if project.syncProvider %}
-                            <a href="{{ redmine.hostname|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"
+                            <a href="{{ providers|key(project.syncProvider)|key('config')|key('hostname')|default('')|trim('/') ~ '/projects/' ~ project.syncIdentifier }}"
                                target="_blank" title="Redmine"><img
                                         src="https://wappalyzer.com/sites/default/files/icons/Redmine.png" alt="Redmine"
                                         height="16" width="16"/></a>
