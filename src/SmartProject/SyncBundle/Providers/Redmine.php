@@ -32,7 +32,7 @@ class Redmine extends ContainerAware implements ProviderInterface
     public function __construct($settings)
     {
         $this->settings = $settings;
-        $this->client = new Client($settings['config']['hostname'], $settings['config']['apikey']);
+        $this->client   = new Client($settings['config']['hostname'], $settings['config']['apikey']);
     }
 
     /**
@@ -67,7 +67,7 @@ class Redmine extends ContainerAware implements ProviderInterface
         do {
             $response = $this->client->api('project')->all(
                 array(
-                    'limit' => 25,
+                    'limit'  => 25,
                     'offset' => $offset,
                 )
             );

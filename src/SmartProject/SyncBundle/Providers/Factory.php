@@ -33,7 +33,7 @@ class Factory extends ContainerAware
      */
     public function __construct($providers, $clients)
     {
-        $this->clients  = $clients;
+        $this->clients   = $clients;
         $this->providers = $providers;
 
         $this->instances = array();

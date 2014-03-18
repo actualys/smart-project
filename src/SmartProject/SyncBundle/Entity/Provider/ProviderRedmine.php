@@ -55,19 +55,20 @@ class ProviderRedmine extends Provider
      * Set apiUser
      *
      * @param string $apiUser
+     *
      * @return ProviderRedmine
      */
     public function setApiUser($apiUser)
     {
         $this->apiUser = $apiUser;
-    
+
         return $this;
     }
 
     /**
      * Get apiUser
      *
-     * @return string 
+     * @return string
      */
     public function getApiUser()
     {
@@ -78,19 +79,20 @@ class ProviderRedmine extends Provider
      * Set apiKey
      *
      * @param string $apiKey
+     *
      * @return ProviderRedmine
      */
     public function setApiKey($apiKey)
     {
         $this->apiKey = $apiKey;
-    
+
         return $this;
     }
 
     /**
      * Get apiKey
      *
-     * @return string 
+     * @return string
      */
     public function getApiKey()
     {
@@ -101,19 +103,20 @@ class ProviderRedmine extends Provider
      * Set url
      *
      * @param string $url
+     *
      * @return ProviderRedmine
      */
     public function setUrl($url)
     {
         $this->url = $url;
-    
+
         return $this;
     }
 
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -124,19 +127,20 @@ class ProviderRedmine extends Provider
      * Set login
      *
      * @param string $login
+     *
      * @return ProviderRedmine
      */
     public function setLogin($login)
     {
         $this->login = $login;
-    
+
         return $this;
     }
 
     /**
      * Get login
      *
-     * @return string 
+     * @return string
      */
     public function getLogin()
     {
@@ -147,19 +151,20 @@ class ProviderRedmine extends Provider
      * Set password
      *
      * @param string $password
+     *
      * @return ProviderRedmine
      */
     public function setPassword($password)
     {
         $this->password = $password;
-    
+
         return $this;
     }
 
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {

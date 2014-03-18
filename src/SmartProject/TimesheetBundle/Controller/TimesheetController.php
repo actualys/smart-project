@@ -2,6 +2,7 @@
 
 namespace SmartProject\TimesheetBundle\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use SmartProject\TimesheetBundle\Entity\Timesheet;
 use SmartProject\TimesheetBundle\Entity\TimesheetRepository;
@@ -55,7 +56,7 @@ class TimesheetController extends Controller
 
         return array(
             'date'      => $date,
-            'timesheet' => null,
+            'timesheet' => $timesheet,
             'form'      => $form->createView(),
         );
     }
@@ -81,7 +82,7 @@ class TimesheetController extends Controller
         /** @var Timesheet $timesheet */
         $timesheet = $timesheetRepository->findByUser($user, $date, true);
 
-        $form = $this->createCreateForm($timesheet, $date);
+        $form = $this->createUpdateForm($timesheet, $date);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -91,20 +92,25 @@ class TimesheetController extends Controller
             try {
                 $em->beginTransaction();
 
-//                $taskRepository = $em->getRepository('SmartProjectTimesheetBundle:TaskProject');
+                $tasksToKeep = new ArrayCollection();
 
                 /** @var TimesheetTaskModel $taskForm */
                 foreach ($data->getTasks() as $taskForm) {
                     $found = false;
 
-                    /** @var Task\TaskProject $task */
-                    foreach ($timesheet->getTasks() as $task) {
-                        if ($task->getId() == $taskForm->getId()) {
-                            $found = true;
-                            break;
+                    // Existing task ?
+                    if ($taskForm->getId()) {
+                        /** @var Task\TaskProject $task */
+                        foreach ($timesheet->getTasks() as $task) {
+                            // Known task ?
+                            if ($task->getId() == $taskForm->getId()) {
+                                $found = true;
+                                break;
+                            }
                         }
                     }
 
+                    // New task
                     if (!$found) {
                         $task = new Task\TaskProject();
                         $timesheet->addTask($task);
@@ -130,8 +136,9 @@ class TimesheetController extends Controller
                         $day      = $tracking->getDate()->format('N');
                         $duration = $taskForm->getDuration($day);
 
-                        if (empty($duration)) {
+                        if (floatval($duration) == 0) {
                             $task->getTrackings()->removeElement($tracking);
+                            $em->remove($tracking);
                         } else {
                             $tracking->setDuration($duration);
                         }
@@ -139,29 +146,45 @@ class TimesheetController extends Controller
                         $done[$day] = true;
                     }
 
-                    /** Support for create */
-                    foreach ($done as $day => $already) {
-                        if (!$already) {
-                            $duration = $taskForm->getDuration($day);
+                    // Necessary to store empty task ?
+                    if (array_sum($done) == 0) {
+                        $em->remove($task);
+                        $timesheet->getTasks()->removeElement($task);
+                    } else {
+                        // Task marked to be kept
+                        $tasksToKeep->add($task);
 
-                            if (!empty($duration)) {
-                                echo '+';
-                                $date = clone $timesheet->getDateStart();
-                                $date->add(new \DateInterval('P' . ($day - 1) . 'D'));
+                        /** Support for create */
+                        foreach ($done as $day => $already) {
+                            if (!$already) {
+                                $duration = $taskForm->getDuration($day);
 
-                                $tracking = new Tracking();
-                                $tracking->setDate($date);
-                                $tracking->setDuration($duration);
-                                $task->addTracking($tracking);
-                                $tracking->setTask($task);
+                                if (floatval($duration) > 0) {
+                                    $date = clone $timesheet->getDateStart();
+                                    $date->add(new \DateInterval('P' . ($day - 1) . 'D'));
+
+                                    $tracking = new Tracking();
+                                    $tracking->setDate($date);
+                                    $tracking->setDuration($duration);
+                                    $task->addTracking($tracking);
+                                    $tracking->setTask($task);
+                                }
                             }
                         }
+                    }
+
+                }
+
+                // Remove old tasks
+                foreach ($timesheet->getTasks() as $task) {
+                    if (!$tasksToKeep->contains($task)) {
+                        $timesheet->removeTask($task);
+                        $em->remove($task);
                     }
                 }
 
                 $em->persist($timesheet);
                 $em->flush();
-
                 $em->commit();
 
             } catch (\Exception $e) {
@@ -172,9 +195,12 @@ class TimesheetController extends Controller
 
             return $this->redirect($this->generateUrl('timesheet', array('date' => $date->format('Y-m-d'))));
         } else {
+            $form = $this->createCreateForm($timesheet, $date);
+            $form->handleRequest($request);
+
             return array(
                 'date'      => $date,
-                'timesheet' => null,
+                'timesheet' => $timesheet,
                 'form'      => $form->createView(),
             );
         }
@@ -215,15 +241,32 @@ class TimesheetController extends Controller
             $tasks[] = $taskModel;
         }
 
-//        usort($tasks, function (TimesheetTaskModel $a, TimesheetTaskModel $b) {
-//                if ($a->getParentedName() && $b->getParentedName()) {
-//                    return strnatcasecmp($a->getClient()->getName(), $b->getClient()->getName());
-//                }
-//            });
-
         foreach ($tasks as $task) {
             $formModel->addTask($task);
         }
+
+        $form = $this->createForm(
+            new TimesheetType(),
+            $formModel,
+            array(
+                'action' => $this->generateUrl('timesheet_submit', array('date' => $date->format('Y-m-d'))),
+                'method' => 'POST',
+            )
+        );
+
+        return $form;
+    }
+
+    /**
+     * @param Timesheet $timesheet
+     * @param \DateTime $date
+     *
+     * @return Form
+     */
+    private function createUpdateForm(Timesheet $timesheet, \DateTime $date)
+    {
+        $formModel = new TimesheetModel();
+        $formModel->setId($timesheet->getId());
 
         $form = $this->createForm(
             new TimesheetType(),

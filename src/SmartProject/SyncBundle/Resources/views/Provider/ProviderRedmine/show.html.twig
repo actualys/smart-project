@@ -5,64 +5,64 @@
 
     <table class="record_properties">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ entity.name }}</td>
-            </tr>
-            <tr>
-                <th>Enabled</th>
-                <td>{{ entity.enabled }}</td>
-            </tr>
-            <tr>
-                <th>Createdat</th>
-                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Updatedat</th>
-                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Deletedat</th>
-                <td>{{ entity.deletedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Apiuser</th>
-                <td>{{ entity.apiUser }}</td>
-            </tr>
-            <tr>
-                <th>Apikey</th>
-                <td>{{ entity.apiKey }}</td>
-            </tr>
-            <tr>
-                <th>Url</th>
-                <td>{{ entity.url }}</td>
-            </tr>
-            <tr>
-                <th>Login</th>
-                <td>{{ entity.login }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ entity.password }}</td>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <td>{{ entity.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ entity.name }}</td>
+        </tr>
+        <tr>
+            <th>Enabled</th>
+            <td>{{ entity.enabled }}</td>
+        </tr>
+        <tr>
+            <th>Createdat</th>
+            <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Updatedat</th>
+            <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Deletedat</th>
+            <td>{{ entity.deletedAt|date('Y-m-d H:i:s') }}</td>
+        </tr>
+        <tr>
+            <th>Apiuser</th>
+            <td>{{ entity.apiUser }}</td>
+        </tr>
+        <tr>
+            <th>Apikey</th>
+            <td>{{ entity.apiKey }}</td>
+        </tr>
+        <tr>
+            <th>Url</th>
+            <td>{{ entity.url }}</td>
+        </tr>
+        <tr>
+            <th>Login</th>
+            <td>{{ entity.login }}</td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td>{{ entity.password }}</td>
+        </tr>
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('provider_redmine') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('provider_redmine_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('provider_redmine') }}">
+                Back to the list
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('provider_redmine_edit', { 'id': entity.id }) }}">
+                Edit
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
 {% endblock %}

@@ -33,6 +33,7 @@ class TimesheetTaskType extends AbstractType
                     'placeholder'  => 'Project',
                     'autocomplete' => 'off',
                     'class'        => 'form-field-select form-field-project',
+                    'style'        => 'display: none',
                 ),
                 'required'                       => false,
                 'class'                          => 'SmartProject\ProjectBundle\Entity\BaseProject',
@@ -50,12 +51,12 @@ class TimesheetTaskType extends AbstractType
             'description',
             null,
             array(
-                'label'               => false,
+                'label'                          => false,
                 'horizontal_input_wrapper_class' => 'col-sm-12',
-                'widget_addon_append' => array(
+                'widget_addon_append'            => array(
                     'icon' => 'pencil',
                 ),
-                'attr'                => array(
+                'attr'                           => array(
                     'placeholder' => 'Description',
                     'class'       => 'field-description',
                 ),
@@ -72,7 +73,7 @@ class TimesheetTaskType extends AbstractType
                     'attr'                           => array(
                         'placeholder' => '',
                         'class'       => 'field-duration field-duration-day' . $i,
-                        'style' => 'padding-left: 3px; padding-right: 3px',
+                        'style'       => 'padding-left: 3px; padding-right: 3px',
                     ),
                 )
             );

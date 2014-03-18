@@ -5,20 +5,20 @@
 
     <table class="records_list">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Enabled</th>
-                <th>Createdat</th>
-                <th>Updatedat</th>
-                <th>Deletedat</th>
-                <th>Apiuser</th>
-                <th>Apikey</th>
-                <th>Url</th>
-                <th>Login</th>
-                <th>Password</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Enabled</th>
+            <th>Createdat</th>
+            <th>Updatedat</th>
+            <th>Deletedat</th>
+            <th>Apiuser</th>
+            <th>Apikey</th>
+            <th>Url</th>
+            <th>Login</th>
+            <th>Password</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
         {% for entity in entities %}
@@ -35,25 +35,25 @@
                 <td>{{ entity.login }}</td>
                 <td>{{ entity.password }}</td>
                 <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('provider_redmine_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('provider_redmine_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
+                    <ul>
+                        <li>
+                            <a href="{{ path('provider_redmine_show', { 'id': entity.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('provider_redmine_edit', { 'id': entity.id }) }}">edit</a>
+                        </li>
+                    </ul>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-        <ul>
+    <ul>
         <li>
             <a href="{{ path('provider_redmine_new') }}">
                 Create a new entry
             </a>
         </li>
     </ul>
-    {% endblock %}
+{% endblock %}

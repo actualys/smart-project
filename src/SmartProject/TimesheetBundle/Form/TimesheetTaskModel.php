@@ -150,7 +150,7 @@ class TimesheetTaskModel
     }
 
     /**
-     * @param int $day
+     * @param int    $day
      * @param double $duration
      */
     public function setDuration($day, $duration)

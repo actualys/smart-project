@@ -67,7 +67,7 @@ abstract class Provider
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -78,19 +78,20 @@ abstract class Provider
      * Set name
      *
      * @param string $name
+     *
      * @return Provider
      */
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -101,19 +102,20 @@ abstract class Provider
      * Set enabled
      *
      * @param boolean $enabled
+     *
      * @return Provider
      */
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
-    
+
         return $this;
     }
 
     /**
      * Get enabled
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getEnabled()
     {
@@ -124,19 +126,20 @@ abstract class Provider
      * Set createdAt
      *
      * @param \DateTime $createdAt
+     *
      * @return Provider
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -147,19 +150,20 @@ abstract class Provider
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
+     *
      * @return Provider
      */
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
-    
+
         return $this;
     }
 
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -170,19 +174,20 @@ abstract class Provider
      * Set deletedAt
      *
      * @param \DateTime $deletedAt
+     *
      * @return Provider
      */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
-    
+
         return $this;
     }
 
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {

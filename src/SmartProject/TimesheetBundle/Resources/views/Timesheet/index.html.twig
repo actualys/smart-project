@@ -110,10 +110,14 @@
 {# --------------------------------------------------------------------------------- #}
 
 {% block headline %}
-    Timesheet <small>{{ date|date('Y-m-d') }} to {{ '+7 days'|date('Y-m-d') }}</small>
+    Timesheet of
+    <a href="#" class="datepicker-inline" data-url="{{ path('timesheet', {date: 'REPLACE'}) }}"
+       data-date-today-btn="true" data-date-today-highlight="true">{{ date|date('Y-m-d') }}</a>
+    <span class="glyphicon glyphicon-pencil" style="font-size: 0.5em"></span>
 {% endblock %}
 
 {% block headline_sub %}
+    <em>weekly view from {{ timesheet.dateStart|date('Y-m-d') }} to {{ timesheet.dateEnd|date('Y-m-d') }}</em>
 {% endblock %}
 
 {% block content_content %}
@@ -175,6 +179,22 @@
         $(document).ready(function () {
             $('.table-timesheet tr').each(function () {
                 initTableLine($(this));
+            });
+
+            $('.datepicker-inline').each(function () {
+                var picker = $(this);
+                picker.datepicker({
+                    autoclose: true,
+                    format: 'yyyy-mm-dd',
+                    weekStart: 1,
+                    todayBtn: false
+                });
+                picker.datepicker('update', picker[0].innerText);
+                picker.datepicker().on('changeDate', function (e) {
+                    if (url = picker.attr('data-url')) {
+                        window.location.href = url.replace('REPLACE', e.format());
+                    }
+                });
             });
 
             $('.btn-add-task').click(function (e) {

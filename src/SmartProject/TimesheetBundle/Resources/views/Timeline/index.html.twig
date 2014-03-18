@@ -44,20 +44,22 @@
                     {% for tracking in day.trackings %}
                         <tr>
                             <td style="width: 40%">
-                                {% if tracking.task.project.type == 'contract' %}
-                                    <a href="{{ path('client_show', {slug: tracking.task.project.client.slug}) }}">{{ tracking.task.project.client.name }}</a>
-                                    &gt;
-                                    <a href="{{ path('project_show', {slug: tracking.task.project.parent.slug}) }}">{{ tracking.task.project.parent.name }}</a>
-                                    &gt;
-                                    <a href="{{ path('contract_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
-                                {% elseif tracking.task.project.type == 'project' %}
-                                    <a href="{{ path('client_show', {slug: tracking.task.project.client.slug}) }}">{{ tracking.task.project.client.name }}</a>
-                                    &gt;
-                                    <a href="{{ path('project_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
-                                {% elseif tracking.task.project.type == 'client' %}
-                                    <a href="{{ path('client_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
+                                {% if tracking.task.project %}
+                                    {% if tracking.task.project.type == 'contract' %}
+                                        <a href="{{ path('client_show', {slug: tracking.task.project.client.slug}) }}">{{ tracking.task.project.client.name }}</a>
+                                        &gt;
+                                        <a href="{{ path('project_show', {slug: tracking.task.project.parent.slug}) }}">{{ tracking.task.project.parent.name }}</a>
+                                        &gt;
+                                        <a href="{{ path('contract_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
+                                    {% elseif tracking.task.project.type == 'project' %}
+                                        <a href="{{ path('client_show', {slug: tracking.task.project.client.slug}) }}">{{ tracking.task.project.client.name }}</a>
+                                        &gt;
+                                        <a href="{{ path('project_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
+                                    {% elseif tracking.task.project.type == 'client' %}
+                                        <a href="{{ path('client_show', {slug: tracking.task.project.slug}) }}">{{ tracking.task.project.name }}</a>
+                                    {% endif %}
                                 {% else %}
-                                    N/A
+                                    <em>N/A</em>
                                 {% endif %}
                             </td>
                             <td>
@@ -140,7 +142,8 @@
                 picker.datepicker({
                     autoclose: true,
                     format: 'yyyy-mm-dd',
-                    weekStart: 1
+                    weekStart: 1,
+                    todayBtn: false
                 });
                 picker.datepicker('update', picker[0].innerText);
                 picker.datepicker().on('changeDate', function (e) {
@@ -154,7 +157,7 @@
                 $(this).click(function () {
                     var date = $(this).attr('data-date');
 
-                    $(this).closest('.panel').parent().each(function() {
+                    $(this).closest('.panel').parent().each(function () {
                         $('.panel', this).removeClass('panel-primary');
                     });
 
