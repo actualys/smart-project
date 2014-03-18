@@ -146,6 +146,26 @@ class TimesheetController extends Controller
                         $done[$day] = true;
                     }
 
+                    /** Support for create */
+                    foreach ($done as $day => $already) {
+                        if (!$already) {
+                            $duration = $taskForm->getDuration($day);
+
+                            if (floatval($duration) > 0) {
+                                $done[$day] = true;
+
+                                $date = clone $timesheet->getDateStart();
+                                $date->add(new \DateInterval('P' . ($day - 1) . 'D'));
+
+                                $tracking = new Tracking();
+                                $tracking->setDate($date);
+                                $tracking->setDuration($duration);
+                                $task->addTracking($tracking);
+                                $tracking->setTask($task);
+                            }
+                        }
+                    }
+
                     // Necessary to store empty task ?
                     if (array_sum($done) == 0) {
                         $em->remove($task);
@@ -153,26 +173,7 @@ class TimesheetController extends Controller
                     } else {
                         // Task marked to be kept
                         $tasksToKeep->add($task);
-
-                        /** Support for create */
-                        foreach ($done as $day => $already) {
-                            if (!$already) {
-                                $duration = $taskForm->getDuration($day);
-
-                                if (floatval($duration) > 0) {
-                                    $date = clone $timesheet->getDateStart();
-                                    $date->add(new \DateInterval('P' . ($day - 1) . 'D'));
-
-                                    $tracking = new Tracking();
-                                    $tracking->setDate($date);
-                                    $tracking->setDuration($duration);
-                                    $task->addTracking($tracking);
-                                    $tracking->setTask($task);
-                                }
-                            }
-                        }
                     }
-
                 }
 
                 // Remove old tasks
