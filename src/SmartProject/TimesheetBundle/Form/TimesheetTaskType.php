@@ -33,7 +33,6 @@ class TimesheetTaskType extends AbstractType
                     'placeholder'  => 'Project',
                     'autocomplete' => 'off',
                     'class'        => 'form-field-select form-field-project',
-                    'style'        => 'display: none',
                 ),
                 'required'                       => false,
                 'class'                          => 'SmartProject\ProjectBundle\Entity\BaseProject',
