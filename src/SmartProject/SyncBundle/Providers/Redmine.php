@@ -2,9 +2,10 @@
 
 namespace SmartProject\SyncBundle\Providers;
 
-use Redmine\Client;
+use Redmine\Client as RedmineClient;
 use SmartProject\ProjectBundle\Entity\BaseProject;
 use SmartProject\ProjectBundle\Entity\Contract;
+use SmartProject\ProjectBundle\Entity\Client;
 use SmartProject\ProjectBundle\Entity\Project;
 use SmartProject\ProjectBundle\Entity\ProjectRepository;
 use Symfony\Component\DependencyInjection\ContainerAware;
@@ -24,7 +25,7 @@ class Redmine extends ContainerAware implements ProviderInterface
     protected $settings;
 
     /**
-     * @var Client
+     * @var RedmineClient
      */
     protected $client;
 
@@ -34,7 +35,7 @@ class Redmine extends ContainerAware implements ProviderInterface
     public function __construct($settings)
     {
         $this->settings = $settings;
-        $this->client   = new Client($settings['config']['hostname'], $settings['config']['apikey']);
+        $this->client   = new RedmineClient($settings['config']['hostname'], $settings['config']['apikey']);
     }
 
     /**
@@ -53,9 +54,6 @@ class Redmine extends ContainerAware implements ProviderInterface
         if (!$this->settings['enabled']) {
             return false;
         }
-
-        // TODO : move code into ProductBundle when available
-        //$productManager = $this->container->get('');
 
         /** @var \Doctrine\ORM\EntityManager $entityManager */
         $entityManager = $this->container->get('doctrine')->getManager();
@@ -85,7 +83,7 @@ class Redmine extends ContainerAware implements ProviderInterface
                     $entity = $repository->findBy(
                         array(
                             'syncProvider' => self::PROVIDER_NAME,
-                            'syncId' => $project['id']
+                            'syncId'       => $project['id']
                         )
                     );
 
